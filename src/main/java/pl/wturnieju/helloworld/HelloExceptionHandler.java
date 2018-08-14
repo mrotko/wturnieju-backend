@@ -1,4 +1,4 @@
-package app.helloworld;
+package pl.wturnieju.helloworld;
 
 import java.io.IOException;
 
