@@ -25,12 +25,16 @@ public class User extends Persistent implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private boolean accountExpired = false;
 
+    @JsonIgnore
     private boolean accountLocked = false;
 
+    @JsonIgnore
     private boolean credentialsExpired = false;
 
+    @JsonIgnore
     private boolean enabled = true;
 
     @Override
@@ -40,21 +44,21 @@ public class User extends Persistent implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !accountExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !accountLocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !credentialsExpired;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return true;
     }
 }

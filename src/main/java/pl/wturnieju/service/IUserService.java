@@ -8,5 +8,9 @@ public interface IUserService extends UserDetailsService {
 
     User create(User user);
 
+    User resetPassword(String username, String password);
+
     User resetPassword(String password);
+
+    boolean check(String email, String password);
 }

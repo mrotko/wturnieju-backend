@@ -41,8 +41,26 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User resetPassword(String username, String password) {
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        return user;
+    }
+
+    @Override
     public User resetPassword(String password) {
-        //        SecurityContextHolder.getContext().getAuthentication().getName()
+
         return null;
+    }
+
+    @Override
+    public boolean check(String email, String password) {
+        log.info("Checking user: {}", email);
+        Optional<User> user = userRepository.findByUsername(email);
+        if (!user.isPresent()) {
+            return false;
+        }
+        return passwordEncoder.matches(password, user.get().getPassword());
     }
 }
