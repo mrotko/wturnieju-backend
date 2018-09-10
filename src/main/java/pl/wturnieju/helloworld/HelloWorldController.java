@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/hello-world")
+@RequiredArgsConstructor
 public class HelloWorldController {
-    private HelloWorldRepository helloWorldRepository;
 
-    public HelloWorldController(HelloWorldRepository helloWorldRepository) {
-        this.helloWorldRepository = helloWorldRepository;
-    }
+    private final HelloWorldRepository helloWorldRepository;
 
     @PostMapping(path = "message")
     public HelloWorldMessage addMessage(@RequestBody Map<String, String> payload) {

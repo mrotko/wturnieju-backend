@@ -1,33 +1,30 @@
 package pl.wturnieju.model.generic;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import pl.wturnieju.TournamentStatus;
+import org.springframework.data.annotation.Transient;
+
+import lombok.Data;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.DuelBuilder;
+import pl.wturnieju.model.DuelBuilderFactory;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.PlayerProfile;
+import pl.wturnieju.model.TournamentParticipantType;
+import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
 
-@Builder
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 public abstract class Tournament extends Persistent {
 
     protected String name;
 
     protected String description;
 
-    protected String img;
+    protected String place;
 
-    protected CompetitionType competitionType;
+    protected String img;
 
     protected TournamentStatus status;
 
@@ -35,11 +32,26 @@ public abstract class Tournament extends Persistent {
 
     protected PlayerProfile owner;
 
-    protected LocalDateTime startDate;
+    protected Date startDate;
 
-    protected LocalDateTime endDate;
-
-    protected GenericStats stats;
+    protected Date endDate;
 
     protected TournamentSystemType systemType;
+
+    protected CompetitionType competitionType;
+
+    protected TournamentParticipantType tournamentParticipantType;
+
+    protected List<String> staffIds;
+
+    protected List<String> contributorsIds;
+
+    protected int minParticipants;
+
+    protected int expectedParticipants;
+
+    @Transient
+    public DuelBuilder getDuelBuilder() {
+        return DuelBuilderFactory.getInstance(competitionType);
+    }
 }

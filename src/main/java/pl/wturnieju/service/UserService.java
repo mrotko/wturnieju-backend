@@ -1,7 +1,9 @@
 package pl.wturnieju.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.wturnieju.model.ProfileType;
 import pl.wturnieju.model.User;
+import pl.wturnieju.model.generic.GenericProfile;
 import pl.wturnieju.repository.UserRepository;
 
 @Service
@@ -62,5 +66,19 @@ public class UserService implements IUserService {
             return false;
         }
         return passwordEncoder.matches(password, user.get().getPassword());
+    }
+
+    public Optional<GenericProfile> getCurrentUserProfile(ProfileType profileType) {
+        return userRepository.findByUsername(getCurrentUser().getUsername())
+                .map(User::getProfiles)
+                .orElse(new ArrayList<>())
+                .stream()
+                .filter(genericProfile -> genericProfile.getProfileType() == profileType)
+                .findFirst();
+    }
+
+    private User getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 }

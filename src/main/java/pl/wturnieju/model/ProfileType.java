@@ -5,4 +5,6 @@ public enum ProfileType {
     TEAM,
     REFEREE,
     COACH,
+    STAFF,
+    CONTRIBUTOR
 }

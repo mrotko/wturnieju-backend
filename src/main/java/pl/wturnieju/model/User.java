@@ -1,6 +1,8 @@
 package pl.wturnieju.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,18 +11,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import pl.wturnieju.model.generic.GenericProfile;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@EqualsAndHashCode
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends Persistent implements UserDetails {
 
     private String username;
+
+    private List<GenericProfile> profiles = new ArrayList<>();
 
     @JsonIgnore
     private String password;
