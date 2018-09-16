@@ -14,7 +14,6 @@ public class TournamentCreatorController implements ITournamentCreatorController
     private final ITournamentCreatorService tournamentCreatorService;
 
     @Override
-
     public void createTournament(TournamentTemplateDto dto) {
         tournamentCreatorService.create(dto);
     }

@@ -25,14 +25,14 @@ public class AuthController {
     private final IEmailService emailService;
 
     @PostMapping("/register")
-    public void register(@RequestBody RegistrationDTO registrationDTO) throws ValueExistsException {
+    public void register(@RequestBody RegistrationDTO registrationDTO) {
         try {
             userService.create(User.builder()
-                    .username(registrationDTO.getEmail())
+                    .username(registrationDTO.getUsername())
                     .password(registrationDTO.getPassword())
                     .build());
         } catch (IllegalArgumentException e) {
-            throw new ValueExistsException("Given email exists. Email: " + registrationDTO.getEmail());
+            throw new ValueExistsException("Given email exists. Email: " + registrationDTO.getUsername());
         }
     }
 

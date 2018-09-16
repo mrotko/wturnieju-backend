@@ -19,7 +19,7 @@ import pl.wturnieju.repository.UserRepository;
 @Service
 @Log4j2
 @AllArgsConstructor
-public class UserService implements IUserService {
+public class UserService implements IUserService, ICurrentUser {
 
     private PasswordEncoder passwordEncoder;
 
@@ -77,8 +77,9 @@ public class UserService implements IUserService {
                 .findFirst();
     }
 
-    private User getCurrentUser() {
+    @Override
+    public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
+        return userRepository.findByUsername((String) authentication.getPrincipal()).orElse(null);
     }
 }

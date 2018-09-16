@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.TournamentFactory;
-import pl.wturnieju.model.User;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
@@ -20,7 +18,10 @@ public class TournamentCreatorService implements ITournamentCreatorService {
 
     private final TournamentRepository tournamentRepository;
 
+    private final ICurrentUser currentUser;
+
     private Map<String, TournamentTemplateDto> userIdToTournamentTemplateDtoMap = new HashMap<>();
+
 
     @Override
     public TournamentTemplateDto getUserTemplate() {
@@ -37,9 +38,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
     }
 
     private String getCurrentUserId() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var user = (User) authentication.getPrincipal();
-        return user.getId();
+        return currentUser.getCurrentUser().getId();
     }
 
     @Override

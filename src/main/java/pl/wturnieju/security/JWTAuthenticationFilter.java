@@ -42,13 +42,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             LoginDTO credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
 
-            if (!userService.check(credentials.getEmail(), credentials.getPassword())) {
+            if (!userService.check(credentials.getUsername(), credentials.getPassword())) {
                 throw new UserNotFoundException(
-                        "Login failed. User " + credentials.getEmail() + " not found");
+                        "Login failed. User " + credentials.getUsername() + " not found");
             }
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    credentials.getEmail(),
+                    credentials.getUsername(),
                     credentials.getPassword(),
                     new ArrayList<>()
             ));
