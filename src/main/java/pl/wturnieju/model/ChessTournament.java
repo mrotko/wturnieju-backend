@@ -13,6 +13,4 @@ public class ChessTournament extends Tournament {
     public ChessTournament() {
         competitionType = CompetitionType.CHESS;
     }
-
-
 }

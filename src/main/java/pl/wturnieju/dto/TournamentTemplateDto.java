@@ -1,7 +1,7 @@
 package pl.wturnieju.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -16,9 +16,9 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
 
     private String name;
 
-    private Date startDate;
+    private LocalDateTime startDate;
 
-    private Date endDate;
+    private LocalDateTime endDate;
 
     private String place;
 
@@ -51,7 +51,6 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
         entity.setMinParticipants(minParticipants);
         entity.setContributorsIds(contributorsIds);
         entity.setStaffIds(staffIds);
-        entity.setCompetitionType(competitionType);
         entity.setSystemType(tournamentSystemType);
         entity.setTournamentParticipantType(tournamentParticipantType);
     }

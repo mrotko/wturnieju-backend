@@ -1,11 +1,13 @@
 package pl.wturnieju.model.generic;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Transient;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.DuelBuilder;
 import pl.wturnieju.model.DuelBuilderFactory;
@@ -32,12 +34,13 @@ public abstract class Tournament extends Persistent {
 
     protected PlayerProfile owner;
 
-    protected Date startDate;
+    protected LocalDateTime startDate;
 
-    protected Date endDate;
+    protected LocalDateTime endDate;
 
     protected TournamentSystemType systemType;
 
+    @Setter(value = AccessLevel.PROTECTED)
     protected CompetitionType competitionType;
 
     protected TournamentParticipantType tournamentParticipantType;

@@ -2,6 +2,7 @@ package pl.wturnieju.dto;
 
 import lombok.Data;
 import pl.wturnieju.model.ChessTournament;
+import pl.wturnieju.model.CompetitionType;
 
 @Data
 public class ChessTournamentTemplateDto extends TournamentTemplateDto<ChessTournament> {
@@ -9,6 +10,10 @@ public class ChessTournamentTemplateDto extends TournamentTemplateDto<ChessTourn
     private int moveTimeSec;
 
     private int incTimeSec;
+
+    public ChessTournamentTemplateDto() {
+        setCompetitionType(CompetitionType.CHESS);
+    }
 
     @Override
     public void assignFields(ChessTournament entity) {

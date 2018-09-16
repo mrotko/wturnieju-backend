@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.User;
+import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
 @Service
@@ -39,11 +40,14 @@ public class TournamentCreatorService {
         return user.getId();
     }
 
-    public void create(TournamentTemplateDto tournamentTemplateDto) {
+    public Tournament create(TournamentTemplateDto tournamentTemplateDto) {
         removeFromCache();
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetitionType());
         tournamentTemplateDto.assignFields(tournament);
-        tournamentRepository.save(tournament);
+        if (tournamentTemplateDto.getStep() == 1) {
+            throw new IllegalArgumentException("Cannot create tournament without required fields");
+        }
+        return tournamentRepository.save(tournament);
     }
 
     public void removeFromCache() {

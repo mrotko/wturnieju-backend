@@ -1,43 +1,107 @@
 package pl.wturnieju.service;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import pl.wturnieju.model.User;
-import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.configuration.WithMockCustomUser;
+import pl.wturnieju.dto.ChessTournamentTemplateDto;
+import pl.wturnieju.dto.TournamentTemplateDto;
+import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.TournamentFactory;
+import pl.wturnieju.model.TournamentParticipantType;
+import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.repository.TournamentRepository;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @DataMongoTest
-@ActiveProfiles(profiles = "test")
+@WithMockCustomUser
 public class TournamentCreatorServiceTest {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private Map<CompetitionType, TournamentTemplateDto> competitionTypeToTournamentDtoMap = new HashMap<>();
 
     @Autowired
-    private UserRepository userRepository;
+    private TournamentRepository tournamentRepository;
 
+    private TournamentCreatorService tournamentCreatorService;
+
+    @Before
+    public void setUp() {
+        tournamentCreatorService = new TournamentCreatorService(tournamentRepository);
+        setUpChessTournamentDto();
+    }
 
     @Test
-    public void insertTest() {
-        User user = new User();
-        user.setUsername("testowy username");
+    public void allCompetitionsIncludedTest() {
+        Assert.assertEquals(competitionTypeToTournamentDtoMap.size(), CompetitionType.values().length);
+    }
 
-        System.out.println(user.getUsername());
-        userRepository.save(user);
-        System.out.println(user.getId());
+    @Test
+    public void shouldSaveTournaments() {
+        Map<String, TournamentTemplateDto> createdTournamentIdToDto = new HashMap<>();
+        competitionTypeToTournamentDtoMap.values().forEach(dto -> {
+            var tournament = tournamentCreatorService.create(dto);
+            createdTournamentIdToDto.put(tournament.getId(), dto);
+        });
 
-        User founded = userRepository.findAll().stream().findFirst().orElse(null);
+        Assert.assertEquals(createdTournamentIdToDto.size(), competitionTypeToTournamentDtoMap.size());
 
-        System.out.println(founded);
-        Assert.assertEquals(user.getId(), founded.getId());
+        createdTournamentIdToDto.forEach((id, dto) -> {
+            var tournament = tournamentRepository.findById(id).orElse(null);
+            Assert.assertNotNull(tournament);
+            Assert.assertEquals(tournament.getCompetitionType(), dto.getCompetitionType());
+        });
+    }
+
+    @Test
+    public void genericMappingTest() {
+        Map<String, String> createdTournamentIdToClassNameMap = new HashMap<>();
+        competitionTypeToTournamentDtoMap.values().forEach(dto -> {
+            var className = TournamentFactory.getTournament(dto.getCompetitionType()).getClass().getName();
+            var tournament = tournamentCreatorService.create(dto);
+            createdTournamentIdToClassNameMap.put(tournament.getId(), className);
+        });
+
+        Assert.assertEquals(createdTournamentIdToClassNameMap.size(), competitionTypeToTournamentDtoMap.size());
+
+        createdTournamentIdToClassNameMap.forEach((id, className) -> {
+            var tournament = tournamentRepository.findById(id).orElse(null);
+            Assert.assertNotNull(tournament);
+            Assert.assertEquals(tournament.getClass().getName(), className);
+        });
+    }
+
+    private void setUpChessTournamentDto() {
+        var dto = new ChessTournamentTemplateDto();
+
+        dto.setMoveTimeSec(500);
+        dto.setIncTimeSec(1);
+
+        dto.setContributorsIds(Arrays.asList("1", "2", "3"));
+        dto.setCompetitionType(CompetitionType.CHESS);
+        dto.setDescription("chess competition description");
+        dto.setStartDate(LocalDateTime.now().plusDays(10));
+        dto.setEndDate(LocalDateTime.now());
+        dto.setExpectedParticipants(5);
+        dto.setMinParticipants(2);
+        dto.setName("chess tournament");
+        dto.setPlace("some place");
+        dto.setStaffIds(Arrays.asList("1", "2", "3"));
+        dto.setStep(2);
+        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
+        dto.setTournamentSystemType(TournamentSystemType.SWISS);
+
+        competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS, dto);
     }
 }
