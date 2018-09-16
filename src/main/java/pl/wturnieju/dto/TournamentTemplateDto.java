@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
 import lombok.Data;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.TournamentParticipantType;
@@ -12,6 +17,9 @@ import pl.wturnieju.model.generic.Tournament;
 
 
 @Data
+@JsonTypeInfo(use = Id.NAME, property = "competitionType")
+@JsonSubTypes(
+        {@Type(value = ChessTournamentTemplateDto.class, name = "CHESS")})
 public class TournamentTemplateDto<T extends Tournament> implements EntityMapping<T> {
 
     private String name;
@@ -37,8 +45,6 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
     private TournamentSystemType tournamentSystemType;
 
     private TournamentParticipantType tournamentParticipantType;
-
-    private int step = 1;
 
     @Override
     public void assignFields(T entity) {

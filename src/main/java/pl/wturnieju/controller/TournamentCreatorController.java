@@ -1,6 +1,7 @@
 package pl.wturnieju.controller;
 
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class TournamentCreatorController implements ITournamentCreatorController
     private final ITournamentCreatorService tournamentCreatorService;
 
     @Override
-    public void createTournament(TournamentTemplateDto dto) {
+    public void createTournament(@RequestBody TournamentTemplateDto dto) {
         tournamentCreatorService.create(dto);
     }
 }

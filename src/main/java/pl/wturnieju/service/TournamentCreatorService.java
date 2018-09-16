@@ -46,9 +46,6 @@ public class TournamentCreatorService implements ITournamentCreatorService {
         removeFromCache();
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetitionType());
         tournamentTemplateDto.assignFields(tournament);
-        if (tournamentTemplateDto.getStep() == 1) {
-            throw new IllegalArgumentException("Cannot create tournament without required fields");
-        }
         return tournamentRepository.save(tournament);
     }
 

@@ -9,9 +9,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.wturnieju.configuration.WithMockCustomUser;
@@ -21,6 +24,7 @@ import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 
 @SpringBootTest
@@ -34,11 +38,16 @@ public class TournamentCreatorServiceTest {
     @Autowired
     private TournamentRepository tournamentRepository;
 
+    @Mock
+    private ICurrentUser currentUser;
+
     private TournamentCreatorService tournamentCreatorService;
 
     @Before
     public void setUp() {
-        tournamentCreatorService = new TournamentCreatorService(tournamentRepository);
+        Mockito.when(currentUser.getCurrentUser()).thenReturn(
+                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUser);
         setUpChessTournamentDto();
     }
 
@@ -98,7 +107,6 @@ public class TournamentCreatorServiceTest {
         dto.setName("chess tournament");
         dto.setPlace("some place");
         dto.setStaffIds(Arrays.asList("1", "2", "3"));
-        dto.setStep(2);
         dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
         dto.setTournamentSystemType(TournamentSystemType.SWISS);
 

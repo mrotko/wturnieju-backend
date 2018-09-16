@@ -11,5 +11,4 @@ public interface ITournamentCreatorController {
 
     @PostMapping("/create")
     void createTournament(TournamentTemplateDto dto);
-
 }
