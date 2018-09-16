@@ -2,7 +2,10 @@ package pl.wturnieju.security;
 
 import static pl.wturnieju.security.SecurityConstants.HEADER_STRING;
 
+import java.util.Optional;
+
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,29 +16,35 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import pl.wturnieju.service.IUserService;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    private IUserService userService;
+    private final IUserService userService;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    private final Environment env;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/register/**").permitAll()
-                .antMatchers("/auth/login/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilter(createAuthenticationFilter())
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        if (isAllAuth()) {
+            http.cors().and().csrf().disable()
+                    .authorizeRequests().anyRequest().permitAll();
+        } else {
+            http.cors().and().csrf().disable()
+                    .authorizeRequests()
+                    .antMatchers("/auth/register/**").permitAll()
+                    .antMatchers("/auth/login/**").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .addFilter(createAuthenticationFilter())
+                    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        }
     }
 
     private JWTAuthenticationFilter createAuthenticationFilter() throws Exception {
@@ -59,5 +68,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         corsConfiguration.addExposedHeader(HEADER_STRING);
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
+    }
+
+    private boolean isAllAuth() {
+        return Optional.ofNullable(env.getProperty("allAuth"))
+                .map(Boolean::valueOf)
+                .orElse(false);
     }
 }

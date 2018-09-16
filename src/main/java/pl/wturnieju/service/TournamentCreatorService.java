@@ -14,14 +14,15 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
-@Service
 @RequiredArgsConstructor
-public class TournamentCreatorService {
+@Service
+public class TournamentCreatorService implements ITournamentCreatorService {
 
     private final TournamentRepository tournamentRepository;
 
     private Map<String, TournamentTemplateDto> userIdToTournamentTemplateDtoMap = new HashMap<>();
 
+    @Override
     public TournamentTemplateDto getUserTemplate() {
         return getTemplateFromCache().orElse(new TournamentTemplateDto());
     }
@@ -30,6 +31,7 @@ public class TournamentCreatorService {
         return Optional.ofNullable(userIdToTournamentTemplateDtoMap.getOrDefault(getCurrentUserId(), null));
     }
 
+    @Override
     public void update(TournamentTemplateDto tournamentTemplateDto) {
         userIdToTournamentTemplateDtoMap.put(getCurrentUserId(), tournamentTemplateDto);
     }
@@ -40,6 +42,7 @@ public class TournamentCreatorService {
         return user.getId();
     }
 
+    @Override
     public Tournament create(TournamentTemplateDto tournamentTemplateDto) {
         removeFromCache();
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetitionType());

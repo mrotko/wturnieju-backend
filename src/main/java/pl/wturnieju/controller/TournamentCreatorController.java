@@ -1,22 +1,21 @@
 package pl.wturnieju.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.service.TournamentCreatorService;
+import pl.wturnieju.dto.TournamentTemplateDto;
+import pl.wturnieju.service.ITournamentCreatorService;
 
-@RestController
-@RequestMapping("/create")
 @RequiredArgsConstructor
-public class TournamentCreatorController {
+@RestController
+public class TournamentCreatorController implements ITournamentCreatorController {
 
-    private final TournamentCreatorService tournamentCreatorService;
+    private final ITournamentCreatorService tournamentCreatorService;
 
+    @Override
 
-
-    //    @PostMapping
-    //    public
-    //
+    public void createTournament(TournamentTemplateDto dto) {
+        tournamentCreatorService.create(dto);
+    }
 }
