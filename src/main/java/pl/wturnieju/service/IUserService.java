@@ -6,11 +6,13 @@ import pl.wturnieju.model.User;
 
 public interface IUserService extends UserDetailsService {
 
-    User create(User user);
+    void create(User user);
 
-    User resetPassword(String username, String password);
+    void resetPassword(String username, String password);
 
-    User resetPassword(String password);
+    void resetPassword(String password);
 
     boolean check(String email, String password);
+
+    void changeEmail(String email);
 }

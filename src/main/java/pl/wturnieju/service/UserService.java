@@ -26,7 +26,7 @@ public class UserService implements IUserService, ICurrentUser {
     private UserRepository userRepository;
 
     @Override
-    public User create(User user) {
+    public void create(User user) {
         Optional<User> existing = userRepository.findByUsername(user.getUsername());
         existing.ifPresent(it -> {
             throw new IllegalArgumentException("User already exists: " + it.getUsername());
@@ -35,7 +35,7 @@ public class UserService implements IUserService, ICurrentUser {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         log.info("New user has been creates {}", user.getUsername());
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -45,17 +45,15 @@ public class UserService implements IUserService, ICurrentUser {
     }
 
     @Override
-    public User resetPassword(String username, String password) {
+    public void resetPassword(String username, String password) {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        return user;
     }
 
     @Override
-    public User resetPassword(String password) {
-
-        return null;
+    public void resetPassword(String password) {
+        resetPassword(getCurrentUser().getUsername(), password);
     }
 
     @Override
@@ -66,6 +64,17 @@ public class UserService implements IUserService, ICurrentUser {
             return false;
         }
         return passwordEncoder.matches(password, user.get().getPassword());
+    }
+
+    @Override
+    public void changeEmail(String email) {
+        if (userRepository.findAllByUsername(email).size() == 1) {
+            throw new IllegalArgumentException("Email exists");
+        }
+        var user = getCurrentUser();
+        user.setUsername(email);
+        userRepository.save(user);
+        SecurityContextHolder.clearContext();
     }
 
     public Optional<GenericProfile> getCurrentUserProfile(ProfileType profileType) {
