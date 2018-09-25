@@ -14,7 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.wturnieju.configuration.WithMockCustomUser;
@@ -26,12 +27,17 @@ import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
+import pl.wturnieju.repository.UserRepository;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @WithMockCustomUser
 public class TournamentCreatorServiceTest {
+
+    private final String username = "email@email.com";
+
+    private final String password = "Password123,";
 
     private Map<CompetitionType, TournamentTemplateDto> competitionTypeToTournamentDtoMap = new HashMap<>();
 
@@ -43,12 +49,29 @@ public class TournamentCreatorServiceTest {
 
     private TournamentCreatorService tournamentCreatorService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    private User savedUser;
+
+    private PasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Before
     public void setUp() {
-        Mockito.when(currentUser.getCurrentUser()).thenReturn(
-                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        userRepository.deleteAll();
+        insertUser();
+
+        Mockito.when(currentUser.getCurrentUser()).thenReturn(savedUser);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUser);
         setUpChessTournamentDto();
+    }
+
+    private void insertUser() {
+        savedUser = User.builder()
+                .username(username)
+                .password(encoder.encode(password))
+                .build();
+        userRepository.insert(savedUser);
     }
 
     @Test

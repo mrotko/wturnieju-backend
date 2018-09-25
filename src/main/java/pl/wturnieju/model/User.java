@@ -1,8 +1,8 @@
 package pl.wturnieju.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,7 @@ public class User extends Persistent implements UserDetails {
 
     private String username;
 
-    private List<GenericProfile> profiles = new ArrayList<>();
+    private Map<CompetitionType, Map<ProfileType, GenericProfile>> profiles = new EnumMap<>(CompetitionType.class);
 
     @JsonIgnore
     private String password;

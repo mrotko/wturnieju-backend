@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.ForgetPasswordDTO;
 import pl.wturnieju.dto.RegistrationDTO;
 import pl.wturnieju.dto.ResetPasswordDTO;
+import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.exception.ValueExistsException;
-import pl.wturnieju.model.User;
 import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
 
@@ -27,12 +27,11 @@ public class AuthController {
     @PostMapping("/register")
     public void register(@RequestBody RegistrationDTO registrationDTO) {
         try {
-            userService.create(User.builder()
-                    .username(registrationDTO.getUsername())
-                    .password(registrationDTO.getPassword())
-                    .build());
+            userService.create(registrationDTO.getUsername(), registrationDTO.getPassword());
         } catch (IllegalArgumentException e) {
-            throw new ValueExistsException("Given email exists. Email: " + registrationDTO.getUsername());
+            throw new ValueExistsException(e.getMessage());
+        } catch (ValidationException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
