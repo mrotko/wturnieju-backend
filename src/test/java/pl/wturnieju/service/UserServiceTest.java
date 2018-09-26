@@ -135,4 +135,19 @@ public class UserServiceTest {
     private void insertUser() {
         userRepository.insert(savedUser);
     }
+
+    @Test
+    public void checkCredentialsShouldPass() {
+        Assert.assertTrue(userService.checkCredentials(usernameIn, password));
+    }
+
+    @Test
+    public void checkCredentialsShouldFailByWrongUsername() {
+        Assert.assertFalse(userService.checkCredentials("a" + usernameIn, password));
+    }
+
+    @Test
+    public void checkCredentialsShouldFailByWrongPass() {
+        Assert.assertFalse(userService.checkCredentials(usernameIn, "a" + password));
+    }
 }

@@ -49,11 +49,11 @@ public class UserService implements IUserService, ICurrentUser {
     @Override
     public boolean checkCredentials(String email, String password) {
         log.info("Checking user: {}", email);
-        Optional<User> user = userRepository.findByUsername(email);
-        if (!user.isPresent()) {
-            return false;
-        }
-        return passwordEncoder.matches(password, user.get().getPassword());
+        
+        return userRepository.findByUsername(email)
+                .map(User::getPassword)
+                .map(encodedPass -> passwordEncoder.matches(password, encodedPass))
+                .orElse(false);
     }
 
     @Override
