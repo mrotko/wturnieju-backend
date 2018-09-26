@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.ProfileType;
 import pl.wturnieju.service.IUserService;
@@ -29,7 +30,11 @@ public class UserController implements IUserController {
     @Override
     @PostMapping("/password/{password}")
     public void changePassword(@PathVariable("password") String password) {
-        userService.resetPassword(password);
+        try {
+            userService.changePassword(password);
+        } catch (ValidationException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override

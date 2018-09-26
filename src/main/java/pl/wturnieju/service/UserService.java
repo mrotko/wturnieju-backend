@@ -35,21 +35,24 @@ public class UserService implements IUserService, ICurrentUser {
     }
 
     @Override
-    public void resetPassword(String username, String password) {
+    public void changePassword(String username, String password) throws ValidationException {
+        if (!Validators.getPasswordValidator().validate(password)) {
+            throw new ValidationException("Bad email or password");
+        }
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
 
     @Override
-    public void resetPassword(String password) {
-        resetPassword(getCurrentUser().getUsername(), password);
+    public void changePassword(String password) throws ValidationException {
+        changePassword(getCurrentUser().getUsername(), password);
     }
 
     @Override
     public boolean checkCredentials(String email, String password) {
         log.info("Checking user: {}", email);
-        
+
         return userRepository.findByUsername(email)
                 .map(User::getPassword)
                 .map(encodedPass -> passwordEncoder.matches(password, encodedPass))

@@ -1,9 +1,10 @@
 package pl.wturnieju.dto;
 
-
 import lombok.Data;
 
 @Data
-public class ForgetPasswordDTO {
+public class ChangePasswordDTO {
+
     private String username;
+
 }

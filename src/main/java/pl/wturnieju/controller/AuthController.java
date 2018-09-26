@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.ForgetPasswordDTO;
 import pl.wturnieju.dto.RegistrationDTO;
-import pl.wturnieju.dto.ResetPasswordDTO;
 import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.exception.ValueExistsException;
 import pl.wturnieju.service.IEmailService;
@@ -37,18 +36,13 @@ public class AuthController {
 
     @PostMapping("/forget-password")
     public void forgetPassword(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
-        var user = userService.loadUserByUsername(forgetPasswordDTO.getEmail());
-        if (user.isAccountNonExpired()
-                && user.isAccountNonLocked()
-                && !user.isEnabled()) {
-            var newPass = RandomStringUtils.random(20, true, true);
-            userService.resetPassword(user.getUsername(), newPass);
-            emailService.sendSimpleMessage(user.getUsername(), "Zmiana hasła", "nowe hasło" + newPass);
+        var user = userService.loadUserByUsername(forgetPasswordDTO.getUsername());
+        var newPass = RandomStringUtils.random(20, true, true);
+        try {
+            userService.changePassword(user.getUsername(), newPass);
+        } catch (ValidationException e) {
+            throw new IllegalArgumentException(e);
         }
-    }
-
-    @PostMapping("reset-password")
-    public void resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) {
-
+        emailService.sendSimpleMessage(user.getUsername(), "Zmiana hasła", "nowe hasło" + newPass);
     }
 }

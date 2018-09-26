@@ -6,9 +6,9 @@ import pl.wturnieju.exception.ValidationException;
 
 public interface IUserService extends UserDetailsService {
 
-    void resetPassword(String username, String password);
+    void changePassword(String username, String password) throws ValidationException;
 
-    void resetPassword(String password);
+    void changePassword(String password) throws ValidationException;
 
     boolean checkCredentials(String email, String password);
 

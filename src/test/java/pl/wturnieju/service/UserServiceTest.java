@@ -150,4 +150,27 @@ public class UserServiceTest {
     public void checkCredentialsShouldFailByWrongPass() {
         Assert.assertFalse(userService.checkCredentials(usernameIn, "a" + password));
     }
+
+    @Test
+    public void changePasswordShouldPass() {
+        var changedPassword = password + "a";
+        try {
+            userService.changePassword(usernameIn, changedPassword);
+        } catch (ValidationException e) {
+            Assert.fail();
+        }
+        Assert.assertTrue(userService.checkCredentials(usernameIn, changedPassword));
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void changePasswordShouldFailByNonExistingUsername() throws ValidationException {
+        var changedPassword = password + "a";
+        userService.changePassword("a" + usernameIn, changedPassword);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void changePasswordShouldFailByBadPasswordFormat() throws ValidationException {
+        var changedPassword = "a";
+        userService.changePassword(usernameIn, changedPassword);
+    }
 }
