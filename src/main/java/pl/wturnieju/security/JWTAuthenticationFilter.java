@@ -25,26 +25,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
 import pl.wturnieju.dto.LoginDTO;
-import pl.wturnieju.exception.UserNotFoundException;
 import pl.wturnieju.model.User;
-import pl.wturnieju.service.IUserService;
 
 @AllArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
 
-    private IUserService userService;
-
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response) {
         try {
             var credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
-
-            if (!userService.checkCredentials(credentials.getUsername(), credentials.getPassword())) {
-                throw new UserNotFoundException("Login failed. User " + credentials.getUsername() + " not found");
-            }
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(),
