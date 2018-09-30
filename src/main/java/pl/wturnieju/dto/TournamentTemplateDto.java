@@ -18,8 +18,8 @@ import pl.wturnieju.model.generic.Tournament;
 
 @Data
 @JsonTypeInfo(use = Id.NAME, property = "competitionType")
-@JsonSubTypes(
-        {@Type(value = ChessTournamentTemplateDto.class, name = "CHESS")})
+@JsonSubTypes({
+        @Type(value = ChessTournamentTemplateDto.class, name = "CHESS")})
 public class TournamentTemplateDto<T extends Tournament> implements EntityMapping<T> {
 
     private String name;

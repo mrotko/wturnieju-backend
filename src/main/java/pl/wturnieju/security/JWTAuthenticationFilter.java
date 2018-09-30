@@ -24,10 +24,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
-import pl.wturnieju.dto.LoginDTO;
+import lombok.extern.log4j.Log4j2;
+import pl.wturnieju.dto.auth.LoginDTO;
 import pl.wturnieju.model.User;
 
 @AllArgsConstructor
+@Log4j2
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
@@ -63,6 +65,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json; charset=utf-8");
         try {
             response.getWriter().write(new ObjectMapper().writeValueAsString(authResult.getPrincipal()));
+            log.info(String.format("User [%s] logged in.", ((User) authResult.getPrincipal()).getUsername()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

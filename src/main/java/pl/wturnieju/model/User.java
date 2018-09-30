@@ -1,29 +1,21 @@
 package pl.wturnieju.model;
 
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import pl.wturnieju.model.generic.GenericProfile;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User extends Persistent implements UserDetails {
+public class User extends Persistent implements UserDetails, IProfile {
 
     private String username;
-
-    private Map<CompetitionType, Map<ProfileType, GenericProfile>> profiles = new EnumMap<>(CompetitionType.class);
 
     @JsonIgnore
     private String password;
@@ -40,9 +32,13 @@ public class User extends Persistent implements UserDetails {
     @JsonIgnore
     private boolean enabled = true;
 
+    private String name;
+
+    private String surname;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

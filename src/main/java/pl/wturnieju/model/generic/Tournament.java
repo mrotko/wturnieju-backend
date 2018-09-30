@@ -11,8 +11,8 @@ import lombok.Setter;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.DuelBuilder;
 import pl.wturnieju.model.DuelBuilderFactory;
+import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Persistent;
-import pl.wturnieju.model.PlayerProfile;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
@@ -30,9 +30,9 @@ public abstract class Tournament extends Persistent {
 
     protected TournamentStatus status;
 
-    protected List<? extends GenericProfile> participant;
+    protected List<IProfile> participant;
 
-    protected PlayerProfile owner;
+    protected IProfile owner;
 
     protected LocalDateTime startDate;
 

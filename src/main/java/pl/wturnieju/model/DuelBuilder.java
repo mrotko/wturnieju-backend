@@ -3,16 +3,15 @@ package pl.wturnieju.model;
 import java.lang.reflect.InvocationTargetException;
 
 import lombok.extern.log4j.Log4j2;
-import pl.wturnieju.model.generic.GenericProfile;
 
 @Log4j2
 public class DuelBuilder {
 
     private Class<? extends Duel> clazz;
 
-    private GenericProfile firstPlayer;
+    private IProfile firstPlayer;
 
-    private GenericProfile secondPlayer;
+    private IProfile secondPlayer;
 
     public DuelBuilder(Class<? extends Duel> clazz) {
         this.clazz = clazz;
@@ -23,11 +22,11 @@ public class DuelBuilder {
     }
 
     public interface FirstPlayer {
-        SecondPlayer withFirstPlayer(GenericProfile player);
+        SecondPlayer withFirstPlayer(IProfile player);
     }
 
     public interface SecondPlayer {
-        Build withSecondPlayer(GenericProfile player);
+        Build withSecondPlayer(IProfile player);
     }
 
     public interface Build {
@@ -42,13 +41,13 @@ public class DuelBuilder {
     private class Builder extends DuelBuilder implements FirstPlayer, SecondPlayer, Build {
 
         @Override
-        public SecondPlayer withFirstPlayer(GenericProfile player) {
+        public SecondPlayer withFirstPlayer(IProfile player) {
             firstPlayer = player;
             return this;
         }
 
         @Override
-        public Build withSecondPlayer(GenericProfile player) {
+        public Build withSecondPlayer(IProfile player) {
             secondPlayer = player;
             return this;
         }
@@ -56,7 +55,7 @@ public class DuelBuilder {
         @Override
         public Duel build() {
             try {
-                return clazz.getConstructor(GenericProfile.class, GenericProfile.class).newInstance(firstPlayer,
+                return clazz.getConstructor(IProfile.class, IProfile.class).newInstance(firstPlayer,
                         secondPlayer);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 log.error(e.getStackTrace());

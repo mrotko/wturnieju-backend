@@ -29,9 +29,18 @@ import pl.wturnieju.repository.UserRepository;
 @WithMockCustomUser(username = "email@email.com")
 public class UserServiceTest {
 
-    private final String usernameIn = "email@email.com";
+    private static final List<String> badEmails = Arrays.asList(
+            "",
+            "email",
+            "@email",
+            "email@",
+            "email@.com",
+            "@.com",
+            "@test.com"
+    );
+    private static final String usernameIn = "email@email.com";
 
-    private final String password = "Password123,";
+    private static final String password = "Password123,";
 
     @Autowired
     private UserRepository userRepository;
@@ -43,6 +52,7 @@ public class UserServiceTest {
     private User notSavedUser;
 
     private User savedUser;
+
 
     @Before
     public void setUp() {
@@ -62,7 +72,7 @@ public class UserServiceTest {
 
     private void createNotSavedUser() {
         notSavedUser = User.builder()
-                .username(usernameIn + 1)
+                .username("a" + usernameIn)
                 .password(password)
                 .build();
     }
@@ -94,17 +104,7 @@ public class UserServiceTest {
 
     @Test()
     public void createUserShouldFailBecauseEmailValidationFail() {
-        List<String> emails = Arrays.asList(
-                "",
-                "email",
-                "@email",
-                "email@",
-                "email@.com",
-                "@.com",
-                "@test.com"
-        );
-
-        emails.forEach(email -> {
+        badEmails.forEach(email -> {
             boolean failed = false;
             try {
                 userService.create(email, password);
@@ -125,11 +125,30 @@ public class UserServiceTest {
     }
 
     @Test
-    public void changeEmailSuccessTest() {
-        var email = savedUser.getUsername() + 1;
-        userService.changeEmail(email);
+    public void changeEmailSuccessTest() throws ValidationException {
+        var email = "a" + savedUser.getUsername();
+        userService.changeEmail(email, password);
         Assert.assertTrue(userRepository.findByUsername(email).isPresent());
         Assert.assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
+    public void changeEmailShouldFailByFormatTest() {
+        badEmails.forEach(email -> {
+            var validationException = false;
+            try {
+                userService.changeEmail(email, "ignore");
+            } catch (ValidationException e) {
+                validationException = true;
+            }
+            Assert.assertTrue(validationException);
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void changeEmailShouldFailByInvalidPasswordTest() throws ValidationException {
+        var email = "a" + usernameIn;
+        userService.changeEmail(email, password + 1);
     }
 
     private void insertUser() {

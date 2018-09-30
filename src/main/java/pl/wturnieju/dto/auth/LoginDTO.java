@@ -1,4 +1,4 @@
-package pl.wturnieju.dto;
+package pl.wturnieju.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

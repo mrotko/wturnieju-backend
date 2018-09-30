@@ -1,6 +1,5 @@
 package pl.wturnieju.service;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,10 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.wturnieju.exception.ValidationException;
-import pl.wturnieju.model.CompetitionType;
-import pl.wturnieju.model.ProfileType;
 import pl.wturnieju.model.User;
-import pl.wturnieju.model.generic.GenericProfile;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.validator.Validators;
 
@@ -60,14 +56,22 @@ public class UserService implements IUserService, ICurrentUser {
     }
 
     @Override
-    public void changeEmail(String email) {
-        if (userRepository.findAllByUsername(email).size() == 1) {
+    public void changeEmail(String username, String password) throws ValidationException {
+        if (!Validators.getEmailValidator().validate(username)) {
+            throw new ValidationException("Bad email format");
+        }
+        if (userRepository.findAllByUsername(username).size() == 1) {
             throw new IllegalArgumentException("Email exists");
         }
-        var user = getCurrentUser();
-        user.setUsername(email);
-        userRepository.save(user);
-        SecurityContextHolder.clearContext();
+        Optional.ofNullable(getCurrentUser()).ifPresent(user -> {
+            if (!checkCredentials(user.getUsername(), password)) {
+                throw new IllegalArgumentException("Invalid password");
+            }
+            user.setUsername(username);
+            userRepository.save(user);
+            SecurityContextHolder.clearContext();
+
+        });
     }
 
     @Override
@@ -93,16 +97,12 @@ public class UserService implements IUserService, ICurrentUser {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    public Optional<GenericProfile> getCurrentUserProfile(CompetitionType competitionType, ProfileType profileType) {
-        return userRepository.findByUsername(getCurrentUser().getUsername())
-                .map(User::getProfiles)
-                .map(profiles -> profiles.getOrDefault(competitionType, new HashMap<>()))
-                .map(profiles -> profiles.getOrDefault(profileType, null));
-    }
 
     @Override
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername((String) authentication.getPrincipal()).orElse(null);
     }
+
+
 }

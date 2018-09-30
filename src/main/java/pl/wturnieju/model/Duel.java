@@ -1,12 +1,13 @@
 package pl.wturnieju.model;
 
-import pl.wturnieju.model.generic.GenericProfile;
+import lombok.Data;
 
+@Data
 public abstract class Duel extends Persistent {
 
-    private GenericProfile firstPlayer;
+    private IProfile firstPlayer;
 
-    private GenericProfile secondPlayer;
+    private IProfile secondPlayer;
 
     private DuelResult result;
 

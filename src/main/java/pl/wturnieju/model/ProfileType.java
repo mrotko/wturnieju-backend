@@ -4,7 +4,5 @@ public enum ProfileType {
     PLAYER,
     TEAM,
     REFEREE,
-    COACH,
-    STAFF,
-    CONTRIBUTOR
+    COACH
 }

@@ -12,7 +12,7 @@ public interface IUserService extends UserDetailsService {
 
     boolean checkCredentials(String email, String password);
 
-    void changeEmail(String email);
+    void changeEmail(String username, String password) throws ValidationException;
 
     void create(String username, String password) throws ValidationException;
 }

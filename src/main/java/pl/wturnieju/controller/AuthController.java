@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.dto.ForgetPasswordDTO;
-import pl.wturnieju.dto.RegistrationDTO;
+import pl.wturnieju.dto.auth.ForgetPasswordDTO;
+import pl.wturnieju.dto.auth.RegistrationDTO;
 import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.exception.ValueExistsException;
 import pl.wturnieju.service.IEmailService;
@@ -43,6 +43,6 @@ public class AuthController {
         } catch (ValidationException e) {
             throw new IllegalArgumentException(e);
         }
-        emailService.sendSimpleMessage(user.getUsername(), "Zmiana hasła", "nowe hasło" + newPass);
+        emailService.sendSimpleMessage(user.getUsername(), "Zmiana hasła", "nowe hasło " + newPass);
     }
 }
