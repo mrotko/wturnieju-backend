@@ -1,8 +1,6 @@
 package pl.wturnieju.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -10,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import lombok.Data;
+import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
-import pl.wturnieju.model.TournamentParticipantType;
-import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.model.generic.Tournament;
 
 
@@ -32,19 +29,13 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
 
     private String description;
 
-    private int expectedParticipants;
+    private int maxParticipants;
 
     private int minParticipants;
 
-    private List<String> contributorsIds = new ArrayList<>();
-
-    private List<String> staffIds = new ArrayList<>();
-
     private CompetitionType competitionType;
 
-    private TournamentSystemType tournamentSystemType;
-
-    private TournamentParticipantType tournamentParticipantType;
+    private AccessOption accessOption;
 
     @Override
     public void assignFields(T entity) {
@@ -53,11 +44,8 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
         entity.setEndDate(endDate);
         entity.setPlace(place);
         entity.setDescription(description);
-        entity.setExpectedParticipants(expectedParticipants);
+        entity.setMaxParticipants(maxParticipants);
         entity.setMinParticipants(minParticipants);
-        entity.setContributorsIds(contributorsIds);
-        entity.setStaffIds(staffIds);
-        entity.setSystemType(tournamentSystemType);
-        entity.setTournamentParticipantType(tournamentParticipantType);
+        entity.setAccessOption(accessOption);
     }
 }

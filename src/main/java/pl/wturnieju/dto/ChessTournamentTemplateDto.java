@@ -2,23 +2,20 @@ package pl.wturnieju.dto;
 
 import lombok.Data;
 import pl.wturnieju.model.ChessTournament;
-import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.TournamentParticipantType;
+import pl.wturnieju.model.TournamentSystemType;
 
 @Data
 public class ChessTournamentTemplateDto extends TournamentTemplateDto<ChessTournament> {
 
-    private int moveTimeSec;
+    private TournamentSystemType tournamentSystemType;
 
-    private int incTimeSec;
-
-    public ChessTournamentTemplateDto() {
-        setCompetitionType(CompetitionType.CHESS);
-    }
+    private TournamentParticipantType tournamentParticipantType;
 
     @Override
     public void assignFields(ChessTournament entity) {
         super.assignFields(entity);
-        entity.setMoveTimeSec(moveTimeSec);
-        entity.setIncTimeSec(incTimeSec);
+        entity.setSystemType(tournamentSystemType);
+        entity.setTournamentParticipantType(tournamentParticipantType);
     }
 }

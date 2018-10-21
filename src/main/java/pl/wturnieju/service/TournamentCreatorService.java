@@ -12,6 +12,20 @@ import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
+
+/*
+ * TODO tourname config template
+ *{
+ *   dostępność: [private, public],
+ *   dyscyplina: [a, b, c]
+ *
+ *
+ *
+ *
+ *
+ *
+ * */
+
 @RequiredArgsConstructor
 @Service
 public class TournamentCreatorService implements ITournamentCreatorService {
@@ -21,7 +35,6 @@ public class TournamentCreatorService implements ITournamentCreatorService {
     private final ICurrentUser currentUser;
 
     private Map<String, TournamentTemplateDto> userIdToTournamentTemplateDtoMap = new HashMap<>();
-
 
     @Override
     public TournamentTemplateDto getUserTemplate() {

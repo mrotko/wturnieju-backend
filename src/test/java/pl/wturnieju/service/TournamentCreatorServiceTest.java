@@ -1,7 +1,6 @@
 package pl.wturnieju.service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,21 +116,16 @@ public class TournamentCreatorServiceTest {
     private void setUpChessTournamentDto() {
         var dto = new ChessTournamentTemplateDto();
 
-        dto.setMoveTimeSec(500);
-        dto.setIncTimeSec(1);
-
-        dto.setContributorsIds(Arrays.asList("1", "2", "3"));
         dto.setCompetitionType(CompetitionType.CHESS);
         dto.setDescription("chess competition description");
         dto.setStartDate(LocalDateTime.now().plusDays(10));
         dto.setEndDate(LocalDateTime.now());
-        dto.setExpectedParticipants(5);
+        dto.setMaxParticipants(5);
         dto.setMinParticipants(2);
         dto.setName("chess tournament");
         dto.setPlace("some place");
-        dto.setStaffIds(Arrays.asList("1", "2", "3"));
-        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
         dto.setTournamentSystemType(TournamentSystemType.SWISS);
+        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
 
         competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS, dto);
     }

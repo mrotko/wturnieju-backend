@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Transient;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.DuelBuilder;
 import pl.wturnieju.model.DuelBuilderFactory;
@@ -30,6 +31,8 @@ public abstract class Tournament extends Persistent {
 
     protected TournamentStatus status;
 
+    protected AccessOption accessOption;
+
     protected List<IProfile> participant;
 
     protected IProfile owner;
@@ -51,7 +54,7 @@ public abstract class Tournament extends Persistent {
 
     protected int minParticipants;
 
-    protected int expectedParticipants;
+    protected int maxParticipants;
 
     @Transient
     public DuelBuilder getDuelBuilder() {
