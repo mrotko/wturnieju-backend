@@ -12,20 +12,6 @@ import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
-
-/*
- * TODO tourname config template
- *{
- *   dostępność: [private, public],
- *   dyscyplina: [a, b, c]
- *
- *
- *
- *
- *
- *
- * */
-
 @RequiredArgsConstructor
 @Service
 public class TournamentCreatorService implements ITournamentCreatorService {
