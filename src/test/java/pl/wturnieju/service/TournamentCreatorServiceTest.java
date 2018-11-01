@@ -44,7 +44,7 @@ public class TournamentCreatorServiceTest {
     private TournamentRepository tournamentRepository;
 
     @Mock
-    private ICurrentUser currentUser;
+    private ICurrentUserProvider currentUser;
 
     private TournamentCreatorService tournamentCreatorService;
 
@@ -91,7 +91,7 @@ public class TournamentCreatorServiceTest {
         createdTournamentIdToDto.forEach((id, dto) -> {
             var tournament = tournamentRepository.findById(id).orElse(null);
             Assert.assertNotNull(tournament);
-            Assert.assertEquals(tournament.getCompetitionType(), dto.getCompetitionType());
+            Assert.assertEquals(tournament.getCompetitionType(), dto.getCompetition());
         });
     }
 
@@ -99,7 +99,7 @@ public class TournamentCreatorServiceTest {
     public void genericMappingTest() {
         Map<String, String> createdTournamentIdToClassNameMap = new HashMap<>();
         competitionTypeToTournamentDtoMap.values().forEach(dto -> {
-            var className = TournamentFactory.getTournament(dto.getCompetitionType()).getClass().getName();
+            var className = TournamentFactory.getTournament(dto.getCompetition()).getClass().getName();
             var tournament = tournamentCreatorService.create(dto);
             createdTournamentIdToClassNameMap.put(tournament.getId(), className);
         });
@@ -116,16 +116,16 @@ public class TournamentCreatorServiceTest {
     private void setUpChessTournamentDto() {
         var dto = new ChessTournamentTemplateDto();
 
-        dto.setCompetitionType(CompetitionType.CHESS);
+        dto.setCompetition(CompetitionType.CHESS);
         dto.setDescription("chess competition description");
-        dto.setStartDate(LocalDateTime.now().plusDays(10));
-        dto.setEndDate(LocalDateTime.now());
+        dto.setFromDate(LocalDateTime.now().plusDays(10));
+        dto.setToDate(LocalDateTime.now());
         dto.setMaxParticipants(5);
         dto.setMinParticipants(2);
         dto.setName("chess tournament");
         dto.setPlace("some place");
-        dto.setTournamentSystemType(TournamentSystemType.SWISS);
-        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
+        dto.setTournamentSystem(TournamentSystemType.SWISS);
+        dto.setParticipantType(TournamentParticipantType.SINGLE);
 
         competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS, dto);
     }

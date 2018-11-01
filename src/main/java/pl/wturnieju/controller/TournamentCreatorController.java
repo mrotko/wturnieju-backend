@@ -27,7 +27,6 @@ public class TournamentCreatorController {
 
     @GetMapping("/config")
     public TournamentConfigDTO getTournamentConfig() {
-        System.out.println(new TournamentConfigDTO());
         return new TournamentConfigDTO();
     }
 }

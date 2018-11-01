@@ -18,7 +18,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
 
     private final TournamentRepository tournamentRepository;
 
-    private final ICurrentUser currentUser;
+    private final ICurrentUserProvider currentUser;
 
     private Map<String, TournamentTemplateDto> userIdToTournamentTemplateDtoMap = new HashMap<>();
 
@@ -43,8 +43,9 @@ public class TournamentCreatorService implements ITournamentCreatorService {
     @Override
     public Tournament create(TournamentTemplateDto tournamentTemplateDto) {
         removeFromCache();
-        var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetitionType());
+        var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetition());
         tournamentTemplateDto.assignFields(tournament);
+        tournament.setOwner(currentUser.getCurrentUser());
         return tournamentRepository.save(tournament);
     }
 

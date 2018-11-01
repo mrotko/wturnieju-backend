@@ -14,16 +14,16 @@ import pl.wturnieju.model.generic.Tournament;
 
 
 @Data
-@JsonTypeInfo(use = Id.NAME, property = "competitionType")
+@JsonTypeInfo(use = Id.NAME, property = "competition")
 @JsonSubTypes({
-        @Type(value = ChessTournamentTemplateDto.class, name = "CHESS")})
+        @Type(value = ChessTournamentTemplateDto.class, name = "COMPETITION_TYPE.CHESS")})
 public class TournamentTemplateDto<T extends Tournament> implements EntityMapping<T> {
 
     private String name;
 
-    private LocalDateTime startDate;
+    private LocalDateTime fromDate;
 
-    private LocalDateTime endDate;
+    private LocalDateTime toDate;
 
     private String place;
 
@@ -33,15 +33,15 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
 
     private int minParticipants;
 
-    private CompetitionType competitionType;
+    private CompetitionType competition;
 
     private AccessOption accessOption;
 
     @Override
     public void assignFields(T entity) {
         entity.setName(name);
-        entity.setStartDate(startDate);
-        entity.setEndDate(endDate);
+        entity.setStartDate(fromDate);
+        entity.setEndDate(toDate);
         entity.setPlace(place);
         entity.setDescription(description);
         entity.setMaxParticipants(maxParticipants);
