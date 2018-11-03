@@ -57,7 +57,7 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         userRepository.deleteAll();
-        userService = new UserProviderService(encoder, userRepository);
+        userService = new UserService(encoder, userRepository);
         createSavedUser();
         createNotSavedUser();
         insertUser();

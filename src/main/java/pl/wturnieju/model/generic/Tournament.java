@@ -1,6 +1,7 @@
 package pl.wturnieju.model.generic;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Transient;
@@ -14,6 +15,7 @@ import pl.wturnieju.model.DuelBuilder;
 import pl.wturnieju.model.DuelBuilderFactory;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Persistent;
+import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
@@ -33,7 +35,7 @@ public abstract class Tournament extends Persistent {
 
     protected AccessOption accessOption;
 
-    protected List<IProfile> participant;
+    protected List<TournamentParticipant> participants = new ArrayList<>();
 
     protected IProfile owner;
 
@@ -48,9 +50,9 @@ public abstract class Tournament extends Persistent {
 
     protected TournamentParticipantType tournamentParticipantType;
 
-    protected List<String> staffIds;
+    protected List<String> staffIds = new ArrayList<>();
 
-    protected List<String> contributorsIds;
+    protected List<String> contributorsIds = new ArrayList<>();
 
     protected int minParticipants;
 

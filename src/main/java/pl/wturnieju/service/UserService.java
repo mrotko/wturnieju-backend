@@ -18,7 +18,7 @@ import pl.wturnieju.validator.Validators;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class UserProviderService implements IUserService, ICurrentUserProvider {
+public class UserService implements IUserService, ICurrentUserProvider {
 
     private final PasswordEncoder passwordEncoder;
 
