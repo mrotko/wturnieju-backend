@@ -9,9 +9,9 @@ public class DuelBuilder {
 
     private Class<? extends Duel> clazz;
 
-    private IProfile firstPlayer;
+    private IProfile homePlayer;
 
-    private IProfile secondPlayer;
+    private IProfile awayPlayer;
 
     public DuelBuilder(Class<? extends Duel> clazz) {
         this.clazz = clazz;
@@ -21,42 +21,42 @@ public class DuelBuilder {
     private DuelBuilder() {
     }
 
-    public interface FirstPlayer {
-        SecondPlayer withFirstPlayer(IProfile player);
+    public interface HomePlayer {
+        AwayPlayer withHomePlayer(IProfile player);
     }
 
-    public interface SecondPlayer {
-        Build withSecondPlayer(IProfile player);
+    public interface AwayPlayer {
+        Build withAwayPlayer(IProfile player);
     }
 
     public interface Build {
         Duel build();
     }
 
-    public FirstPlayer builder() {
+    public HomePlayer builder() {
         return new Builder();
     }
 
 
-    private class Builder extends DuelBuilder implements FirstPlayer, SecondPlayer, Build {
+    private class Builder extends DuelBuilder implements HomePlayer, AwayPlayer, Build {
 
         @Override
-        public SecondPlayer withFirstPlayer(IProfile player) {
-            firstPlayer = player;
+        public AwayPlayer withHomePlayer(IProfile player) {
+            homePlayer = player;
             return this;
         }
 
         @Override
-        public Build withSecondPlayer(IProfile player) {
-            secondPlayer = player;
+        public Build withAwayPlayer(IProfile player) {
+            awayPlayer = player;
             return this;
         }
 
         @Override
         public Duel build() {
             try {
-                return clazz.getConstructor(IProfile.class, IProfile.class).newInstance(firstPlayer,
-                        secondPlayer);
+                return clazz.getConstructor(IProfile.class, IProfile.class).newInstance(homePlayer,
+                        awayPlayer);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 log.error(e.getStackTrace());
             }

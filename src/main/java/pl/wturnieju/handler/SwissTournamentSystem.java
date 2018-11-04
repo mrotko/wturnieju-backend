@@ -13,8 +13,6 @@ import pl.wturnieju.model.swiss.SwissSystemParticipant;
 
 public class SwissTournamentSystem extends TournamentSystem<SwissState> {
 
-    private int declaredRounds;
-
     private Map<Double, List<SwissSystemParticipant>> pointsToPlayersGroup = new HashMap<>();
 
     @Override
@@ -34,8 +32,8 @@ public class SwissTournamentSystem extends TournamentSystem<SwissState> {
 
         for (int i = 0; i < pivot; i++) {
             duels.add(getState().getTournament().getDuelBuilder().builder()
-                    .withFirstPlayer(participants.get(i).getProfile())
-                    .withSecondPlayer(participants.get(i + pivot).getProfile())
+                    .withHomePlayer(participants.get(i).getProfile())
+                    .withAwayPlayer(participants.get(i + pivot).getProfile())
                     .build()
             );
         }

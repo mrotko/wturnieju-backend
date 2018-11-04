@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import pl.wturnieju.model.Duel;
+import pl.wturnieju.model.IProfile;
 
 public class ChessDuel extends Duel {
 
@@ -16,4 +17,8 @@ public class ChessDuel extends Duel {
     private Map<String, Integer> playerIdToTimeLeftMap = new HashMap<>();
 
     private int timeBonus;
+
+    public ChessDuel(IProfile homePlayer, IProfile awayPlayer) {
+        super(homePlayer, awayPlayer);
+    }
 }

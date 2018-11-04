@@ -1,19 +1,22 @@
 package pl.wturnieju.handler;
 
-import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.model.swiss.SwissState;
 
 public class TournamentSystemFactory {
 
-    public static TournamentSystem getInstance(TournamentSystemType type) {
-        switch (type) {
+    public static TournamentSystem getInstance(Tournament tournament) {
+        switch (tournament.getSystemType()) {
         case SWISS:
-            return createSwissSystem();
+            var system = createSwissSystem();
+            system.setState((SwissState) tournament.getTournamentState());
+            return system;
         default:
-            throw new IllegalArgumentException("unknown tournament system type: " + type);
+            throw new IllegalArgumentException("unknown tournament system type: " + tournament.getSystemType());
         }
     }
 
-    private static TournamentSystem createSwissSystem() {
+    private static SwissTournamentSystem createSwissSystem() {
         return new SwissTournamentSystem();
     }
 }

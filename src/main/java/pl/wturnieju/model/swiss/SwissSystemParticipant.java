@@ -6,10 +6,9 @@ import java.util.Map;
 
 import lombok.Data;
 import pl.wturnieju.model.IProfile;
-import pl.wturnieju.model.Persistent;
 
 @Data
-public class SwissSystemParticipant extends Persistent {
+public class SwissSystemParticipant {
 
     private IProfile profile;
 

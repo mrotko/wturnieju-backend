@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.TournamentFactory;
+import pl.wturnieju.model.TournamentStateFactory;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
@@ -46,6 +47,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetition());
         tournamentTemplateDto.assignFields(tournament);
         tournament.setOwner(currentUser.getCurrentUser());
+        tournament.setTournamentState(TournamentStateFactory.getInstance(tournament));
         return tournamentRepository.save(tournament);
     }
 

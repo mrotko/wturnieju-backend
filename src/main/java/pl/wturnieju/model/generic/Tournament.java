@@ -54,6 +54,8 @@ public abstract class Tournament extends Persistent {
 
     protected List<String> contributorsIds = new ArrayList<>();
 
+    protected TournamentState tournamentState;
+
     protected int minParticipants;
 
     protected int maxParticipants;
