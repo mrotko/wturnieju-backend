@@ -1,6 +1,5 @@
 package pl.wturnieju.service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,12 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.wturnieju.configuration.WithMockCustomUser;
-import pl.wturnieju.dto.ChessTournamentTemplateDto;
 import pl.wturnieju.dto.TournamentTemplateDto;
+import pl.wturnieju.generator.CurrentUserGenerator;
+import pl.wturnieju.generator.TournamentCreatorDtoGenerator;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.TournamentFactory;
-import pl.wturnieju.model.TournamentParticipantType;
-import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
@@ -62,14 +60,13 @@ public class TournamentCreatorServiceTest {
 
         Mockito.when(currentUser.getCurrentUser()).thenReturn(savedUser);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUser);
-        setUpChessTournamentDto();
+        competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS,
+                TournamentCreatorDtoGenerator.generateChessTournaments().get(0));
     }
 
     private void insertUser() {
-        savedUser = User.builder()
-                .username(username)
-                .password(encoder.encode(password))
-                .build();
+        savedUser = CurrentUserGenerator.generateUser();
+        savedUser.setPassword(encoder.encode(savedUser.getPassword()));
         userRepository.insert(savedUser);
     }
 
@@ -111,22 +108,5 @@ public class TournamentCreatorServiceTest {
             Assert.assertNotNull(tournament);
             Assert.assertEquals(tournament.getClass().getName(), className);
         });
-    }
-
-    private void setUpChessTournamentDto() {
-        var dto = new ChessTournamentTemplateDto();
-
-        dto.setCompetition(CompetitionType.CHESS);
-        dto.setDescription("chess competition description");
-        dto.setFromDate(LocalDateTime.now().plusDays(10));
-        dto.setToDate(LocalDateTime.now());
-        dto.setMaxParticipants(5);
-        dto.setMinParticipants(2);
-        dto.setName("chess tournament");
-        dto.setPlace("some place");
-        dto.setTournamentSystem(TournamentSystemType.SWISS);
-        dto.setParticipantType(TournamentParticipantType.SINGLE);
-
-        competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS, dto);
     }
 }

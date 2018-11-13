@@ -9,13 +9,9 @@ import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.model.generic.TournamentState;
 
 @Data
-public class SwissState extends TournamentState {
+public class SwissSystemState extends TournamentSystemState {
 
     private List<SwissSystemParticipant> participants = new ArrayList<>();
-
-    public SwissState(Tournament tournament) {
-        super(tournament);
-    }
 
     @Override
     public SwissTournamentTable getTournamentTable() {

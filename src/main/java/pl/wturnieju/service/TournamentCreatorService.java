@@ -47,7 +47,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetition());
         tournamentTemplateDto.assignFields(tournament);
         tournament.setOwner(currentUser.getCurrentUser());
-        tournament.setTournamentState(TournamentStateFactory.getInstance(tournament));
+        tournament.setTournamentSystemState(TournamentStateFactory.getInstance(tournament));
         return tournamentRepository.save(tournament);
     }
 

@@ -2,8 +2,10 @@ package pl.wturnieju.dto;
 
 import java.time.LocalDateTime;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.Data;
-import pl.wturnieju.model.DuelResult;
+import pl.wturnieju.model.FixtureStatus;
 import pl.wturnieju.model.IProfile;
 
 @Data
@@ -11,15 +13,9 @@ public class FixtureDTO {
 
     private LocalDateTime timestamp;
 
-    private IProfile homePlayer;
+    private Pair<IProfile, IProfile> players;
 
-    private IProfile awayPlayer;
+    private Pair<Double, Double> points;
 
-    private double homePlayerPoints;
-
-    private double awayPlayerPoints;
-
-    private DuelResult duelResult;
-
-
+    private FixtureStatus status;
 }

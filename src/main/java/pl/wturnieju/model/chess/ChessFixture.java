@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pl.wturnieju.model.Duel;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.IProfile;
 
-public class ChessDuel extends Duel {
+public class ChessFixture extends Fixture {
 
     private List<ChessMove> moves = new ArrayList<>();
 
@@ -18,7 +20,7 @@ public class ChessDuel extends Duel {
 
     private int timeBonus;
 
-    public ChessDuel(IProfile homePlayer, IProfile awayPlayer) {
-        super(homePlayer, awayPlayer);
+    public ChessFixture(ImmutablePair<IProfile, IProfile> players) {
+        super(players);
     }
 }

@@ -11,8 +11,8 @@ import lombok.Data;
 import lombok.Setter;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
-import pl.wturnieju.model.DuelBuilder;
-import pl.wturnieju.model.DuelBuilderFactory;
+import pl.wturnieju.model.FixtureBuilder;
+import pl.wturnieju.model.FixtureBuilderFactory;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.TournamentParticipant;
@@ -54,14 +54,14 @@ public abstract class Tournament extends Persistent {
 
     protected List<String> contributorsIds = new ArrayList<>();
 
-    protected TournamentState tournamentState;
+    protected TournamentSystemState tournamentSystemState;
 
     protected int minParticipants;
 
     protected int maxParticipants;
 
     @Transient
-    public DuelBuilder getDuelBuilder() {
-        return DuelBuilderFactory.getInstance(competitionType);
+    public FixtureBuilder getDuelBuilder() {
+        return FixtureBuilderFactory.getInstance(competitionType);
     }
 }

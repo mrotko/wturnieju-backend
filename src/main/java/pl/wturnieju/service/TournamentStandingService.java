@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.FixtureDTO;
-import pl.wturnieju.model.Duel;
+import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.generic.GenericTournamentTable;
 import pl.wturnieju.model.generic.Tournament;
-import pl.wturnieju.model.generic.TournamentState;
+import pl.wturnieju.model.generic.TournamentSystemState;
 import pl.wturnieju.repository.TournamentRepository;
 
 @Service
@@ -25,18 +25,16 @@ public class TournamentStandingService implements ITournamentStandingService {
     @Override
     public GenericTournamentTable getTable(String tournamentId) {
         return tournamentRepository.findById(tournamentId)
-                .map(Tournament::getTournamentState)
-                .map(TournamentState::getTournamentTable)
+                .map(Tournament::getTournamentSystemState)
+                .map(TournamentSystemState::getTournamentTable)
                 .orElse(null);
     }
 
     @Override
     public List<FixtureDTO> getFixtures(String tournamentId) {
         return tournamentRepository.findById(tournamentId)
-                .map(Tournament::getTournamentState)
-                .map(TournamentState::getRoundToDuelsMap)
-                .map(roundToDuels -> roundToDuels.values().stream().flatMap(Collection::stream)
-                        .collect(Collectors.toList()))
+                .map(Tournament::getTournamentSystemState)
+                .map(TournamentSystemState::getFixtures)
                 .map(this::createFixtures)
                 .map(fixtures -> {
                     fixtures.sort(Comparator.comparing(FixtureDTO::getTimestamp).reversed());
@@ -47,22 +45,20 @@ public class TournamentStandingService implements ITournamentStandingService {
     @Override
     public List<FixtureDTO> getFixtures(String tournamentId, String playerId) {
         return getFixtures(tournamentId).stream()
-                .filter(dto -> dto.getHomePlayer().getId().equals(playerId)
-                        || dto.getAwayPlayer().getId().equals(playerId))
+                .filter(dto -> dto.getPlayers().getLeft().getId().equals(playerId)
+                        || dto.getPlayers().getRight().getId().equals(playerId))
                 .collect(Collectors.toList());
     }
 
-    private List<FixtureDTO> createFixtures(Collection<Duel> duels) {
-        return duels.stream()
-                .map(duel -> {
+    private List<FixtureDTO> createFixtures(Collection<Fixture> fixtures) {
+        return fixtures.stream()
+                .map(fixture -> {
                     var dto = new FixtureDTO();
 
-                    dto.setHomePlayer(duel.getHomePlayer());
-                    dto.setAwayPlayer(duel.getAwayPlayer());
-                    dto.setHomePlayerPoints(duel.getHomePlayerPoints());
-                    dto.setAwayPlayerPoints(duel.getAwayPlayerPoints());
-                    dto.setDuelResult(duel.getResult());
-                    dto.setTimestamp(duel.getTimestamp());
+                    dto.setPlayers(fixture.getPlayers());
+                    dto.setPoints(fixture.getPoints());
+                    dto.setStatus(fixture.getStatus());
+                    dto.setTimestamp(fixture.getTimestamp());
 
                     return dto;
                 })
