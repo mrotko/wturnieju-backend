@@ -5,8 +5,7 @@ import java.util.List;
 
 import lombok.Data;
 import pl.wturnieju.model.generic.SwissTournamentTable;
-import pl.wturnieju.model.generic.Tournament;
-import pl.wturnieju.model.generic.TournamentState;
+import pl.wturnieju.model.generic.TournamentSystemState;
 
 @Data
 public class SwissSystemState extends TournamentSystemState {

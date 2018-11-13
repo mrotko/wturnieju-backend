@@ -19,9 +19,16 @@ public abstract class TournamentSystemState extends Persistent {
 
     private LocalDateTime lastUpdate;
 
-    private int currentRound;
+    private int currentRoundNumber;
+
+    private List<GenericFixtureUpdateBundle> updateFixtureBundles = new ArrayList<>();
+
+    private List<GenericTournamentUpdateBundle> updateTournamentBundles = new ArrayList<>();
 
     private GenericTournamentTable tournamentTable;
 
-    private Map<Integer, List<Duel>> roundToDuelsMap = new HashMap<>();
+    private List<Fixture> fixtures = new ArrayList<>();
+
+    @Deprecated
+    private Map<Integer, List<Fixture>> roundToFixturesMap = new HashMap<>();
 }

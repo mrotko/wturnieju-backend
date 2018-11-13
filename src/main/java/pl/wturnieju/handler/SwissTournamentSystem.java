@@ -7,36 +7,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import pl.wturnieju.model.Duel;
-import pl.wturnieju.model.swiss.SwissState;
+import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.swiss.SwissSystemParticipant;
+import pl.wturnieju.model.swiss.SwissSystemState;
 
-public class SwissTournamentSystem extends TournamentSystem<SwissState> {
+public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
     private Map<Double, List<SwissSystemParticipant>> pointsToPlayersGroup = new HashMap<>();
 
     @Override
     public void drawNextRound() {
         groupPlayersByPoints();
-        int nextRound = getState().getCurrentRound() + 1;
+        int nextRound = getState().getCurrentRoundNumber() + 1;
 
-        getState().getRoundToDuelsMap().put(nextRound, generateRandomDuels());
+        getState().getRoundToFixturesMap().put(nextRound, generateRandomDuels());
     }
 
-    private List<Duel> generateRandomDuels() {
+    private List<Fixture> generateRandomDuels() {
         List<SwissSystemParticipant> participants = new ArrayList<>(getState().getParticipants());
         Collections.shuffle(participants, new Random(System.currentTimeMillis()));
-        List<Duel> duels = new ArrayList<>();
+        List<Fixture> duels = new ArrayList<>();
 
         int pivot = participants.size() / 2;
 
-        for (int i = 0; i < pivot; i++) {
-            duels.add(getState().getTournament().getDuelBuilder().builder()
-                    .withHomePlayer(participants.get(i).getProfile())
-                    .withAwayPlayer(participants.get(i + pivot).getProfile())
-                    .build()
-            );
-        }
+        //        for (int i = 0; i < pivot; i++) {
+        //            duels.add(getState().get().getDuelBuilder().builder()
+        //                    .withHomePlayer(participants.get(i).getProfile())
+        //                    .withAwayPlayer(participants.get(i + pivot).getProfile())
+        //                    .build()
+        //            );
+        //        }
         if (participants.size() % 2 == 1) {
             participants.get(participants.size() - 1).setBye(true);
         }

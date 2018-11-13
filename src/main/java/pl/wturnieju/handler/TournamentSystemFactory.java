@@ -1,7 +1,7 @@
 package pl.wturnieju.handler;
 
 import pl.wturnieju.model.generic.Tournament;
-import pl.wturnieju.model.swiss.SwissState;
+import pl.wturnieju.model.swiss.SwissSystemState;
 
 public class TournamentSystemFactory {
 
@@ -9,7 +9,8 @@ public class TournamentSystemFactory {
         switch (tournament.getSystemType()) {
         case SWISS:
             var system = createSwissSystem();
-            system.setState((SwissState) tournament.getTournamentState());
+            system.setState((SwissSystemState) tournament.getTournamentSystemState());
+            //            system.setTournament(tournament);
             return system;
         default:
             throw new IllegalArgumentException("unknown tournament system type: " + tournament.getSystemType());
