@@ -1,14 +1,13 @@
 package pl.wturnieju.service;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import pl.wturnieju.model.IProfile;
+import pl.wturnieju.model.Timestamp;
 
 @Data
 public abstract class GenericTournamentUpdateBundle {
 
-    private LocalDateTime timestamp;
+    private Timestamp timestamp;
 
     private IProfile changedBy;
 

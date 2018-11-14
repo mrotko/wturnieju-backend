@@ -7,6 +7,7 @@ import java.util.List;
 import pl.wturnieju.dto.ChessTournamentTemplateDto;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
@@ -29,8 +30,8 @@ public class TournamentCreatorDtoGenerator {
 
         dto.setCompetition(CompetitionType.CHESS);
         dto.setDescription("chess competition description");
-        dto.setFromDate(LocalDateTime.now().plusDays(10));
-        dto.setToDate(LocalDateTime.now());
+        dto.setFromDate(new Timestamp(LocalDateTime.now().plusDays(10)));
+        dto.setToDate(new Timestamp(LocalDateTime.now()));
         dto.setMaxParticipants(5);
         dto.setMinParticipants(2);
         dto.setName("chess tournament");

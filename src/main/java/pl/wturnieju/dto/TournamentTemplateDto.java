@@ -1,7 +1,5 @@
 package pl.wturnieju.dto;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -10,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import lombok.Data;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.generic.Tournament;
 
 
@@ -21,9 +20,9 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
 
     private String name;
 
-    private LocalDateTime fromDate;
+    private Timestamp fromDate;
 
-    private LocalDateTime toDate;
+    private Timestamp toDate;
 
     private String place;
 

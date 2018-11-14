@@ -1,9 +1,10 @@
 package pl.wturnieju.model.generic;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.AccessType.Type;
 import org.springframework.data.annotation.Transient;
 
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ import pl.wturnieju.model.FixtureBuilder;
 import pl.wturnieju.model.FixtureBuilderFactory;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Persistent;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentStatus;
@@ -39,9 +41,10 @@ public abstract class Tournament extends Persistent {
 
     protected IProfile owner;
 
-    protected LocalDateTime startDate;
+    @AccessType(Type.PROPERTY)
+    protected Timestamp startDate;
 
-    protected LocalDateTime endDate;
+    protected Timestamp endDate;
 
     protected TournamentSystemType systemType;
 

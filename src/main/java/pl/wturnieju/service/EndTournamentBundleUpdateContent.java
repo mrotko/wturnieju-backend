@@ -1,13 +1,12 @@
 package pl.wturnieju.service;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
+import pl.wturnieju.model.Timestamp;
 
 @Data
 public class EndTournamentBundleUpdateContent extends TournamentBundleUpdateContent {
 
-    private LocalDateTime date;
+    private Timestamp date;
 
     public EndTournamentBundleUpdateContent() {
         setType(TournamentBundleUpdateContentType.END);

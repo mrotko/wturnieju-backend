@@ -7,6 +7,7 @@ import pl.wturnieju.dto.ChessTournamentTemplateDto;
 import pl.wturnieju.dto.TournamentConfigDTO;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.service.ITournamentCreatorService;
@@ -30,12 +31,12 @@ public class TournamentInserter {
         dto.setTournamentSystem(TournamentSystemType.SWISS);
         dto.setAccessOption(AccessOption.PRIVATE);
         dto.setDescription("");
-        dto.setFromDate(LocalDateTime.now().minusDays(1));
+        dto.setFromDate(new Timestamp(LocalDateTime.now().minusDays(1)));
         dto.setMaxParticipants(5);
         dto.setMinParticipants(2);
         dto.setName("TURNIEJ SZACHOWY");
         dto.setPlace("");
-        dto.setToDate(LocalDateTime.now().plusDays(1));
+        dto.setToDate(new Timestamp(LocalDateTime.now().plusDays(1)));
 
         return dto;
     }
