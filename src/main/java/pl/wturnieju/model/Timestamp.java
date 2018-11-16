@@ -2,6 +2,8 @@ package pl.wturnieju.model;
 
 import java.beans.Transient;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import org.springframework.lang.NonNull;
 
@@ -21,7 +23,7 @@ public class Timestamp {
 
     @JsonCreator
     public Timestamp(String text) {
-        value = LocalDateTime.parse(text);
+        value = ZonedDateTime.parse(text).toLocalDateTime();
     }
 
     @Transient
@@ -32,6 +34,6 @@ public class Timestamp {
     @Override
     @JsonValue
     public String toString() {
-        return value.toString();
+        return value.toInstant(ZoneOffset.UTC).toString();
     }
 }

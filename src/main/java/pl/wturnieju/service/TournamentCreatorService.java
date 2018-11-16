@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.TournamentStateFactory;
+import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 
@@ -46,6 +47,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
         removeFromCache();
         var tournament = TournamentFactory.getTournament(tournamentTemplateDto.getCompetition());
         tournamentTemplateDto.assignFields(tournament);
+        tournament.setStatus(TournamentStatus.BEFORE_START);
         tournament.setOwner(currentUser.getCurrentUser());
         tournament.setTournamentSystemState(TournamentStateFactory.getInstance(tournament));
         return tournamentRepository.save(tournament);

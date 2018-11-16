@@ -15,7 +15,6 @@ import pl.wturnieju.service.ITournamentCreatorService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/tournamentCreator")
-
 public class TournamentCreatorController {
 
     private final ITournamentCreatorService tournamentCreatorService;

@@ -40,7 +40,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
                     break;
                 }
             });
-            tournamentService.update(tournament);
+            tournamentService.updateTournament(tournament);
         });
     }
 
@@ -52,7 +52,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
                     tournamentParticipant.setParticipantStatus(ParticipantStatus.DISQUALIFIED);
                 }
             });
-            tournamentService.update(tournament);
+            tournamentService.updateTournament(tournament);
         });
     }
 
@@ -77,7 +77,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
             tournamentParticipant.setId(participantId);
             tournamentParticipant.setParticipantStatus(ParticipantStatus.INVITED);
             tournament.getParticipants().add(tournamentParticipant);
-            tournamentService.update(tournament);
+            tournamentService.updateTournament(tournament);
         });
     }
 
@@ -89,7 +89,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
                     tournamentParticipant.setParticipantStatus(ParticipantStatus.ACTIVE);
                 }
             });
-            tournamentService.update(tournament);
+            tournamentService.updateTournament(tournament);
         });
     }
 
