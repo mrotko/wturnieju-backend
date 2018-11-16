@@ -1,5 +1,7 @@
 package pl.wturnieju;
 
+import java.util.TimeZone;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -13,6 +15,7 @@ public class Application extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         return application.sources(Application.class);
     }
 
