@@ -1,6 +1,7 @@
 package pl.wturnieju.controller;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import pl.wturnieju.dto.auth.ForgetPasswordDTO;
 import pl.wturnieju.dto.auth.RegistrationDTO;
 import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.exception.ValueExistsException;
+import pl.wturnieju.inserter.UserInserter;
+import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
 
@@ -19,9 +22,19 @@ import pl.wturnieju.service.IUserService;
 @RequestMapping("/auth")
 public class AuthController {
 
+    // TODO(mr): 21.11.2018 to remove
+    @Autowired
+    private UserRepository userRepository;
+
     private final IUserService userService;
 
     private final IEmailService emailService;
+
+    @PostMapping("/inserter")
+    public void insertUsers() {
+        UserInserter inserter = new UserInserter(userService, userRepository);
+        inserter.insertUsersToDatabase();
+    }
 
     @PostMapping("/register")
     public void register(@RequestBody RegistrationDTO registrationDTO) {
