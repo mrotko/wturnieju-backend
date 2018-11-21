@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
         log.debug("Register CORS configuration");
         registry.addMapping("/**")
                 .allowedOrigins(frontendUrl)
-                .allowedMethods("PUT", "DELETE", "GET", "POST")
+                .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
                 .allowCredentials(true);
     }
 }
