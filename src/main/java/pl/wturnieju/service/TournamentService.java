@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.handler.TournamentSystem;
 import pl.wturnieju.handler.TournamentSystemFactory;
+import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
+import pl.wturnieju.model.generic.GenericTournamentTable;
 import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.model.generic.TournamentSystemState;
 import pl.wturnieju.repository.TournamentRepository;
 
 @Service
@@ -36,9 +39,13 @@ public class TournamentService implements ITournamentService {
         tournamentRepository.save(tournament);
     }
 
+    // TODO(mr): 21.11.2018 test
     @Override
     public void updateFixture(GenericFixtureUpdateBundle bundle) {
-
+        Tournament tournament = tournamentRepository.findById(bundle.getTournamentId()).orElseThrow();
+        TournamentSystem system = TournamentSystemFactory.getInstance(tournament);
+        system.updateFixture(bundle);
+        tournamentRepository.save(tournament);
     }
 
     @Override
@@ -55,4 +62,23 @@ public class TournamentService implements ITournamentService {
                 .collect(Collectors.groupingBy(Tournament::getStatus, Collectors.toList()));
 
     }
+
+    // TODO(mr): 21.11.2018 test
+    @Override
+    public Fixture getFixtureById(String tournamentId, String fixtureId) {
+        return tournamentRepository.findById(tournamentId)
+                .map(Tournament::getTournamentSystemState)
+                .flatMap(state -> state.getFixtureById(fixtureId))
+                .orElse(null);
+    }
+
+    @Override
+    public GenericTournamentTable getTournamentTable(String tournamentId) {
+        return tournamentRepository.findById(tournamentId)
+                .map(Tournament::getTournamentSystemState)
+                .map(TournamentSystemState::getTournamentTable)
+                .orElse(null);
+    }
+
+
 }

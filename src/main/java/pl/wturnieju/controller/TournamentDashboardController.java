@@ -1,7 +1,6 @@
 package pl.wturnieju.controller;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentParticipantDTO;
+import pl.wturnieju.dto.mapping.TournamentParticipantMapping;
 import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.User;
 import pl.wturnieju.service.GenericTournamentUpdateBundle;
@@ -56,20 +56,8 @@ public class TournamentDashboardController {
     }
 
     private TournamentParticipantDTO mapParticipantToDto(TournamentParticipant participant) {
-        Optional<User> user = userService.getById(participant.getId());
-
-        TournamentParticipantDTO dto = new TournamentParticipantDTO();
-
-        dto.setId(participant.getId());
-        dto.setStatus(participant.getParticipantStatus());
-
-        user.ifPresent(u -> {
-            dto.setName(u.getName());
-            dto.setSurname(u.getSurname());
-            dto.setEmail(u.getUsername());
-        });
-
-        return dto;
+        User user = userService.getById(participant.getId()).orElse(null);
+        return TournamentParticipantMapping.map(user, participant);
     }
 
     @GetMapping("/participants/{userId}")

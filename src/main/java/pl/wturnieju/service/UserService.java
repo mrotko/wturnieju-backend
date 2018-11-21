@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import pl.wturnieju.exception.ValidationException;
+import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.validator.Validators;
@@ -93,6 +94,14 @@ public class UserService implements IUserService {
     @Override
     public Optional<User> getById(String userId) {
         return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<User> getByProfile(IProfile profile) {
+        if (profile == null) {
+            return Optional.empty();
+        }
+        return getById(profile.getId());
     }
 
     private boolean checkIfUserExists(String username) {

@@ -3,6 +3,7 @@ package pl.wturnieju.model;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -61,6 +62,7 @@ public class User extends Persistent implements UserDetails, IProfile {
         return true;
     }
 
+    @Transient
     public String getFullName() {
         if (name != null && surname != null) {
             return name + " " + surname;

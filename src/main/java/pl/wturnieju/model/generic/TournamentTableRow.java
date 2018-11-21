@@ -15,15 +15,15 @@ public abstract class TournamentTableRow<T extends TournamentTableRow> implement
 
     protected final IProfile profile;
 
-    protected double score;
+    protected Double points;
 
-    protected int wins;
+    protected Integer wins;
 
-    protected int draws;
+    protected Integer draws;
 
-    protected int loses;
+    protected Integer loses;
 
-    protected int games;
+    protected Integer games;
 
     @Override
     public int compareTo(@NonNull T o) {

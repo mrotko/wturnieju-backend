@@ -1,23 +1,21 @@
 package pl.wturnieju.model.generic;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import pl.wturnieju.model.IProfile;
+import pl.wturnieju.model.Timestamp;
 
 @Data
 public abstract class GenericTournamentTable<T extends TournamentTableRow> {
 
-    private LocalDateTime lastUpdate;
+    private Timestamp lastUpdate;
 
-    private Map<IProfile, T> profileToRowMap = new HashMap<>();
+    protected List<T> rows = new ArrayList<>();
 
     public List<T> getFinalStandings() {
-        return profileToRowMap.values().stream()
+        return rows.stream()
                 .sorted()
                 .collect(Collectors.toList());
     }
