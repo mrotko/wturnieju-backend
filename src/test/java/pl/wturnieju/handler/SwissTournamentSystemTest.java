@@ -26,6 +26,7 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.EndTournamentBundleUpdateContent;
 import pl.wturnieju.service.ICurrentUserProvider;
 import pl.wturnieju.service.ITournamentCreatorService;
 import pl.wturnieju.service.ITournamentService;
@@ -81,8 +82,7 @@ public class SwissTournamentSystemTest {
 
         Timestamp startDate = new Timestamp(LocalDateTime.now().plusDays(1));
         StartTournamentBundleUpdateContent content = new StartTournamentBundleUpdateContent();
-        content.setDate(startDate);
-
+        content.setStartDate(startDate);
 
         bundle.setContent(content);
 
@@ -92,8 +92,32 @@ public class SwissTournamentSystemTest {
 
         Assert.assertEquals(TournamentStatus.IN_PROGRESS, tournament.getStatus());
         Assert.assertEquals(startDate, tournament.getStartDate());
+    }
 
+    @Test
+    public void unauthorizedAccessTest() {
+        // TODO(mr): 15.11.2018 unauthorizedAccessTest (brakuje całego serwisu autoryzacji)
+    }
 
+    @Test
+    public void testEndTournament() {
+        SwissTournamentUpdateBundle bundle = new SwissTournamentUpdateBundle();
+        bundle.setChangedBy(currentUserProvider.getCurrentUser());
+        bundle.setTimestamp(Timestamp.now());
+        bundle.setTournamentId(savedTournamentId);
+
+        Timestamp stopDate = new Timestamp(LocalDateTime.now().plusDays(1));
+        EndTournamentBundleUpdateContent content = new EndTournamentBundleUpdateContent();
+        content.setEndDate(stopDate);
+
+        bundle.setContent(content);
+
+        tournamentService.updateTournament(bundle);
+
+        Tournament tournament = tournamentService.getById(savedTournamentId).orElseThrow();
+
+        Assert.assertEquals(TournamentStatus.ENDED, tournament.getStatus());
+        Assert.assertEquals(stopDate, tournament.getEndDate());
     }
 
     private void insertTournament() {

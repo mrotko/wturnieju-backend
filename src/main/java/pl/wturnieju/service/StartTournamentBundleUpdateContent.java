@@ -6,7 +6,7 @@ import pl.wturnieju.model.Timestamp;
 @Data
 public class StartTournamentBundleUpdateContent extends TournamentBundleUpdateContent {
 
-    private Timestamp date;
+    private Timestamp startDate;
 
     public StartTournamentBundleUpdateContent() {
         setType(TournamentBundleUpdateContentType.START);

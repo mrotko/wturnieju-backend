@@ -9,6 +9,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentParticipantDTO;
 import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.service.GenericTournamentUpdateBundle;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
@@ -38,6 +41,13 @@ public class TournamentController {
         dto.setTournaments(tournamentService.getAllUserTournamentsGroupedByStatus(userId));
 
         return dto;
+    }
+
+    @PutMapping("/{tournamentId}")
+    public Tournament updateTournament(@PathVariable("tournamentId") String tournamentId,
+            @RequestBody GenericTournamentUpdateBundle bundle) {
+        tournamentService.updateTournament(bundle);
+        return tournamentService.getById(tournamentId).orElse(null);
     }
 
     @GetMapping("/{tournamentId}")

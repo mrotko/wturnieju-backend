@@ -10,7 +10,7 @@ public class TournamentSystemFactory {
         case SWISS:
             var system = createSwissSystem();
             system.setState((SwissSystemState) tournament.getTournamentSystemState());
-            //            system.setTournament(tournament);
+            system.setTournament(tournament);
             return system;
         default:
             throw new IllegalArgumentException("unknown tournament system type: " + tournament.getSystemType());

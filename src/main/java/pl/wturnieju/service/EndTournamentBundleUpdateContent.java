@@ -6,10 +6,11 @@ import pl.wturnieju.model.Timestamp;
 @Data
 public class EndTournamentBundleUpdateContent extends TournamentBundleUpdateContent {
 
-    private Timestamp date;
+    private Timestamp endDate;
 
     public EndTournamentBundleUpdateContent() {
         setType(TournamentBundleUpdateContentType.END);
     }
+
 
 }
