@@ -60,4 +60,14 @@ public class User extends Persistent implements UserDetails, IProfile {
     public boolean isEnabled() {
         return true;
     }
+
+    public String getFullName() {
+        if (name != null && surname != null) {
+            return name + " " + surname;
+        }
+        if (name != null) {
+            return name;
+        }
+        return username;
+    }
 }
