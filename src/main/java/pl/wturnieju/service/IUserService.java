@@ -1,10 +1,13 @@
 package pl.wturnieju.service;
 
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import pl.wturnieju.exception.ValidationException;
+import pl.wturnieju.model.User;
 
-public interface IUserService extends UserDetailsService {
+public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     void changePassword(String username, String password) throws ValidationException;
 
@@ -15,4 +18,6 @@ public interface IUserService extends UserDetailsService {
     void changeEmail(String username, String password) throws ValidationException;
 
     void create(String username, String password) throws ValidationException;
+
+    Optional<User> getById(String userId);
 }

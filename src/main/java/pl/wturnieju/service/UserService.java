@@ -18,7 +18,7 @@ import pl.wturnieju.validator.Validators;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class UserService implements IUserService, ICurrentUserProvider {
+public class UserService implements IUserService {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -88,6 +88,11 @@ public class UserService implements IUserService, ICurrentUserProvider {
                 .password(passwordEncoder.encode(password))
                 .build());
         log.info("New user has been creates {}", username);
+    }
+
+    @Override
+    public Optional<User> getById(String userId) {
+        return userRepository.findById(userId);
     }
 
     private boolean checkIfUserExists(String username) {
