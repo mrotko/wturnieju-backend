@@ -18,12 +18,11 @@ import pl.wturnieju.model.FixtureBuilderFactory;
 import pl.wturnieju.model.FixtureStatus;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.TournamentStatus;
+import pl.wturnieju.model.TournamentTableFactory;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
 import pl.wturnieju.model.generic.ResultBundleUpdateContent;
 import pl.wturnieju.model.generic.StatusBundleUpdateContent;
 import pl.wturnieju.model.generic.SwissFixtureUpdateBundle;
-import pl.wturnieju.model.generic.SwissTournamentTable;
-import pl.wturnieju.model.generic.SwissTournamentTableRow;
 import pl.wturnieju.model.swiss.SwissSystemParticipant;
 import pl.wturnieju.model.swiss.SwissSystemState;
 import pl.wturnieju.service.EndTournamentBundleUpdateContent;
@@ -184,24 +183,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         tournament.setStartDate(content.getStartDate());
         tournament.setStatus(TournamentStatus.IN_PROGRESS);
         // TODO(mr): 21.11.2018 test if is created table after start
-        initTournamentTable();
-    }
-
-    void initTournamentTable() {
-        var table = new SwissTournamentTable();
-        tournament.getParticipants().forEach(participant -> {
-            var row = new SwissTournamentTableRow(participant);
-
-            row.setGames(0);
-            row.setPoints(0.);
-            row.setWins(0);
-            row.setDraws(0);
-            row.setLoses(0);
-            row.setSmallPoints(0.);
-
-            table.getRows().add(row);
-        });
-        tournament.getTournamentSystemState().setTournamentTable(table);
+        tournament.getTournamentSystemState().setTournamentTable(TournamentTableFactory.getTable(tournament));
     }
 
     private Optional<Fixture> findFixture(SwissFixtureUpdateBundle bundle) {
