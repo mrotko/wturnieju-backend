@@ -1,5 +1,6 @@
 package pl.wturnieju.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,10 +67,19 @@ public class TournamentService implements ITournamentService {
     // TODO(mr): 21.11.2018 test
     @Override
     public Fixture getFixtureById(String tournamentId, String fixtureId) {
+        return getFixtures(tournamentId).stream()
+                .filter(fixture -> fixture.getId().equals(fixtureId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public List<Fixture> getFixtures(String tournamentId) {
+
         return tournamentRepository.findById(tournamentId)
                 .map(Tournament::getTournamentSystemState)
-                .flatMap(state -> state.getFixtureById(fixtureId))
-                .orElse(null);
+                .map(TournamentSystemState::getFixtures)
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -80,5 +90,33 @@ public class TournamentService implements ITournamentService {
                 .orElse(null);
     }
 
+    @Override
+    public List<Fixture> getCurrentFixtures(String tournamentId) {
+        return getCurrentRound(tournamentId)
+                .map(round -> getFixtures(tournamentId).stream()
+                        .filter(fixture -> fixture.getGameSeries() == round)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
 
+    @Override
+    public List<Fixture> prepareNextRound(String tournamentId) {
+        return tournamentRepository.findById(tournamentId)
+                .map(TournamentSystemFactory::getInstance)
+                .map(TournamentSystem::prepareNextRound)
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures) {
+        tournamentRepository.findById(tournamentId)
+                .map(TournamentSystemFactory::getInstance)
+                .ifPresent(f -> f.addNextRoundFixtures(fixtures));
+    }
+
+    private Optional<Integer> getCurrentRound(String tournamentId) {
+        return tournamentRepository.findById(tournamentId)
+                .map(Tournament::getTournamentSystemState)
+                .map(TournamentSystemState::getCurrentRound);
+    }
 }

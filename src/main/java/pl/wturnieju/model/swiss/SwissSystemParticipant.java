@@ -5,12 +5,11 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import lombok.Data;
-import pl.wturnieju.model.IProfile;
 
 @Data
 public class SwissSystemParticipant {
 
-    private IProfile profile;
+    private String profileId;
 
     private LinkedList<SwissSystemParticipant> opponents = new LinkedList<>();
 

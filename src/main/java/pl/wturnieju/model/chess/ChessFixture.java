@@ -1,26 +1,24 @@
 package pl.wturnieju.model.chess;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import lombok.Data;
+import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Fixture;
-import pl.wturnieju.model.IProfile;
 
+@Data
 public class ChessFixture extends Fixture {
 
-    private List<ChessMove> moves = new ArrayList<>();
+    //    private List<ChessMove> moves = new ArrayList<>();
 
-    private String currentPlayerIdMove;
+    //    private String currentPlayerIdMove;
 
-    private Map<String, Integer> playerIdToTimeLeftMap = new HashMap<>();
+    //    private Map<String, Integer> playerIdToTimeLeftMap = new HashMap<>();
 
-    private int timeBonus;
+    //    private int timeBonus;
 
-    public ChessFixture(ImmutablePair<IProfile, IProfile> players) {
-        super(players);
+    public ChessFixture(ImmutablePair<String, String> playersIds) {
+        super(playersIds);
+        competitionType = CompetitionType.CHESS;
     }
 }

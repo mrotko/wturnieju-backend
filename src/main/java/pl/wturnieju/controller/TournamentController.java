@@ -4,6 +4,7 @@ package pl.wturnieju.controller;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.lang.NonNull;
@@ -41,6 +42,7 @@ public class TournamentController {
 
     private final IUserService userService;
 
+
     @GetMapping()
     public UserTournamentsDTO getAllUserTournaments(@RequestParam("userId") String userId) {
         var dto = new UserTournamentsDTO();
@@ -75,9 +77,19 @@ public class TournamentController {
 
     @GetMapping("/{tournamentId}/fixtures")
     public List<Fixture> getFixtures(@PathVariable("tournamentId") String tournamentId) {
-        // TODO(mr): 21.11.2018 impl getTournamentFixtures
+        return tournamentService.getFixtures(tournamentId);
+    }
 
-        return null;
+    @GetMapping("/{tournamentId}/roundToFixtures")
+    public Map<Integer, List<Fixture>> getRoundToFixtures(@PathVariable("tournamentId") String tournamentId) {
+        return tournamentService.getFixtures(tournamentId).stream()
+                .collect(Collectors.groupingBy(Fixture::getGameSeries, Collectors.toList()));
+    }
+
+
+    @GetMapping("/{tournamentId}/fixtures/current")
+    public List<Fixture> getCurrentFixtures(@PathVariable("tournamentId") String tournamentId) {
+        return tournamentService.getCurrentFixtures(tournamentId);
     }
 
     @GetMapping("/{tournamentId}")
@@ -98,5 +110,15 @@ public class TournamentController {
     public void inviteParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
             @PathVariable("participantId") @NonNull String participantId) {
         participantService.invite(tournamentId, participantId);
+    }
+
+    @GetMapping("/{tournamentId}/prepareNextRound")
+    public List<Fixture> prepareNextRound(@PathVariable("tournamentId") @NonNull String tournamentId) {
+        return tournamentService.prepareNextRound(tournamentId);
+    }
+
+    @PostMapping("/{tournamentId}/prepareNextRound")
+    public void addNextRound(@PathVariable("tournamentId") String tournamentId, @NonNull List<Fixture> fixtures) {
+        tournamentService.addNextRoundFixtures(tournamentId, fixtures);
     }
 }

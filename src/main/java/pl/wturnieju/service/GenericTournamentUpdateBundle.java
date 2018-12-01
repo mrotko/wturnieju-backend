@@ -14,6 +14,10 @@ import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Data
+@JsonTypeInfo(use = Id.NAME, property = "tournamentSystemType")
+@JsonSubTypes({
+        @Type(value = SwissTournamentUpdateBundle.class, name = "TOURNAMENT_SYSTEM_TYPE.SWISS"),
+})
 public abstract class GenericTournamentUpdateBundle {
 
     private Timestamp timestamp;

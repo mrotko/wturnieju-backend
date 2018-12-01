@@ -11,9 +11,9 @@ public class FixtureBuilder {
 
     private Class<? extends Fixture> clazz;
 
-    private IProfile firstPlayer;
+    private String firstPlayerId;
 
-    private IProfile secondPlayer;
+    private String secondPlayerId;
 
     public FixtureBuilder(Class<? extends Fixture> clazz) {
         this.clazz = clazz;
@@ -23,11 +23,11 @@ public class FixtureBuilder {
     }
 
     public interface FirstPlayer {
-        SecondPlayer firstPlayer(IProfile player);
+        SecondPlayer firstPlayer(String playerId);
     }
 
     public interface SecondPlayer {
-        Build secondPlayer(IProfile player);
+        Build secondPlayer(String playerId);
     }
 
     public interface Build {
@@ -42,14 +42,14 @@ public class FixtureBuilder {
     private class Builder extends FixtureBuilder implements FirstPlayer, SecondPlayer, Build {
 
         @Override
-        public SecondPlayer firstPlayer(IProfile player) {
-            firstPlayer = player;
+        public SecondPlayer firstPlayer(String playerId) {
+            firstPlayerId = playerId;
             return this;
         }
 
         @Override
-        public Build secondPlayer(IProfile player) {
-            secondPlayer = player;
+        public Build secondPlayer(String playerId) {
+            secondPlayerId = playerId;
             return this;
         }
 
@@ -58,7 +58,7 @@ public class FixtureBuilder {
 
             try {
                 return clazz.getConstructor(ImmutablePair.class).newInstance(
-                        new ImmutablePair<>(firstPlayer, secondPlayer));
+                        new ImmutablePair<>(firstPlayerId, secondPlayerId));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 log.error(e.getStackTrace());
             }

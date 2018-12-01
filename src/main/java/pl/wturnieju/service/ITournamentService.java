@@ -14,7 +14,7 @@ import pl.wturnieju.model.generic.Tournament;
 // TODO(mr): 12.11.2018 impl serwisu do dashboard
 /*
  * url tournament/{id}/dashboard
- * invite CRUD players
+ * invite CRUD playersIds
  * invite staff
  * start next round / end tournament
  * get tournament schedule / results
@@ -52,5 +52,13 @@ public interface ITournamentService {
 
     Fixture getFixtureById(String tournamentId, String fixtureId);
 
+    List<Fixture> getFixtures(String tournamentId);
+
     GenericTournamentTable getTournamentTable(String tournamentId);
+
+    List<Fixture> getCurrentFixtures(String tournamentId);
+
+    List<Fixture> prepareNextRound(String tournamentId);
+
+    void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures);
 }

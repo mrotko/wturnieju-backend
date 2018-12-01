@@ -1,8 +1,11 @@
 package pl.wturnieju.handler;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.model.generic.TournamentSystemState;
 
@@ -16,4 +19,8 @@ public abstract class TournamentSystem<T extends TournamentSystemState> implemen
     protected Tournament tournament;
 
     protected T state;
+
+    public abstract List<Fixture> prepareNextRound();
+
+    public abstract void addNextRoundFixtures(List<Fixture> fixtures);
 }

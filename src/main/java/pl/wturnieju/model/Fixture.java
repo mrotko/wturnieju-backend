@@ -1,28 +1,45 @@
 package pl.wturnieju.model;
 
-import java.time.LocalDateTime;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
+import pl.wturnieju.JsonPairSerializer;
+import pl.wturnieju.model.chess.ChessFixture;
 
 @Data
+@JsonTypeInfo(use = Id.NAME, property = "competitionType")
+@JsonSubTypes({
+        @Type(value = ChessFixture.class, name = "COMPETITION_TYPE.CHESS"),
+})
 public abstract class Fixture extends Persistent {
 
-    private LocalDateTime timestamp;
+    protected Timestamp timestamp;
 
-    private ImmutablePair<IProfile, IProfile> players;
+    @JsonSerialize(using = JsonPairSerializer.class)
+    protected ImmutablePair<String, String> playersIds;
 
-    private MutablePair<Double, Double> points;
+    @JsonSerialize(using = JsonPairSerializer.class)
+    protected MutablePair<Double, Double> points;
 
-    private FixtureStatus status;
+    protected FixtureStatus status;
 
-    private int gameSeries;
+    @Setter(value = AccessLevel.PROTECTED)
+    protected CompetitionType competitionType;
 
-    public Fixture(ImmutablePair<IProfile, IProfile> players) {
-        this.players = players;
+    protected int gameSeries;
+
+    public Fixture(ImmutablePair<String, String> playersIds) {
+        this.playersIds = playersIds;
         id = new ObjectId().toString();
     }
 }

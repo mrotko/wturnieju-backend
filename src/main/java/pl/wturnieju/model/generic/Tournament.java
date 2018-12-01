@@ -55,4 +55,6 @@ public abstract class Tournament extends Persistent {
     protected int minParticipants;
 
     protected int maxParticipants;
+
+    protected int plannedRounds;
 }

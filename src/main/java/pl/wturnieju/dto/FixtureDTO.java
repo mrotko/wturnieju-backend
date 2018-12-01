@@ -13,7 +13,7 @@ public class FixtureDTO {
 
     private LocalDateTime timestamp;
 
-    private Pair<IProfile, IProfile> players;
+    private Pair<UserDTO, IProfile> players;
 
     private Pair<Double, Double> points;
 

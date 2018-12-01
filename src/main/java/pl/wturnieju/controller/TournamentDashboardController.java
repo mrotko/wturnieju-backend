@@ -95,5 +95,6 @@ public class TournamentDashboardController {
     //
     //    Optional<Tournament> getById(String tournamentId);
 
-    // TODO(mr): 15.11.2018 void confirm(String tournamentId, String participantId);
+
+    // TODO(mr): 15.11.2018 void confirm(String tournamentId, String profileId);
 }
