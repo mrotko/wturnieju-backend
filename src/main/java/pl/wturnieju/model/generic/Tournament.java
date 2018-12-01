@@ -3,6 +3,8 @@ package pl.wturnieju.model.generic;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -50,6 +52,7 @@ public abstract class Tournament extends Persistent {
 
     protected List<String> contributorsIds = new ArrayList<>();
 
+    @JsonIgnore
     protected TournamentSystemState tournamentSystemState;
 
     protected int minParticipants;

@@ -52,6 +52,7 @@ public class TournamentMapping {
                 dto.setPlace(tournament.getPlace());
                 dto.setStatus(tournament.getStatus());
                 dto.setSystemType(tournament.getSystemType());
+                dto.setPlannedRounds(tournament.getPlannedRounds());
 
                 return dto;
             });

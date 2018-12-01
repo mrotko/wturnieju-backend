@@ -45,4 +45,6 @@ public class TournamentDTO {
     private Integer minParticipants;
 
     private Integer maxParticipants;
+
+    private Integer plannedRounds;
 }
