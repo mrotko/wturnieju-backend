@@ -9,5 +9,4 @@ public abstract class BundleUpdateContent {
 
     @Setter(AccessLevel.PROTECTED)
     protected FixtureBundleUpdateContentType type;
-
 }

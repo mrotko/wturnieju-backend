@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,11 @@ import pl.wturnieju.dto.mapping.TournamentMapping;
 import pl.wturnieju.dto.mapping.TournamentParticipantMapping;
 import pl.wturnieju.dto.mapping.TournamentTableMapping;
 import pl.wturnieju.model.Fixture;
-import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
+import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.model.generic.ChessBundleResult;
+import pl.wturnieju.model.generic.ResultBundleUpdateContent;
+import pl.wturnieju.model.generic.SwissFixtureUpdateBundle;
+import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.service.GenericTournamentUpdateBundle;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
@@ -67,10 +72,44 @@ public class TournamentController {
         return TournamentMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
     }
 
-    @PutMapping("/{tournamentId}/fixtures/{fixtureId}")
-    public Fixture updateFixture(@PathVariable("tournamentId") String tournamentId,
+    //    @PutMapping("/{tournamentId}/fixtures/{fixtureId}")
+    //    public Fixture updateFixtureResult(@PathVariable("tournamentId") String tournamentId,
+    //            @PathVariable("fixtureId") String fixtureId,
+    //            @RequestBody GenericFixtureUpdateBundle bundle) {
+    //        tournamentService.updateFixtureResult(bundle);
+    //        return tournamentService.getFixtureById(tournamentId, fixtureId);
+    //    }
+
+    @PutMapping("/{tournamentId}/fixture/{fixtureId}/result")
+    public Fixture updateFixtureResult(@PathVariable("tournamentId") String tournamentId,
             @PathVariable("fixtureId") String fixtureId,
-            @RequestBody GenericFixtureUpdateBundle bundle) {
+            @RequestBody MutablePair<Double, Double> result) {
+        // TODO(mr): 01.12.2018 impl factory
+
+        var bundle = new SwissFixtureUpdateBundle();
+        bundle.setChangedById(userService.getCurrentUser().getId());
+        bundle.setFixtureId(fixtureId);
+        bundle.setTimestamp(Timestamp.now());
+        bundle.setTournamentId(tournamentId);
+        bundle.setType(tournamentService.getById(tournamentId).map(Tournament::getSystemType).orElse(null));
+
+        {
+            var content = new ResultBundleUpdateContent<ChessBundleResult>();
+
+            {
+                var newResult = new ChessBundleResult();
+                newResult.setResult(result);
+
+                var oldResult = new ChessBundleResult();
+                oldResult.setResult(tournamentService.getFixtureById(tournamentId, fixtureId).getResult());
+
+                content.setNewResult(newResult);
+                content.setOldResult(oldResult);
+            }
+
+            bundle.setContent(content);
+        }
+
         tournamentService.updateFixture(bundle);
         return tournamentService.getFixtureById(tournamentId, fixtureId);
     }
@@ -83,7 +122,7 @@ public class TournamentController {
     @GetMapping("/{tournamentId}/roundToFixtures")
     public Map<Integer, List<Fixture>> getRoundToFixtures(@PathVariable("tournamentId") String tournamentId) {
         return tournamentService.getFixtures(tournamentId).stream()
-                .collect(Collectors.groupingBy(Fixture::getGameSeries, Collectors.toList()));
+                .collect(Collectors.groupingBy(Fixture::getRound, Collectors.toList()));
     }
 
 

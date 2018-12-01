@@ -1,20 +1,21 @@
 package pl.wturnieju.model.generic;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
-import pl.wturnieju.model.IProfile;
+import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.model.TournamentSystemType;
 
 @Data
 public abstract class GenericFixtureUpdateBundle {
 
-    private IProfile changedBy;
+    private String changedById;
 
-    private LocalDateTime timestamp;
+    private Timestamp timestamp;
 
     private String tournamentId;
 
     private String fixtureId;
+
+    private TournamentSystemType type;
 
     private BundleUpdateContent content;
 }

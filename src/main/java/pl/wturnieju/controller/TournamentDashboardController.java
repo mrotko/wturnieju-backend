@@ -91,7 +91,7 @@ public class TournamentDashboardController {
     //
     //    void updateTournament(GenericTournamentUpdateBundle bundle);
     //
-    //    void updateFixture(GenericFixtureUpdateBundle bundle);
+    //    void updateFixtureResult(GenericFixtureUpdateBundle bundle);
     //
     //    Optional<Tournament> getById(String tournamentId);
 

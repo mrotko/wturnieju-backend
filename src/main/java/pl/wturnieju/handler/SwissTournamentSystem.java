@@ -102,8 +102,8 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
                         pair.getLeft()).secondPlayer(pair.getRight()).build())
                 .peek(fixture -> {
                     fixture.setTimestamp(timestamp);
-                    fixture.setPoints(new MutablePair<>(0D, 0D));
-                    fixture.setGameSeries(getState().getCurrentRound() + 1);
+                    fixture.setResult(new MutablePair<>(0D, 0D));
+                    fixture.setRound(getState().getCurrentRound() + 1);
                     fixture.setStatus(FixtureStatus.BEFORE_START);
                 })
                 .collect(Collectors.toList());
@@ -191,11 +191,11 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     }
 
     private void updateResult(ResultBundleUpdateContent content, String fixtureId) {
-
+        System.out.println(content);
 
         // TODO(mr): 11.11.2018 impl aktualizacja wyniku spotkania
         //        if (content != null && fixtureId != null) {
-        //            fixture.setPoints(content.getNewResult().getPoints());
+        //            fixture.setResult(content.getNewResult().getResult());
         //        }
     }
 

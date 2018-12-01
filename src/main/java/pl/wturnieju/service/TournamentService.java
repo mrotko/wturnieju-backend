@@ -94,7 +94,7 @@ public class TournamentService implements ITournamentService {
     public List<Fixture> getCurrentFixtures(String tournamentId) {
         return getCurrentRound(tournamentId)
                 .map(round -> getFixtures(tournamentId).stream()
-                        .filter(fixture -> fixture.getGameSeries() == round)
+                        .filter(fixture -> fixture.getRound() == round)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }

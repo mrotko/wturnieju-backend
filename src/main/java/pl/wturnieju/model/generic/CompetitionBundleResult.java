@@ -7,8 +7,7 @@ import lombok.Data;
 @Data
 public abstract class CompetitionBundleResult {
 
-    protected MutablePair<Double, Double> points;
-
+    protected MutablePair<Double, Double> result;
 }
 
 

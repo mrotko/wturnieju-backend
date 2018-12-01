@@ -28,15 +28,18 @@ public abstract class Fixture extends Persistent {
     @JsonSerialize(using = JsonPairSerializer.class)
     protected ImmutablePair<String, String> playersIds;
 
+    protected String winner;
+
     @JsonSerialize(using = JsonPairSerializer.class)
-    protected MutablePair<Double, Double> points;
+    protected MutablePair<Double, Double> result;
 
     protected FixtureStatus status;
 
     @Setter(value = AccessLevel.PROTECTED)
     protected CompetitionType competitionType;
 
-    protected int gameSeries;
+
+    protected int round;
 
     public Fixture(ImmutablePair<String, String> playersIds) {
         this.playersIds = playersIds;
