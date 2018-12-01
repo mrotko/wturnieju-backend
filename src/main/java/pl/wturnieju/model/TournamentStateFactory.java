@@ -24,7 +24,7 @@ public class TournamentStateFactory {
     private static SwissSystemState createSwissTournamentState(Tournament tournament) {
         var state = new SwissSystemState();
 
-        state.setCurrentRound(0);
+        state.setCurrentRound(1);
         state.setLastUpdate(Timestamp.now());
         state.setParticipants(tournament.getParticipants().stream()
                 .map(TournamentStateFactory::createSwissSystemParticipant)

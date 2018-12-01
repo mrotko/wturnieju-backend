@@ -1,9 +1,7 @@
 package pl.wturnieju.model.generic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,4 @@ public abstract class TournamentSystemState extends Persistent {
     private GenericTournamentTable tournamentTable;
 
     private List<Fixture> fixtures = new ArrayList<>();
-
-    @Deprecated
-    private Map<Integer, List<Fixture>> roundToFixturesMap = new HashMap<>();
 }
