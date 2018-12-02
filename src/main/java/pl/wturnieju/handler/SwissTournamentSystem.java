@@ -3,6 +3,7 @@ package pl.wturnieju.handler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,8 +18,9 @@ import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.FixtureBuilderFactory;
 import pl.wturnieju.model.FixtureStatus;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentStateFactory;
+import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentStatus;
+import pl.wturnieju.model.TournamentTableFactory;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
 import pl.wturnieju.model.generic.ResultBundleUpdateContent;
 import pl.wturnieju.model.generic.StatusBundleUpdateContent;
@@ -169,7 +171,22 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         // TODO(mr): 13.11.2018 alert triggered by tournament start
         tournament.setStartDate(content.getStartDate());
         tournament.setStatus(TournamentStatus.IN_PROGRESS);
-        tournament.setTournamentSystemState(TournamentStateFactory.getInstance(tournament));
+        state.setParticipants(tournament.getParticipants().stream()
+                .map(this::createSwissSystemParticipant)
+                .collect(Collectors.toList()));
+        state.setTournamentTable(TournamentTableFactory.getTable(tournament));
+    }
+
+    private SwissSystemParticipant createSwissSystemParticipant(TournamentParticipant participant) {
+        var swissParticipant = new SwissSystemParticipant();
+
+        swissParticipant.setBye(false);
+        swissParticipant.setOpponentsIds(new LinkedList<>());
+        swissParticipant.setOpponentsIdsToResultsMap(new HashMap<>());
+        swissParticipant.setPoints(0.);
+        swissParticipant.setProfileId(participant.getId());
+
+        return swissParticipant;
     }
 
     private Optional<Fixture> findFixture(SwissFixtureUpdateBundle bundle) {
