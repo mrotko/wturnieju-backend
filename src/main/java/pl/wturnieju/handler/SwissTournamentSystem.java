@@ -104,7 +104,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
                         pair.getLeft()).secondPlayer(pair.getRight()).build())
                 .peek(fixture -> {
                     fixture.setTimestamp(timestamp);
-                    fixture.setResult(new MutablePair<>(0D, 0D));
+                    fixture.setResult(new MutablePair<>(null, null));
                     fixture.setRound(getState().getCurrentRound() + 1);
                     fixture.setStatus(FixtureStatus.BEFORE_START);
                 })
