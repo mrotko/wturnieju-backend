@@ -109,9 +109,12 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures) {
-        tournamentRepository.findById(tournamentId)
-                .map(TournamentSystemFactory::getInstance)
-                .ifPresent(f -> f.addNextRoundFixtures(fixtures));
+        var tournament = tournamentRepository.findById(tournamentId);
+        tournament.ifPresent(t -> {
+            var system = TournamentSystemFactory.getInstance(t);
+            system.createNextRoundFixtures(fixtures);
+            tournamentRepository.save(t);
+        });
     }
 
     private Optional<Integer> getCurrentRound(String tournamentId) {

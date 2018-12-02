@@ -1,8 +1,13 @@
 package pl.wturnieju.model.chess;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import pl.wturnieju.JsonPairDeserializer;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Fixture;
 
@@ -17,7 +22,12 @@ public class ChessFixture extends Fixture {
 
     //    private int timeBonus;
 
-    public ChessFixture(ImmutablePair<String, String> playersIds) {
+
+    @JsonCreator
+    public ChessFixture(
+            @JsonProperty("playersIds")
+            @JsonDeserialize(using = JsonPairDeserializer.class)
+                    MutablePair<String, String> playersIds) {
         super(playersIds);
         competitionType = CompetitionType.CHESS;
     }

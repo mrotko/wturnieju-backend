@@ -42,7 +42,7 @@ public class TournamentStateFactory {
         var swissParticipant = new SwissSystemParticipant();
 
         swissParticipant.setBye(false);
-        swissParticipant.setOpponents(new LinkedList<>());
+        swissParticipant.setOpponentsIds(new LinkedList<>());
         swissParticipant.setOpponentsIdsToResultsMap(new HashMap<>());
         swissParticipant.setPoints(0.);
         swissParticipant.setProfileId(participant.getId());

@@ -22,5 +22,5 @@ public abstract class TournamentSystem<T extends TournamentSystemState> implemen
 
     public abstract List<Fixture> prepareNextRound();
 
-    public abstract void addNextRoundFixtures(List<Fixture> fixtures);
+    public abstract void createNextRoundFixtures(List<Fixture> fixtures);
 }

@@ -142,8 +142,8 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
                 .collect(Collectors.toMap(SwissSystemParticipant::getProfileId, p -> false));
 
         getState().getParticipants().forEach(participant -> {
-            participant.getOpponents().forEach(
-                    opponent -> allPlayersToPlayedMap.put(opponent.getProfileId(), true));
+            participant.getOpponentsIds().forEach(
+                    opponentId -> allPlayersToPlayedMap.put(opponentId, true));
             playerToNotPlayedPlayersIds.put(participant.getProfileId(), allPlayersToPlayedMap.entrySet().stream()
                     .filter(entry -> !entry.getValue())
                     .filter(entry -> !participant.getProfileId().equals(entry.getKey()))
@@ -226,7 +226,21 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     }
 
     @Override
-    public void addNextRoundFixtures(List<Fixture> fixtures) {
+    public void createNextRoundFixtures(List<Fixture> fixtures) {
         state.getFixtures().addAll(fixtures);
+        state.setCurrentRound(state.getCurrentRound() + 1);
+        addOpponentsToParticipants(fixtures);
+    }
+
+    private void addOpponentsToParticipants(List<Fixture> fixtures) {
+        fixtures.forEach(fixture -> {
+            var firstPlayer = getParticipantById(fixture.getPlayersIds().left);
+            var secondPlayer = getParticipantById(fixture.getPlayersIds().right);
+
+            firstPlayer.ifPresent(
+                    p -> p.getOpponentsIds().add(secondPlayer.map(SwissSystemParticipant::getProfileId).orElse(null)));
+            secondPlayer.ifPresent(
+                    p -> p.getOpponentsIds().add(firstPlayer.map(SwissSystemParticipant::getProfileId).orElse(null)));
+        });
     }
 }

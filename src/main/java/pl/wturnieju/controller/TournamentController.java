@@ -157,7 +157,8 @@ public class TournamentController {
     }
 
     @PostMapping("/{tournamentId}/prepareNextRound")
-    public void addNextRound(@PathVariable("tournamentId") String tournamentId, @NonNull List<Fixture> fixtures) {
+    public void addNextRound(@PathVariable("tournamentId") String tournamentId,
+            @NonNull @RequestBody List<Fixture> fixtures) {
         tournamentService.addNextRoundFixtures(tournamentId, fixtures);
     }
 }

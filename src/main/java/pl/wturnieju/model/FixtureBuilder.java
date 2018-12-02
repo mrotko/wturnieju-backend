@@ -2,7 +2,7 @@ package pl.wturnieju.model;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -57,8 +57,8 @@ public class FixtureBuilder {
         public Fixture build() {
 
             try {
-                return clazz.getConstructor(ImmutablePair.class).newInstance(
-                        new ImmutablePair<>(firstPlayerId, secondPlayerId));
+                return clazz.getConstructor(MutablePair.class).newInstance(
+                        MutablePair.of(firstPlayerId, secondPlayerId));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 log.error(e.getStackTrace());
             }

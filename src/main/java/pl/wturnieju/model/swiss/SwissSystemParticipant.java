@@ -11,7 +11,7 @@ public class SwissSystemParticipant {
 
     private String profileId;
 
-    private LinkedList<SwissSystemParticipant> opponents = new LinkedList<>();
+    private LinkedList<String> opponentsIds = new LinkedList<>();
 
     private Map<String, Double> opponentsIdsToResultsMap = new HashMap<>();
 
