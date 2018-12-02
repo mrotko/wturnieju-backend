@@ -161,4 +161,9 @@ public class TournamentController {
             @NonNull @RequestBody List<Fixture> fixtures) {
         tournamentService.addNextRoundFixtures(tournamentId, fixtures);
     }
+
+    @GetMapping("/{tournamentId}/currentRound")
+    public Integer getCurrentRound(@PathVariable("tournamentId") String tournamentId) {
+        return tournamentService.getCurrentRound(tournamentId).orElse(null);
+    }
 }

@@ -20,7 +20,7 @@ public class TournamentStateFactory {
     private static SwissSystemState createSwissTournamentState() {
         var state = new SwissSystemState();
 
-        state.setCurrentRound(1);
+        state.setCurrentRound(0);
         state.setLastUpdate(Timestamp.now());
         state.setFixtures(new ArrayList<>());
         state.setUpdateFixtureBundles(new ArrayList<>());

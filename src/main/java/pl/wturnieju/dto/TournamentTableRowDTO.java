@@ -1,14 +1,13 @@
 package pl.wturnieju.dto;
 
 import lombok.Data;
-import pl.wturnieju.model.IProfile;
 
 @Data
 public class TournamentTableRowDTO {
 
     private Integer position;
 
-    private IProfile profile;
+    private String profileId;
 
     private Double points;
 

@@ -3,6 +3,7 @@ package pl.wturnieju.model;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -29,7 +30,7 @@ public abstract class Fixture extends Persistent {
     @JsonSerialize(using = JsonPairSerializer.class)
     protected MutablePair<String, String> playersIds;
 
-    protected String winner;
+    protected String winnerId;
 
     @JsonSerialize(using = JsonPairSerializer.class)
     protected MutablePair<Double, Double> result;
@@ -39,6 +40,8 @@ public abstract class Fixture extends Persistent {
     @Setter(value = AccessLevel.PROTECTED)
     protected CompetitionType competitionType;
 
+    @JsonIgnore
+    protected boolean dirty;
 
     protected int round;
 

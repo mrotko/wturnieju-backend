@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import lombok.Data;
-import pl.wturnieju.model.IProfile;
 
 @Data
 public class SwissTournamentTableRow extends TournamentTableRow<SwissTournamentTableRow> {
 
     private Double smallPoints;
 
-    public SwissTournamentTableRow(IProfile profile) {
-        super(profile);
+    public SwissTournamentTableRow(String profileId) {
+        super(profileId);
     }
 
     @Override

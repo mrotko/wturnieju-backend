@@ -29,7 +29,7 @@ public class TournamentTableMapping {
                     var rowDto = new TournamentTableRowDTO();
 
                     rowDto.setPosition(tableDto.getRows().size() + 1);
-                    rowDto.setProfile(row.getProfile());
+                    rowDto.setProfileId(row.getProfileId());
                     rowDto.setWins(row.getWins());
                     rowDto.setDraws(row.getDraws());
                     rowDto.setLoses(row.getLoses());

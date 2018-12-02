@@ -7,13 +7,12 @@ import org.springframework.lang.NonNull;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.model.IProfile;
 
 @Data
 @RequiredArgsConstructor
 public abstract class TournamentTableRow<T extends TournamentTableRow> implements Comparable<T> {
 
-    protected final IProfile profile;
+    protected final String profileId;
 
     protected Double points;
 
@@ -30,7 +29,7 @@ public abstract class TournamentTableRow<T extends TournamentTableRow> implement
         for (Supplier<Integer> comparator : getComparators(o)) {
             int result = comparator.get();
             if (result != 0) {
-                return result;
+                return -1 * result;
             }
         }
         return 0;

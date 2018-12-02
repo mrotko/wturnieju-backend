@@ -1,13 +1,13 @@
 package pl.wturnieju.model.generic;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import lombok.Data;
 
 @Data
 public abstract class CompetitionBundleResult {
 
-    protected Pair<Double, Double> result;
+    protected MutablePair<Double, Double> result;
 }
 
 

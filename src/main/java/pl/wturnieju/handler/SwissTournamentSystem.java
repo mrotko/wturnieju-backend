@@ -6,13 +6,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.FixtureBuilderFactory;
@@ -25,6 +23,8 @@ import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
 import pl.wturnieju.model.generic.ResultBundleUpdateContent;
 import pl.wturnieju.model.generic.StatusBundleUpdateContent;
 import pl.wturnieju.model.generic.SwissFixtureUpdateBundle;
+import pl.wturnieju.model.generic.SwissTournamentTableRow;
+import pl.wturnieju.model.generic.TournamentTableRow;
 import pl.wturnieju.model.swiss.SwissSystemParticipant;
 import pl.wturnieju.model.swiss.SwissSystemState;
 import pl.wturnieju.service.EndTournamentBundleUpdateContent;
@@ -97,11 +97,11 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
     }
 
-    private List<Fixture> generateFixtures(List<Pair<String, String>> pairedPlayers) {
+    private List<Fixture> generateFixtures(Map<String, String> pairedPlayers) {
         Timestamp timestamp = Timestamp.now();
-        return pairedPlayers.stream()
+        return pairedPlayers.entrySet().stream()
                 .map(pair -> FixtureBuilderFactory.getInstance(tournament.getCompetitionType()).builder().firstPlayer(
-                        pair.getLeft()).secondPlayer(pair.getRight()).build())
+                        pair.getKey()).secondPlayer(pair.getValue()).build())
                 .peek(fixture -> {
                     fixture.setTimestamp(timestamp);
                     fixture.setResult(new MutablePair<>(null, null));
@@ -111,50 +111,60 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
                 .collect(Collectors.toList());
     }
 
-    private List<Pair<String, String>> pairPlayersBySameScore(Map<String, List<String>> playerToNotPlayedPlayersIds) {
-        List<Pair<String, String>> pairs = new ArrayList<>();
+    private Map<String, String> pairPlayersBySameScore(Map<String, List<String>> playerToNotPlayedPlayersIds) {
+        Map<String, String> pairs = new HashMap<>();
 
         Set<String> availablePlayersIds = new HashSet<>(playerToNotPlayedPlayersIds.keySet());
 
         playerToNotPlayedPlayersIds.forEach((participantId, opponentsIds) -> {
             if (availablePlayersIds.contains(participantId)) {
-                getParticipantById(participantId).ifPresent(participant -> {
-                    var opponent = opponentsIds.stream()
-                            .filter(availablePlayersIds::contains)
-                            .map(this::getParticipantById)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .filter(o -> o.getPoints() == participant.getPoints())
-                            .findFirst();
-                    opponent.map(SwissSystemParticipant::getProfileId).ifPresent(opponentId -> {
-                        pairs.add(new MutablePair<>(participantId, opponent.get().getProfileId()));
-                        availablePlayersIds.remove(participantId);
-                        availablePlayersIds.remove(opponentId);
-                    });
+                var participant = getParticipantById(participantId).orElseThrow();
+                var opponent = opponentsIds.stream()
+                        .filter(availablePlayersIds::contains)
+                        .map(this::getParticipantById)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .filter(o -> o.getPoints() == participant.getPoints())
+                        .findFirst();
+
+                opponent.map(SwissSystemParticipant::getProfileId).ifPresent(opponentId -> {
+                    pairs.put(participantId, opponentId);
+                    availablePlayersIds.remove(participantId);
+                    availablePlayersIds.remove(opponentId);
                 });
             }
         });
+
+        int pivot = availablePlayersIds.size() / 2;
+        var availablePlayersIdsList = new ArrayList<>(availablePlayersIds);
+
+
+        for (int i = 0; i < pivot; i++) {
+            pairs.put(availablePlayersIdsList.get(i), availablePlayersIdsList.get(pivot + i));
+            availablePlayersIds.remove(availablePlayersIdsList.get(i));
+            availablePlayersIds.remove(availablePlayersIdsList.get(pivot + i));
+        }
+
+        if (!availablePlayersIds.isEmpty()) {
+            pairs.put(availablePlayersIds.iterator().next(), null);
+        }
+
         return pairs;
     }
 
     private Map<String, List<String>> groupPlayersWithNotPlayed() {
-        Map<String, List<String>> playerToNotPlayedPlayersIds = new HashMap<>();
+        var allParticipantsIds = getState().getParticipants().stream()
+                .map(SwissSystemParticipant::getProfileId)
+                .collect(Collectors.toList());
 
-        Map<String, Boolean> allPlayersToPlayedMap = getState().getParticipants().stream()
-                .collect(Collectors.toMap(SwissSystemParticipant::getProfileId, p -> false));
-
-        getState().getParticipants().forEach(participant -> {
-            participant.getOpponentsIds().forEach(
-                    opponentId -> allPlayersToPlayedMap.put(opponentId, true));
-            playerToNotPlayedPlayersIds.put(participant.getProfileId(), allPlayersToPlayedMap.entrySet().stream()
-                    .filter(entry -> !entry.getValue())
-                    .filter(entry -> !participant.getProfileId().equals(entry.getKey()))
-                    .map(Entry::getKey)
-                    .collect(Collectors.toList())
-            );
-            allPlayersToPlayedMap.replaceAll((key, value) -> false);
-        });
-        return playerToNotPlayedPlayersIds;
+        return getState().getParticipants().stream()
+                .map(participant -> {
+                    var playersNotPlayedIds = new ArrayList<>(allParticipantsIds);
+                    playersNotPlayedIds.remove(participant.getProfileId());
+                    playersNotPlayedIds.removeAll(participant.getOpponentsIds());
+                    return MutablePair.of(participant.getProfileId(), playersNotPlayedIds);
+                })
+                .collect(Collectors.toMap(pair -> pair.left, pair -> pair.right));
     }
 
     private Optional<SwissSystemParticipant> getParticipantById(String profileId) {
@@ -208,12 +218,73 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     }
 
     private void updateResult(ResultBundleUpdateContent content, String fixtureId) {
-        System.out.println(content);
+        findFixture(fixtureId).ifPresent(fixture -> {
+            fixture.setResult(content.getNewResult().getResult());
 
-        // TODO(mr): 11.11.2018 impl aktualizacja wyniku spotkania
-        //        if (content != null && fixtureId != null) {
-        //            fixture.setResult(content.getNewResult().getResult());
-        //        }
+            if (!fixture.getResult().getLeft().equals(fixture.getResult().getRight())) {
+                if (fixture.getResult().getLeft() > fixture.getResult().getRight()) {
+                    fixture.setStatus(FixtureStatus.ENDED);
+                    fixture.setWinnerId(fixture.getPlayersIds().getLeft());
+                } else {
+                    fixture.setStatus(FixtureStatus.ENDED);
+                    fixture.setWinnerId(fixture.getPlayersIds().getRight());
+                }
+            } else {
+                fixture.setStatus(FixtureStatus.ENDED);
+                fixture.setWinnerId(null);
+            }
+
+            fixture.setDirty(true);
+            updateTable();
+        });
+    }
+
+    private void updateTable() {
+        state.getFixtures().stream()
+                .filter(Fixture::isDirty)
+                .forEach(fixture -> {
+                    var firstPlayerId = fixture.getPlayersIds().getLeft();
+                    var secondPlayerId = fixture.getPlayersIds().getRight();
+                    var winnerId = fixture.getWinnerId();
+
+                    var firstPlayerRow = getState().getTournamentTable().getProfileRow(firstPlayerId).orElseThrow();
+                    var secondPlayerRow = getState().getTournamentTable().getProfileRow(secondPlayerId);
+
+                    if (winnerId != null) {
+                        if (firstPlayerId.equals(winnerId)) {
+                            updateRowAsWin(firstPlayerRow,
+                                    secondPlayerRow.map(TournamentTableRow::getPoints).orElse(0.0));
+                            secondPlayerRow.ifPresent(this::updateRowAsLose);
+                        } else {
+                            updateRowAsWin(secondPlayerRow.orElseThrow(), firstPlayerRow.getPoints());
+                            updateRowAsLose(firstPlayerRow);
+                        }
+                    } else {
+                        updateRowAsDraw(firstPlayerRow,
+                                secondPlayerRow.map(TournamentTableRow::getPoints).orElseThrow());
+                        updateRowAsDraw(secondPlayerRow.orElseThrow(), firstPlayerRow.getPoints());
+                    }
+
+                    getState().getTournamentTable().setLastUpdate(Timestamp.now());
+                    fixture.setDirty(false);
+                });
+    }
+
+
+    private void updateRowAsWin(SwissTournamentTableRow row, double smallPoints) {
+        row.setSmallPoints(row.getSmallPoints() + smallPoints);
+        row.setPoints(row.getPoints() + 1);
+        row.setWins(row.getWins() + 1);
+    }
+
+    private void updateRowAsDraw(SwissTournamentTableRow row, double smallPoints) {
+        row.setSmallPoints(row.getSmallPoints() + smallPoints);
+        row.setPoints(row.getPoints() + 0.5);
+        row.setDraws(row.getDraws() + 1);
+    }
+
+    private void updateRowAsLose(SwissTournamentTableRow row) {
+        row.setLoses(row.getLoses() + 1);
     }
 
     @Override
@@ -244,9 +315,20 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
     @Override
     public void createNextRoundFixtures(List<Fixture> fixtures) {
+        fixtures.stream()
+                .filter(fixture -> fixture.getPlayersIds().getRight() == null)
+                .findFirst()
+                .ifPresent(fixture -> {
+                    fixture.setDirty(true);
+                    fixture.setStatus(FixtureStatus.ENDED);
+                    fixture.setWinnerId(fixture.getPlayersIds().getLeft());
+                });
+
+
         state.getFixtures().addAll(fixtures);
         state.setCurrentRound(state.getCurrentRound() + 1);
         addOpponentsToParticipants(fixtures);
+        updateTable();
     }
 
     private void addOpponentsToParticipants(List<Fixture> fixtures) {

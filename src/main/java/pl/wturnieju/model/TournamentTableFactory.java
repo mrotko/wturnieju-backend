@@ -22,7 +22,7 @@ public class TournamentTableFactory {
         var table = new SwissTournamentTable();
 
         participants.forEach(participant -> {
-            var row = new SwissTournamentTableRow(participant);
+            var row = new SwissTournamentTableRow(participant.getId());
 
             row.setGames(0);
             row.setPoints(0.);

@@ -117,7 +117,8 @@ public class TournamentService implements ITournamentService {
         });
     }
 
-    private Optional<Integer> getCurrentRound(String tournamentId) {
+    @Override
+    public Optional<Integer> getCurrentRound(String tournamentId) {
         return tournamentRepository.findById(tournamentId)
                 .map(Tournament::getTournamentSystemState)
                 .map(TournamentSystemState::getCurrentRound);
