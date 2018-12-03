@@ -1,9 +1,9 @@
-package pl.wturnieju.security;
+package pl.wturnieju.config.security;
 
-import static pl.wturnieju.security.SecurityConstants.EXPIRATION_TIME;
-import static pl.wturnieju.security.SecurityConstants.HEADER_STRING;
-import static pl.wturnieju.security.SecurityConstants.SECRET;
-import static pl.wturnieju.security.SecurityConstants.TOKEN_PREFIX;
+import static pl.wturnieju.config.security.SecurityConstants.EXPIRATION_TIME;
+import static pl.wturnieju.config.security.SecurityConstants.HEADER_STRING;
+import static pl.wturnieju.config.security.SecurityConstants.SECRET;
+import static pl.wturnieju.config.security.SecurityConstants.TOKEN_PREFIX;
 
 import java.io.IOException;
 import java.util.ArrayList;

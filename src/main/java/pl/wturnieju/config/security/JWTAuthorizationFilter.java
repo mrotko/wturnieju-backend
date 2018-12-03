@@ -1,4 +1,4 @@
-package pl.wturnieju.security;
+package pl.wturnieju.config.security;
 
 import java.io.IOException;
 import java.util.ArrayList;

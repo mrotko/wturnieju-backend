@@ -1,6 +1,6 @@
-package pl.wturnieju.security;
+package pl.wturnieju.config.security;
 
-import static pl.wturnieju.security.SecurityConstants.HEADER_STRING;
+import static pl.wturnieju.config.security.SecurityConstants.HEADER_STRING;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import pl.wturnieju.service.IUserService;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class WebSecurity extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final IUserService userService;
 
