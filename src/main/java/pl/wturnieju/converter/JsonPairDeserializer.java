@@ -1,4 +1,4 @@
-package pl.wturnieju;
+package pl.wturnieju.converter;
 
 import java.io.IOException;
 
