@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.model.swiss.SystemParticipant;
 import pl.wturnieju.service.GenericTournamentUpdateBundle;
 
 
@@ -26,4 +27,6 @@ public abstract class TournamentSystemState extends Persistent {
     private GenericTournamentTable tournamentTable;
 
     private List<Fixture> fixtures = new ArrayList<>();
+
+    protected List<SystemParticipant> participants = new ArrayList<>();
 }

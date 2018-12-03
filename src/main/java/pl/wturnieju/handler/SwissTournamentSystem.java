@@ -27,6 +27,7 @@ import pl.wturnieju.model.generic.SwissTournamentTableRow;
 import pl.wturnieju.model.generic.TournamentTableRow;
 import pl.wturnieju.model.swiss.SwissSystemParticipant;
 import pl.wturnieju.model.swiss.SwissSystemState;
+import pl.wturnieju.model.swiss.SystemParticipant;
 import pl.wturnieju.service.EndTournamentBundleUpdateContent;
 import pl.wturnieju.service.GenericTournamentUpdateBundle;
 import pl.wturnieju.service.NextRoundTournamentBundleUpdateContent;
@@ -118,16 +119,17 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
         playerToNotPlayedPlayersIds.forEach((participantId, opponentsIds) -> {
             if (availablePlayersIds.contains(participantId)) {
-                var participant = getParticipantById(participantId).orElseThrow();
+                var participant = (SwissSystemParticipant) getParticipantById(participantId).orElseThrow();
                 var opponent = opponentsIds.stream()
                         .filter(availablePlayersIds::contains)
                         .map(this::getParticipantById)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
+                        .map(p -> (SwissSystemParticipant) p)
                         .filter(o -> o.getPoints() == participant.getPoints())
                         .findFirst();
 
-                opponent.map(SwissSystemParticipant::getProfileId).ifPresent(opponentId -> {
+                opponent.map(SystemParticipant::getProfileId).ifPresent(opponentId -> {
                     pairs.put(participantId, opponentId);
                     availablePlayersIds.remove(participantId);
                     availablePlayersIds.remove(opponentId);
@@ -154,7 +156,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
     private Map<String, List<String>> groupPlayersWithNotPlayed() {
         var allParticipantsIds = getState().getParticipants().stream()
-                .map(SwissSystemParticipant::getProfileId)
+                .map(SystemParticipant::getProfileId)
                 .collect(Collectors.toList());
 
         return getState().getParticipants().stream()
@@ -165,12 +167,6 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
                     return MutablePair.of(participant.getProfileId(), playersNotPlayedIds);
                 })
                 .collect(Collectors.toMap(pair -> pair.left, pair -> pair.right));
-    }
-
-    private Optional<SwissSystemParticipant> getParticipantById(String profileId) {
-        return getState().getParticipants().stream()
-                .filter(p -> p.getProfileId().equals(profileId))
-                .findFirst();
     }
 
     private void handleTournamentPause(PauseTournamentBundleUpdateContent content) {
@@ -192,25 +188,11 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
         swissParticipant.setBye(false);
         swissParticipant.setOpponentsIds(new LinkedList<>());
-        swissParticipant.setOpponentsIdsToResultsMap(new HashMap<>());
         swissParticipant.setPoints(0.);
         swissParticipant.setProfileId(participant.getId());
 
         return swissParticipant;
     }
-
-    private Optional<Fixture> findFixture(SwissFixtureUpdateBundle bundle) {
-        return getState().getFixtures().stream()
-                .filter(f -> f.getId().equals(bundle.getFixtureId()))
-                .findFirst();
-    }
-
-    private Optional<Fixture> findFixture(String fixtureId) {
-        return getState().getFixtures().stream()
-                .filter(f -> f.getId().equals(fixtureId))
-                .findFirst();
-    }
-
 
     private void updateStatus(StatusBundleUpdateContent content, String fixtureId) {
         // TODO(mr): 10.11.2018 impl aktualizacja statusu spotkania
@@ -329,17 +311,5 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         state.setCurrentRound(state.getCurrentRound() + 1);
         addOpponentsToParticipants(fixtures);
         updateTable();
-    }
-
-    private void addOpponentsToParticipants(List<Fixture> fixtures) {
-        fixtures.forEach(fixture -> {
-            var firstPlayer = getParticipantById(fixture.getPlayersIds().left);
-            var secondPlayer = getParticipantById(fixture.getPlayersIds().right);
-
-            firstPlayer.ifPresent(
-                    p -> p.getOpponentsIds().add(secondPlayer.map(SwissSystemParticipant::getProfileId).orElse(null)));
-            secondPlayer.ifPresent(
-                    p -> p.getOpponentsIds().add(firstPlayer.map(SwissSystemParticipant::getProfileId).orElse(null)));
-        });
     }
 }
