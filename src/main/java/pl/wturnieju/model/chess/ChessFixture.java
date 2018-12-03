@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
-import pl.wturnieju.JsonPairDeserializer;
+import pl.wturnieju.converter.JsonPairDeserializer;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Fixture;
 

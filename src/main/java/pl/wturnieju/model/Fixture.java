@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import pl.wturnieju.JsonPairDeserializer;
-import pl.wturnieju.JsonPairSerializer;
+import pl.wturnieju.converter.JsonPairDeserializer;
+import pl.wturnieju.converter.JsonPairSerializer;
 import pl.wturnieju.model.chess.ChessFixture;
 
 @Data

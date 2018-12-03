@@ -32,7 +32,10 @@ public class TournamentConfigDTO {
     }
 
     private void initAvailableSystems() {
-        systemTypes.put(CompetitionType.CHESS, Collections.singletonList(TournamentSystemType.SWISS));
+        systemTypes.put(CompetitionType.CHESS, Arrays.asList(
+                TournamentSystemType.SWISS,
+                TournamentSystemType.ROUND_ROBIN
+        ));
     }
 
     public Map<CompetitionType, List<TournamentSystemType>> getSystemTypes() {

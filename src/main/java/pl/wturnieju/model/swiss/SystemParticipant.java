@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 public abstract class SystemParticipant {
+
     private LinkedList<String> opponentsIds = new LinkedList<>();
+
     private String profileId;
 }
