@@ -1,5 +1,7 @@
 package pl.wturnieju.service;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
+import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.validator.Validators;
 
@@ -104,6 +107,13 @@ public class UserService implements IUserService {
         return getById(profile.getId());
     }
 
+    @Override
+    public void setAuthorities(Collection<UserGrantedAuthority> authorities) {
+        var user = getCurrentUser();
+        user.setAuthorities(new HashSet<>(authorities));
+        userRepository.save(user);
+    }
+
     private boolean checkIfUserExists(String username) {
         if (username == null) {
             return false;
@@ -117,6 +127,4 @@ public class UserService implements IUserService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername((String) authentication.getPrincipal()).orElse(null);
     }
-
-
 }

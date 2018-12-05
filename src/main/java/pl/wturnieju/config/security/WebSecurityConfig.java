@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.config.AuthorityType;
 import pl.wturnieju.service.IUserService;
 
 @RequiredArgsConstructor
@@ -39,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.cors().and().csrf().disable()
                     .authorizeRequests()
                     .antMatchers("/auth/**").permitAll()
+                    .antMatchers("/cli/**").hasAnyAuthority(AuthorityType.CLI.name())
                     .anyRequest().authenticated()
                     .and()
                     .addFilter(createAuthenticationFilter())

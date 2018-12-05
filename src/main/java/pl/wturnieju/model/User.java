@@ -1,10 +1,9 @@
 package pl.wturnieju.model;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.annotation.Transient;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,13 +32,15 @@ public class User extends Persistent implements UserDetails, IProfile {
     @JsonIgnore
     private boolean enabled = true;
 
+    private Set<UserGrantedAuthority> authorities = new HashSet<>();
+
     private String name;
 
     private String surname;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+    public Set<UserGrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
