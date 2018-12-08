@@ -65,7 +65,9 @@ public class CliCommandParser implements ICommandParsedDataProvider {
         while (tokenizer.hasMoreTokens()) {
             var token = tokenizer.nextToken();
             int eqIndex = token.indexOf('=');
+
             if (eqIndex != -1) {
+                token = joinTokensIfInQuotes(tokenizer, token);
                 int keyIndex;
                 if (token.indexOf("--") == 0) {
                     keyIndex = 2;
@@ -77,6 +79,21 @@ public class CliCommandParser implements ICommandParsedDataProvider {
                 parameters.put(key.toLowerCase(), value);
             }
         }
+    }
+
+    private String joinTokensIfInQuotes(StringTokenizer tokenizer, String token) {
+        int first = token.indexOf('"');
+        int last = token.lastIndexOf('"');
+
+        var stringBuilder = new StringBuilder(token);
+
+        while (first == last && tokenizer.hasMoreTokens()) {
+            stringBuilder.append(" ").append(tokenizer.nextToken());
+            first = stringBuilder.indexOf("\"");
+            last = stringBuilder.lastIndexOf("\"");
+        }
+
+        return stringBuilder.toString();
     }
 
     @Override

@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class SettingsInfoResponse extends CliResponse {
 
+    @JsonInclude(Include.NON_NULL)
     private String id;
 
     @JsonInclude(Include.NON_NULL)
