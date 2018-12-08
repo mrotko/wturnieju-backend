@@ -3,6 +3,7 @@ package pl.wturnieju.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +12,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.generator.CurrentUserGenerator;
@@ -26,7 +28,8 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 
-@SpringBootTest
+//@SpringBootTest
+@Import(value = MongoConfig.class)
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @WithMockCustomUser
@@ -108,5 +111,11 @@ public class TournamentCreatorServiceTest {
             Assert.assertNotNull(tournament);
             Assert.assertEquals(tournament.getClass().getName(), className);
         });
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        tournamentRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

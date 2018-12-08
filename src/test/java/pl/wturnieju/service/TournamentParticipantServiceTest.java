@@ -10,11 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.inserter.TournamentInserter;
 import pl.wturnieju.inserter.UserInserter;
 import pl.wturnieju.model.ParticipantStatus;
@@ -25,7 +26,8 @@ import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 
-@SpringBootTest
+//@SpringBootTest
+@Import(value = MongoConfig.class)
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class TournamentParticipantServiceTest {

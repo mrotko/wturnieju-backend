@@ -3,6 +3,7 @@ package pl.wturnieju.service;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +22,7 @@ import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 
-@SpringBootTest
+//@SpringBootTest
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -97,7 +97,7 @@ public class UserServiceTest {
         Assert.assertTrue(userRepository.findByUsername("a" + usernameIn).isPresent());
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void createUserShouldFailBecauseExists() throws ValidationException {
         userService.create(usernameIn, password);
     }
@@ -191,5 +191,10 @@ public class UserServiceTest {
     public void changePasswordShouldFailByBadPasswordFormat() throws ValidationException {
         var changedPassword = "a";
         userService.changePassword(usernameIn, changedPassword);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        userRepository.deleteAll();
     }
 }

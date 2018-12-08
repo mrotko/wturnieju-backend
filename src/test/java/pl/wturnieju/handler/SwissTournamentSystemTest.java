@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +35,7 @@ import pl.wturnieju.service.TournamentCreatorService;
 import pl.wturnieju.service.TournamentService;
 
 @Import(MongoConfig.class)
-@SpringBootTest
+//@SpringBootTest
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class SwissTournamentSystemTest {
@@ -134,6 +133,8 @@ public class SwissTournamentSystemTest {
 
     @After
     public void tearDown() throws Exception {
+        tournamentRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 }
