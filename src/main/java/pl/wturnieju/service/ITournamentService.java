@@ -63,4 +63,6 @@ public interface ITournamentService {
     void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures);
 
     Optional<Integer> getCurrentRound(String tournamentId);
+
+    List<Tournament> getUserTournaments(String userId);
 }

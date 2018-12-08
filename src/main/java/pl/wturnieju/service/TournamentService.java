@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.handler.TournamentSystem;
 import pl.wturnieju.handler.TournamentSystemFactory;
 import pl.wturnieju.model.Fixture;
+import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
 import pl.wturnieju.model.generic.GenericTournamentTable;
@@ -122,5 +123,15 @@ public class TournamentService implements ITournamentService {
         return tournamentRepository.findById(tournamentId)
                 .map(Tournament::getTournamentSystemState)
                 .map(TournamentSystemState::getCurrentRound);
+    }
+
+    @Override
+    public List<Tournament> getUserTournaments(String userId) {
+        return tournamentRepository.findAll().stream()
+                .filter(t -> t.getParticipants().stream()
+                        .map(TournamentParticipant::getId)
+                        .anyMatch(pId -> pId.equals(userId))
+                )
+                .collect(Collectors.toList());
     }
 }

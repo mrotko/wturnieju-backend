@@ -20,6 +20,10 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     void changeEmail(String username, String password) throws ValidationException;
 
+    void setName(String name);
+
+    void setSurname(String surname);
+
     void create(String username, String password) throws ValidationException;
 
     Optional<User> getById(String userId);

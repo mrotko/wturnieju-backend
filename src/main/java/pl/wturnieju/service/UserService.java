@@ -79,6 +79,20 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public void setName(String name) {
+        var user = getCurrentUser();
+        user.setName(name);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void setSurname(String surname) {
+        var user = getCurrentUser();
+        user.setSurname(surname);
+        userRepository.save(user);
+    }
+
+    @Override
     public void create(String username, String password) throws ValidationException {
         if (!Validators.getEmailValidator().validate(username) ||
                 !Validators.getPasswordValidator().validate(password)) {
