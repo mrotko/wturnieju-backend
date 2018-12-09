@@ -131,6 +131,8 @@ public class TournamentService implements ITournamentService {
                 .filter(t -> t.getParticipants().stream()
                         .map(TournamentParticipant::getId)
                         .anyMatch(pId -> pId.equals(userId))
+                        ||
+                        t.getOwner().getId().equals(userId)
                 )
                 .collect(Collectors.toList());
     }
