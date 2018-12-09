@@ -60,47 +60,6 @@ public class CliCommandParser implements ICommandParsedDataProvider {
         }
     }
 
-    private void parseParameters() throws ParseException {
-        var tokenizer = new StringTokenizer(rawCommand, " ");
-        while (tokenizer.hasMoreTokens()) {
-            var token = tokenizer.nextToken();
-            int eqIndex = token.indexOf('=');
-
-            if (eqIndex != -1) {
-                token = joinTokensIfInQuotes(tokenizer, token);
-                int keyIndex;
-                if (token.indexOf("--") == 0) {
-                    keyIndex = 2;
-                } else {
-                    keyIndex = 1;
-                }
-                var key = token.substring(keyIndex, eqIndex);
-                var value = trim(token.substring(eqIndex + 1), '"');
-                parameters.put(key.toLowerCase(), value);
-            }
-        }
-    }
-
-    private String joinTokensIfInQuotes(StringTokenizer tokenizer, String token) {
-        int first = token.indexOf('"');
-        int last = token.lastIndexOf('"');
-
-        var stringBuilder = new StringBuilder(token);
-
-        while (first == last && tokenizer.hasMoreTokens()) {
-            stringBuilder.append(" ").append(tokenizer.nextToken());
-            first = stringBuilder.indexOf("\"");
-            last = stringBuilder.lastIndexOf("\"");
-        }
-
-        return stringBuilder.toString();
-    }
-
-    @Override
-    public Optional<String> getParameterValue(@NonNull String name) {
-        return Optional.ofNullable(parameters.get(name));
-    }
-
     private String trim(String str, Character character) {
         var stringBuilder = new StringBuilder(str);
 
@@ -114,6 +73,56 @@ public class CliCommandParser implements ICommandParsedDataProvider {
             stringBuilder.delete(0, 1);
         }
         return stringBuilder.reverse().toString();
+    }
+
+    private void parseParameters() throws ParseException {
+        var tokenizer = new StringTokenizer(rawCommand, " ");
+        while (tokenizer.hasMoreTokens()) {
+            var token = tokenizer.nextToken();
+            int eqIndex = token.indexOf('=');
+
+            if (eqIndex != -1) {
+                token = joinTokensIfValueInQuotes(tokenizer, token);
+                int keyIndex;
+                if (token.indexOf("--") == 0) {
+                    keyIndex = 2;
+                } else {
+                    keyIndex = 1;
+                }
+                var key = token.substring(keyIndex, eqIndex);
+                var value = trimQuotes(token.substring(eqIndex + 1));
+                parameters.put(key.toLowerCase(), value);
+            }
+        }
+    }
+
+    private String joinTokensIfValueInQuotes(StringTokenizer tokenizer, String token) {
+        var stringBuilder = new StringBuilder(token);
+
+        if (token.indexOf("=\"") == token.indexOf('=')) {
+            while ((stringBuilder.lastIndexOf("\"") != stringBuilder.length() - 1) && tokenizer.hasMoreTokens()) {
+                stringBuilder.append(" ").append(tokenizer.nextToken());
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public Optional<String> getParameterValue(@NonNull String name) {
+        return Optional.ofNullable(parameters.get(name));
+    }
+
+    private String trimQuotes(String str) {
+        var stringBuilder = new StringBuilder(str);
+
+        if (stringBuilder.length() > 1
+                && (stringBuilder.lastIndexOf("\"") == stringBuilder.length() - 1)
+                && (stringBuilder.indexOf("\"") == 0)) {
+            stringBuilder.deleteCharAt(0);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        return stringBuilder.toString();
     }
 
     @Override

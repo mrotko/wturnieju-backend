@@ -114,6 +114,29 @@ public class SettingsCommandInterpreterTest {
         Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass2));
     }
 
+    @Test
+    public void changePasswordWithEqInsideTest() {
+        var pass = "Asdfgh123.=";
+        var command1 = "settings --password=" + pass;
+        var parser1 = createInitializedCommandParser(command1);
+        var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
+
+        Assert.assertNull(response.getErrorMessages());
+        Assert.assertTrue(response.getPasswordChanged());
+        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
+    }
+
+    @Test
+    public void changePasswordWithEqQuoteInsideTest() {
+        var pass = "Asdfgh123.=\"";
+        var command1 = "settings --password=" + pass;
+        var parser1 = createInitializedCommandParser(command1);
+        var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
+
+        Assert.assertNull(response.getErrorMessages());
+        Assert.assertTrue(response.getPasswordChanged());
+        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
+    }
 
     @Test
     public void setNameTest() {
@@ -150,6 +173,15 @@ public class SettingsCommandInterpreterTest {
 
         user.setSurname(surname2);
         setValueTask("-s=" + surname2, settingsInfoResponse -> settingsInfoResponse.setSurname(surname2), user);
+    }
+
+    @Test
+    public void setSurnameWithSpaceBetweenTest() {
+        var surname = "Alisson Becker";
+        var user = userService.getCurrentUser();
+        user.setSurname(surname);
+        setValueTask("--surname=" + "\"" + surname + "\"",
+                settingsInfoResponse -> settingsInfoResponse.setSurname(surname), user);
     }
 
     @Test
