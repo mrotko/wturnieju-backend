@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.IUserService;
 
@@ -39,13 +38,7 @@ public class UserInserter {
     }
 
     public void insertUsersToDatabase() {
-        createEmailsAndPasswords().forEach((email, password) -> {
-            try {
-                userService.create(email, password);
-            } catch (ValidationException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        createEmailsAndPasswords().forEach(userService::create);
         setUserDetails();
     }
 

@@ -95,9 +95,10 @@ public class SettingsCommandInterpreter extends CommandInterpreter<SettingsInfoR
     private void passwordParameterTask(SettingsInfoResponse dto) {
         doCommandTask(dto, () -> {
             var password = getParameterValue("password", "p");
+            var oldPassword = getParameterValue("oldPassword", "o");
             var email = getParameterValue("email", "e");
-            if (password.isPresent() && !email.isPresent()) {
-                userService.changePassword(password.get());
+            if (password.isPresent() && oldPassword.isPresent() && !email.isPresent()) {
+                userService.changePassword(password.get(), oldPassword.get());
                 dto.setPasswordChanged(true);
             }
         });

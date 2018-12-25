@@ -15,7 +15,6 @@ import pl.wturnieju.config.AuthorityType;
 import pl.wturnieju.dto.user.ChangePasswordDTO;
 import pl.wturnieju.dto.user.ChangeUsernameDTO;
 import pl.wturnieju.dto.user.UserConfigDTO;
-import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.service.IUserService;
 
@@ -27,21 +26,14 @@ public class UserController {
     private final IUserService userService;
 
     @PutMapping("/password")
+    //    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
-        try {
-            userService.changePassword(changePasswordDTO.getPassword());
-        } catch (ValidationException e) {
-            throw new IllegalArgumentException(e);
-        }
+        userService.changePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getOldPassword());
     }
 
     @PutMapping("/email")
     public void changeEmail(@RequestBody ChangeUsernameDTO changeUsernameDTO) {
-        try {
-            userService.changeEmail(changeUsernameDTO.getUsername(), changeUsernameDTO.getPassword());
-        } catch (ValidationException e) {
-            throw new IllegalArgumentException(e);
-        }
+        userService.changeEmail(changeUsernameDTO.getUsername(), changeUsernameDTO.getPassword());
     }
 
     @PutMapping("/authority")

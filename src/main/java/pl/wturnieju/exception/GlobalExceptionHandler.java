@@ -10,17 +10,20 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
-            ValueExistsException.class,
+            ResourceExistsException.class,
             UserNotFoundException.class,
-            IncorrectPasswordException.class
+            IncorrectPasswordException.class,
+            InvalidFormatException.class,
     })
     public final ResponseEntity<String> handleException(Exception e, WebRequest request) {
-        if (e instanceof ValueExistsException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        if (e instanceof ResourceExistsException) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } else if (e instanceof UserNotFoundException) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } else if (e instanceof IncorrectPasswordException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } else if (e instanceof InvalidFormatException) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

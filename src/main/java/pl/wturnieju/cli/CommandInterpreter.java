@@ -19,21 +19,28 @@ public abstract class CommandInterpreter<T extends CliResponse> {
     }
 
     protected Optional<String> getParameterValue(String longName, String shortName) {
-        if (isParameterExists(longName, shortName)) {
-            if (validate(longName, shortName)) {
-                var value = parsedDataProvider.getParameterValue(longName);
+        var normalizedLongName = normalizeParameter(longName);
+        var normalizedShortNam = normalizeParameter(shortName);
+
+        if (isParameterExists(normalizedLongName, normalizedShortNam)) {
+            if (validate(normalizedLongName, normalizedShortNam)) {
+                var value = parsedDataProvider.getParameterValue(normalizedLongName);
                 if (value.isPresent()) {
                     return value;
                 } else {
-                    return parsedDataProvider.getParameterValue(shortName);
+                    return parsedDataProvider.getParameterValue(normalizedShortNam);
                 }
             } else {
                 throw new IllegalArgumentException(
                         String.format("Command error with parameter(--%s, -%s) and value. See help",
-                                longName, shortName));
+                                normalizedLongName, normalizedShortNam));
             }
         }
         return Optional.empty();
+    }
+
+    private String normalizeParameter(String p) {
+        return Optional.ofNullable(p).map(String::toLowerCase).orElse("");
     }
 
     protected boolean isFlagExists(String longName, String shortName) {

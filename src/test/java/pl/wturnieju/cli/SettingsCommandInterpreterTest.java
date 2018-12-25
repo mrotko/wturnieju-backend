@@ -33,6 +33,8 @@ public class SettingsCommandInterpreterTest {
 
     private User currentUser;
 
+    private String rawPassword = "EFcYcdFXT7GCAa1,";
+
     @Mock
     private IUserService userService;
 
@@ -40,7 +42,7 @@ public class SettingsCommandInterpreterTest {
     private UserRepository userRepository;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
         new UserInserter(userService, userRepository).insertUsersToDatabase();
         currentUser = userService.getCurrentUser();
@@ -49,11 +51,11 @@ public class SettingsCommandInterpreterTest {
     @Test
     public void changeEmailTest() {
         var email = "aukjan1@yahoo.com";
-        var password = "EFcYcdFXT7GCAa1,";
 
         var expectedUser = userService.getCurrentUser();
         expectedUser.setUsername(email);
-        var interpreter = createCommandInterpreterForCommand("settings --email=" + email + " --password=" + password);
+        var interpreter = createCommandInterpreterForCommand(
+                "settings --email=" + email + " --password=" + rawPassword);
 
         var expectedResponse = new SettingsInfoResponse();
         expectedResponse.setEmail(email);
@@ -66,11 +68,10 @@ public class SettingsCommandInterpreterTest {
     @Test
     public void changeEmailAliasTest() {
         var email = "aukjan2@yahoo.com";
-        var password = "EFcYcdFXT7GCAa1,";
 
         var expectedUser = userService.getCurrentUser();
         expectedUser.setUsername(email);
-        var interpreter = createCommandInterpreterForCommand("settings -e=" + email + " -p=" + password);
+        var interpreter = createCommandInterpreterForCommand("settings -e=" + email + " -p=" + rawPassword);
 
         var expectedResponse = new SettingsInfoResponse();
         expectedResponse.setEmail(email);
@@ -91,10 +92,11 @@ public class SettingsCommandInterpreterTest {
     @Test
     public void changePasswordTest() {
         var pass1 = "Asdfgh123.";
+        var oldPassword = rawPassword;
         var pass2 = "Asdfgh1234.";
 
-        var command1 = "settings --password=" + pass1;
-        var command2 = "settings -p=" + pass2;
+        var command1 = "settings --password=" + pass1 + " --oldPassword=" + oldPassword;
+        var command2 = "settings -p=" + pass2 + " -o=" + pass1;
 
         var parser1 = createInitializedCommandParser(command1);
         var parser2 = createInitializedCommandParser(command2);
@@ -117,7 +119,8 @@ public class SettingsCommandInterpreterTest {
     @Test
     public void changePasswordWithEqInsideTest() {
         var pass = "Asdfgh123.=";
-        var command1 = "settings --password=" + pass;
+        var oldPass = rawPassword;
+        var command1 = "settings --password=" + pass + " --oldPassword=" + oldPass;
         var parser1 = createInitializedCommandParser(command1);
         var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
 
@@ -129,7 +132,8 @@ public class SettingsCommandInterpreterTest {
     @Test
     public void changePasswordWithEqQuoteInsideTest() {
         var pass = "Asdfgh123.=\"";
-        var command1 = "settings --password=" + pass;
+        var oldPass = rawPassword;
+        var command1 = "settings --password=" + pass + " --oldPassword=" + oldPass;
         var parser1 = createInitializedCommandParser(command1);
         var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
 
@@ -165,11 +169,9 @@ public class SettingsCommandInterpreterTest {
         var surname1 = "Alisson";
         var surname2 = "Becker";
 
-
         var user = userService.getCurrentUser();
         user.setSurname(surname1);
         setValueTask("--surname=" + surname1, settingsInfoResponse -> settingsInfoResponse.setSurname(surname1), user);
-
 
         user.setSurname(surname2);
         setValueTask("-s=" + surname2, settingsInfoResponse -> settingsInfoResponse.setSurname(surname2), user);

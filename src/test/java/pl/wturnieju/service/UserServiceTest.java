@@ -18,7 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.wturnieju.configuration.WithMockCustomUser;
-import pl.wturnieju.exception.ValidationException;
+import pl.wturnieju.exception.IncorrectPasswordException;
+import pl.wturnieju.exception.InvalidFormatException;
+import pl.wturnieju.exception.ResourceExistsException;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 
@@ -97,26 +99,18 @@ public class UserServiceTest {
         Assert.assertTrue(userRepository.findByUsername("a" + usernameIn).isPresent());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createUserShouldFailBecauseExists() throws ValidationException {
+    @Test(expected = ResourceExistsException.class)
+    public void createUserShouldFailBecauseExists() {
         userService.create(usernameIn, password);
     }
 
-    @Test()
+    @Test(expected = InvalidFormatException.class)
     public void createUserShouldFailBecauseEmailValidationFail() {
-        badEmails.forEach(email -> {
-            boolean failed = false;
-            try {
-                userService.create(email, password);
-            } catch (ValidationException e) {
-                failed = true;
-            }
-            Assert.assertTrue(failed);
-        });
+        badEmails.forEach(email -> userService.create(email, password));
     }
 
     @Test
-    public void passwordEncodingTestShouldSuccess() throws ValidationException {
+    public void passwordEncodingTestShouldSuccess() {
         var rawPass = password + 1;
         var email = "a" + usernameIn;
         userService.create(email, rawPass);
@@ -125,28 +119,20 @@ public class UserServiceTest {
     }
 
     @Test
-    public void changeEmailSuccessTest() throws ValidationException {
+    public void changeEmailSuccessTest() {
         var email = "a" + savedUser.getUsername();
         userService.changeEmail(email, password);
         Assert.assertTrue(userRepository.findByUsername(email).isPresent());
         Assert.assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    @Test
+    @Test(expected = InvalidFormatException.class)
     public void changeEmailShouldFailByFormatTest() {
-        badEmails.forEach(email -> {
-            var validationException = false;
-            try {
-                userService.changeEmail(email, "ignore");
-            } catch (ValidationException e) {
-                validationException = true;
-            }
-            Assert.assertTrue(validationException);
-        });
+        badEmails.forEach(email -> userService.changeEmail(email, "ignore"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void changeEmailShouldFailByInvalidPasswordTest() throws ValidationException {
+    @Test(expected = IncorrectPasswordException.class)
+    public void changeEmailShouldFailByInvalidPasswordTest() {
         var email = "a" + usernameIn;
         userService.changeEmail(email, password + 1);
     }
@@ -173,28 +159,24 @@ public class UserServiceTest {
     @Test
     public void changePasswordShouldPass() {
         var changedPassword = password + "a";
-        try {
-            userService.changePassword(usernameIn, changedPassword);
-        } catch (ValidationException e) {
-            Assert.fail();
-        }
+        userService.changePassword(usernameIn, changedPassword, password);
         Assert.assertTrue(userService.checkCredentials(usernameIn, changedPassword));
     }
 
     @Test(expected = UsernameNotFoundException.class)
-    public void changePasswordShouldFailByNonExistingUsername() throws ValidationException {
+    public void changePasswordShouldFailByNonExistingUsername() {
         var changedPassword = password + "a";
-        userService.changePassword("a" + usernameIn, changedPassword);
+        userService.changePassword("a" + usernameIn, changedPassword, password);
     }
 
-    @Test(expected = ValidationException.class)
-    public void changePasswordShouldFailByBadPasswordFormat() throws ValidationException {
+    @Test(expected = InvalidFormatException.class)
+    public void changePasswordShouldFailByBadPasswordFormat() {
         var changedPassword = "a";
-        userService.changePassword(usernameIn, changedPassword);
+        userService.changePassword(usernameIn, changedPassword, password);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         userRepository.deleteAll();
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.wturnieju.exception.ValidationException;
+import pl.wturnieju.exception.IncorrectPasswordException;
+import pl.wturnieju.exception.InvalidFormatException;
+import pl.wturnieju.exception.ResourceExistsException;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
@@ -35,18 +37,23 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void changePassword(String username, String password) throws ValidationException {
-        if (!Validators.getPasswordValidator().validate(password)) {
-            throw new ValidationException("Bad email or password");
+    public void changePassword(String username, String newPassword, String oldPassword) {
+        if (!Validators.getPasswordValidator().validate(newPassword)) {
+            throw new InvalidFormatException("Invalid password format");
         }
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        user.setPassword(passwordEncoder.encode(password));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IncorrectPasswordException("Invalid password");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
     @Override
-    public void changePassword(String password) throws ValidationException {
-        changePassword(getCurrentUser().getUsername(), password);
+    public void changePassword(String newPassword, String oldPassword) {
+        changePassword(getCurrentUser().getUsername(), newPassword, oldPassword);
     }
 
     @Override
@@ -60,21 +67,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void changeEmail(String username, String password) throws ValidationException {
+    public void changeEmail(String username, String password) {
         if (!Validators.getEmailValidator().validate(username)) {
-            throw new ValidationException("Bad email format");
+            throw new InvalidFormatException("Invalid email format");
         }
         if (userRepository.findAllByUsername(username).size() == 1) {
-            throw new IllegalArgumentException("Email exists");
+            throw new ResourceExistsException("Email exists");
         }
         Optional.ofNullable(getCurrentUser()).ifPresent(user -> {
             if (!checkCredentials(user.getUsername(), password)) {
-                throw new IllegalArgumentException("Invalid password");
+                throw new IncorrectPasswordException("Invalid password");
             }
             user.setUsername(username);
             userRepository.save(user);
             SecurityContextHolder.clearContext();
-
         });
     }
 
@@ -93,13 +99,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void create(String username, String password) throws ValidationException {
+    public void create(String username, String password) {
         if (!Validators.getEmailValidator().validate(username) ||
                 !Validators.getPasswordValidator().validate(password)) {
-            throw new ValidationException("Bad email or password");
+            throw new InvalidFormatException("Bad email or password");
         }
         if (checkIfUserExists(username)) {
-            throw new IllegalArgumentException("User already exists: " + username);
+            throw new ResourceExistsException("User already exists: " + username);
         }
         userRepository.save(User.builder()
                 .username(username)

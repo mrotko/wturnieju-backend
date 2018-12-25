@@ -5,26 +5,25 @@ import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
 
 public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
-    void changePassword(String username, String password) throws ValidationException;
+    void changePassword(String username, String newPassword, String oldPassword);
 
-    void changePassword(String password) throws ValidationException;
+    void changePassword(String newPassword, String oldPassword);
 
     boolean checkCredentials(String email, String password);
 
-    void changeEmail(String username, String password) throws ValidationException;
+    void changeEmail(String username, String password);
 
     void setName(String name);
 
     void setSurname(String surname);
 
-    void create(String username, String password) throws ValidationException;
+    void create(String username, String password);
 
     Optional<User> getById(String userId);
 
