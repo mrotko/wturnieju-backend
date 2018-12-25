@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import pl.wturnieju.dto.ExceptionErrorDTO;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -15,17 +17,24 @@ public class GlobalExceptionHandler {
             IncorrectPasswordException.class,
             InvalidFormatException.class,
     })
-    public final ResponseEntity<String> handleException(Exception e, WebRequest request) {
+    public final ResponseEntity<ExceptionErrorDTO> handleException(Exception e, WebRequest request) {
         if (e instanceof ResourceExistsException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(createDto(e), HttpStatus.CONFLICT);
         } else if (e instanceof UserNotFoundException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(createDto(e), HttpStatus.BAD_REQUEST);
         } else if (e instanceof IncorrectPasswordException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(createDto(e), HttpStatus.UNPROCESSABLE_ENTITY);
         } else if (e instanceof InvalidFormatException) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(createDto(e), HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private ExceptionErrorDTO createDto(Exception e) {
+        var dto = new ExceptionErrorDTO();
+        dto.setMessage(e.getMessage());
+        dto.setSimpleClassName(e.getClass().getSimpleName());
+        return dto;
     }
 }
