@@ -1,5 +1,7 @@
 package pl.wturnieju.service;
 
+import java.util.concurrent.Executors;
+
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,6 @@ public class EmailService implements IEmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        javaMailSender.send(message);
+        Executors.newSingleThreadExecutor().execute(() -> javaMailSender.send(message));
     }
 }
