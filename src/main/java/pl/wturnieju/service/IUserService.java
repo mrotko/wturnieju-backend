@@ -17,7 +17,7 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     boolean checkCredentials(String email, String password);
 
-    void changeEmail(String username, String password);
+    void validateEmailChange(String username, String password);
 
     void setName(String name);
 
@@ -30,4 +30,8 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
     Optional<User> getByProfile(IProfile profile);
 
     void setAuthorities(Collection<UserGrantedAuthority> authorities);
+
+    void confirmNewAccount(String email);
+
+    void confirmChangedEmail(String email, String newEmail);
 }

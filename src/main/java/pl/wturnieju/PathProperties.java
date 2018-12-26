@@ -16,7 +16,7 @@ public class PathProperties {
 
     private String serverUrl;
 
-    private String frontendUrl;
+    private String applicationUrl;
 
     private String apiUrl;
 

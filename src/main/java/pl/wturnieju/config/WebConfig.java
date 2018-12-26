@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${path.server-url}")
     private String serverUrl;
 
-    @Value("${path.frontend-url}")
+    @Value("${path.application-url}")
     private String frontendUrl;
 
     @Value("${path.api-url}")
@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
         log.debug("Register CORS configuration");
         registry.addMapping("/**")
                 .allowedOrigins(frontendUrl)
-                .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS")
+                .allowedMethods("PUT", "DELETE", "GET", "POST", "OPTIONS", "PATCH")
                 .allowCredentials(true);
     }
 }

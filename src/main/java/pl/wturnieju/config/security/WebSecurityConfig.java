@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.cors().and().csrf().disable()
                     .authorizeRequests()
                     .antMatchers("/auth/**").permitAll()
+                    .antMatchers("/verification/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                     .addFilter(createAuthenticationFilter())
@@ -67,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         var corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
         corsConfiguration.addAllowedMethod(HttpMethod.OPTIONS);
         corsConfiguration.addAllowedMethod(HttpMethod.PUT);
+        corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
         corsConfiguration.addExposedHeader(HEADER_STRING);
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;

@@ -1,16 +1,23 @@
 package pl.wturnieju.cli;
 
 import pl.wturnieju.cli.dto.SettingsInfoResponse;
+import pl.wturnieju.model.ChangeEmailVerificationToken;
+import pl.wturnieju.service.EmailChangeVerificationData;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IVerificationService;
 
 public class SettingsCommandInterpreter extends CommandInterpreter<SettingsInfoResponse> {
 
     private final IUserService userService;
 
+    private final IVerificationService<ChangeEmailVerificationToken> verificationService;
+
     public SettingsCommandInterpreter(IUserService userService,
+            IVerificationService<ChangeEmailVerificationToken> verificationService,
             ICommandParsedDataProvider parsedDataProvider) {
         super(parsedDataProvider);
         this.userService = userService;
+        this.verificationService = verificationService;
     }
 
     @Override
@@ -86,7 +93,13 @@ public class SettingsCommandInterpreter extends CommandInterpreter<SettingsInfoR
             var email = getParameterValue("email", "e");
 
             if (password.isPresent() && email.isPresent()) {
-                userService.changeEmail(email.get(), password.get());
+                userService.validateEmailChange(email.get(), password.get());
+
+                var data = new EmailChangeVerificationData();
+                data.setNewEmail(email.get());
+                data.setOldEmail(userService.getCurrentUser().getUsername());
+
+                verificationService.createVerification(data);
                 dto.setEmail(email.get());
             }
         });

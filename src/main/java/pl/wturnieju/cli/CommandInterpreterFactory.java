@@ -4,17 +4,19 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.search.ISearch;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IVerificationService;
 
 public class CommandInterpreterFactory {
     public static CommandInterpreter createInterpreter(
             IUserService userService,
             ITournamentService tournamentService,
             ISearch<String, User> userSearch,
+            IVerificationService verificationService,
             ICommandParsedDataProvider parsedDataProvider) {
         var commandName = parsedDataProvider.getCommandName();
         switch (commandName) {
         case "settings":
-            return new SettingsCommandInterpreter(userService, parsedDataProvider);
+            return new SettingsCommandInterpreter(userService, verificationService, parsedDataProvider);
         case "user":
             return new UserCommandInterpreter(userService, userSearch, tournamentService, parsedDataProvider);
         case "tournament":

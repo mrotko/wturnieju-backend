@@ -138,7 +138,7 @@ public class TournamentCommandInterpreterTest {
 
     private TournamentCommandInterpreter createInitializedTournamentCommandInterpreter(ICommandParsedDataProvider parsedDataProvider) {
         return (TournamentCommandInterpreter) CommandInterpreterFactory.createInterpreter(null, tournamentService, null,
-                parsedDataProvider);
+                null, parsedDataProvider);
     }
 
 }

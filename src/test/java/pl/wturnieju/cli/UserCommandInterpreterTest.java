@@ -252,6 +252,6 @@ public class UserCommandInterpreterTest {
 
     private UserCommandInterpreter createInitializedUserCommandInterpreter(ICommandParsedDataProvider parsedDataProvider) {
         return (UserCommandInterpreter) CommandInterpreterFactory.createInterpreter(userService, tournamentService,
-                userSearch, parsedDataProvider);
+                userSearch, null, parsedDataProvider);
     }
 }

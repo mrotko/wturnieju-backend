@@ -2,6 +2,8 @@ package pl.wturnieju.validator;
 
 import java.util.regex.Pattern;
 
+import pl.wturnieju.exception.ValidationException;
+
 public class PasswordValidator implements IValidator<String> {
 
     //    8 chars, 1 letter, 1 number
@@ -15,6 +17,19 @@ public class PasswordValidator implements IValidator<String> {
 
     @Override
     public boolean validate(String password) {
-        return pattern.matcher(password).matches();
+        try {
+            validateAndThrowInvalid(password);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void validateAndThrowInvalid(String password) throws ValidationException {
+        var result = pattern.matcher(password).matches();
+        if (!result) {
+            throw new ValidationException("Invalid password format");
+        }
     }
 }

@@ -14,17 +14,25 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import pl.wturnieju.cli.dto.SettingsInfoResponse;
+import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.inserter.UserInserter;
+import pl.wturnieju.model.ChangeEmailVerificationToken;
 import pl.wturnieju.model.User;
+import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.EmailChangeTokenVerificationService;
+import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IVerificationService;
 import pl.wturnieju.service.UserService;
 
+@Import(value = MongoConfig.class)
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -35,15 +43,23 @@ public class SettingsCommandInterpreterTest {
 
     private String rawPassword = "EFcYcdFXT7GCAa1,";
 
-    @Mock
     private IUserService userService;
+
+    private IVerificationService<ChangeEmailVerificationToken> verificationService;
+
+    @Mock
+    private IEmailService emailService;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TokenVerificationRepository verificationRepository;
+
     @Before
     public void setUp() {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
+        verificationService = new EmailChangeTokenVerificationService(verificationRepository, emailService);
         new UserInserter(userService, userRepository).insertUsersToDatabase();
         currentUser = userService.getCurrentUser();
     }
@@ -59,10 +75,12 @@ public class SettingsCommandInterpreterTest {
 
         var expectedResponse = new SettingsInfoResponse();
         expectedResponse.setEmail(email);
-        var response1 = interpreter.getResponse();
+        var response = interpreter.getResponse();
 
-        Assert.assertEquals(expectedResponse, response1);
-        Assert.assertEquals(expectedUser, userRepository.findByUsername(email).orElse(null));
+        Assert.assertEquals(expectedResponse, response);
+
+        var token = verificationService.getValidToken(getFirstToken());
+        Assert.assertEquals(email, token.getNewEmail());
     }
 
     @Test
@@ -75,10 +93,12 @@ public class SettingsCommandInterpreterTest {
 
         var expectedResponse = new SettingsInfoResponse();
         expectedResponse.setEmail(email);
-        var response1 = interpreter.getResponse();
+        var response = interpreter.getResponse();
 
-        Assert.assertEquals(expectedResponse, response1);
-        Assert.assertEquals(expectedUser, userRepository.findByUsername(email).orElse(null));
+        Assert.assertEquals(expectedResponse, response);
+
+        var token = verificationService.getValidToken(getFirstToken());
+        Assert.assertEquals(email, token.getNewEmail());
     }
 
     @Test
@@ -88,6 +108,13 @@ public class SettingsCommandInterpreterTest {
                 settingsInfoResponse.setEmail(userService.getCurrentUser().getUsername()));
     }
 
+    private String getFirstToken() {
+        var tokens = verificationRepository.findAll();
+        if (tokens.isEmpty()) {
+            return null;
+        }
+        return tokens.get(0).getToken();
+    }
 
     @Test
     public void changePasswordTest() {
@@ -203,6 +230,7 @@ public class SettingsCommandInterpreterTest {
     @After
     public void tearDown() {
         userRepository.deleteAll();
+        verificationRepository.deleteAll();
     }
 
     private CliCommandParser createInitializedCommandParser(String command) {
@@ -218,7 +246,7 @@ public class SettingsCommandInterpreterTest {
 
     private SettingsCommandInterpreter createInitializedSettingsCommandInterpreter(ICommandParsedDataProvider parsedDataProvider) {
         return (SettingsCommandInterpreter) CommandInterpreterFactory.createInterpreter(userService, null,
-                null, parsedDataProvider);
+                null, verificationService, parsedDataProvider);
     }
 
     private SettingsCommandInterpreter createCommandInterpreterForCommand(String command) {

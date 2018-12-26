@@ -11,21 +11,24 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.exception.IncorrectPasswordException;
 import pl.wturnieju.exception.InvalidFormatException;
 import pl.wturnieju.exception.ResourceExistsException;
+import pl.wturnieju.exception.UserNotFoundException;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 
-//@SpringBootTest
+
 @RunWith(SpringRunner.class)
+@Import(value = MongoConfig.class)
 @DataMongoTest
 @EnableAutoConfiguration
 @WithMockCustomUser(username = "email@email.com")
@@ -42,7 +45,7 @@ public class UserServiceTest {
     );
     private static final String usernameIn = "email@email.com";
 
-    private static final String password = "Password123,";
+    private static final String basePassword = "Password123,";
 
     @Autowired
     private UserRepository userRepository;
@@ -51,31 +54,20 @@ public class UserServiceTest {
 
     private IUserService userService;
 
-    private User notSavedUser;
-
     private User savedUser;
-
 
     @Before
     public void setUp() {
         userRepository.deleteAll();
         userService = new UserService(encoder, userRepository);
         createSavedUser();
-        createNotSavedUser();
         insertUser();
     }
 
     private void createSavedUser() {
         savedUser = User.builder()
                 .username(usernameIn)
-                .password(encoder.encode(password))
-                .build();
-    }
-
-    private void createNotSavedUser() {
-        notSavedUser = User.builder()
-                .username("a" + usernameIn)
-                .password(password)
+                .password(encoder.encode(basePassword))
                 .build();
     }
 
@@ -92,7 +84,7 @@ public class UserServiceTest {
     @Test
     public void createUserShouldPass() {
         try {
-            userService.create("a" + usernameIn, password);
+            userService.create("a" + usernameIn, basePassword);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -101,17 +93,17 @@ public class UserServiceTest {
 
     @Test(expected = ResourceExistsException.class)
     public void createUserShouldFailBecauseExists() {
-        userService.create(usernameIn, password);
+        userService.create(usernameIn, basePassword);
     }
 
     @Test(expected = InvalidFormatException.class)
     public void createUserShouldFailBecauseEmailValidationFail() {
-        badEmails.forEach(email -> userService.create(email, password));
+        badEmails.forEach(email -> userService.create(email, basePassword));
     }
 
     @Test
-    public void passwordEncodingTestShouldSuccess() {
-        var rawPass = password + 1;
+    public void passwordEncodingTestShouldPass() {
+        var rawPass = basePassword + 1;
         var email = "a" + usernameIn;
         userService.create(email, rawPass);
         var user = userRepository.findByUsername(email);
@@ -119,22 +111,48 @@ public class UserServiceTest {
     }
 
     @Test
-    public void changeEmailSuccessTest() {
+    public void newUserShouldBeDisabled() {
+        var email = "a" + usernameIn;
+        var password = "a" + basePassword;
+        userService.create(email, password);
+        var user = userRepository.findByUsername(email).orElseThrow();
+        Assert.assertFalse(user.isEnabled());
+    }
+
+    @Test
+    public void confirmNewAccountShouldPass() {
+        var email = "a" + usernameIn;
+        var password = "a" + basePassword;
+
+        userService.create(email, password);
+        userService.confirmNewAccount(email);
+
+        var user = userRepository.findByUsername(email).orElseThrow();
+        Assert.assertTrue(user.isEnabled());
+    }
+
+    @Test
+    public void confirmEmailChangeShouldPass() {
         var email = "a" + savedUser.getUsername();
-        userService.changeEmail(email, password);
+        userService.confirmChangedEmail(savedUser.getUsername(), email);
         Assert.assertTrue(userRepository.findByUsername(email).isPresent());
-        Assert.assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
+    public void validateEmailChangePassTest() {
+        var email = "a" + savedUser.getUsername();
+        userService.validateEmailChange(email, basePassword);
     }
 
     @Test(expected = InvalidFormatException.class)
-    public void changeEmailShouldFailByFormatTest() {
-        badEmails.forEach(email -> userService.changeEmail(email, "ignore"));
+    public void validateEmailChangeShouldFailByFormatTest() {
+        badEmails.forEach(email -> userService.validateEmailChange(email, "ignore"));
     }
 
     @Test(expected = IncorrectPasswordException.class)
-    public void changeEmailShouldFailByInvalidPasswordTest() {
+    public void validateEmailChangeShouldFailByIncorrectPasswordTest() {
         var email = "a" + usernameIn;
-        userService.changeEmail(email, password + 1);
+        userService.validateEmailChange(email, basePassword + 1);
     }
 
     private void insertUser() {
@@ -143,36 +161,36 @@ public class UserServiceTest {
 
     @Test
     public void checkCredentialsShouldPass() {
-        Assert.assertTrue(userService.checkCredentials(usernameIn, password));
+        Assert.assertTrue(userService.checkCredentials(usernameIn, basePassword));
     }
 
     @Test
     public void checkCredentialsShouldFailByWrongUsername() {
-        Assert.assertFalse(userService.checkCredentials("a" + usernameIn, password));
+        Assert.assertFalse(userService.checkCredentials("a" + usernameIn, basePassword));
     }
 
     @Test
     public void checkCredentialsShouldFailByWrongPass() {
-        Assert.assertFalse(userService.checkCredentials(usernameIn, "a" + password));
+        Assert.assertFalse(userService.checkCredentials(usernameIn, "a" + basePassword));
     }
 
     @Test
     public void changePasswordShouldPass() {
-        var changedPassword = password + "a";
-        userService.changePassword(usernameIn, changedPassword, password);
+        var changedPassword = basePassword + "a";
+        userService.changePassword(usernameIn, changedPassword, basePassword);
         Assert.assertTrue(userService.checkCredentials(usernameIn, changedPassword));
     }
 
-    @Test(expected = UsernameNotFoundException.class)
+    @Test(expected = UserNotFoundException.class)
     public void changePasswordShouldFailByNonExistingUsername() {
-        var changedPassword = password + "a";
-        userService.changePassword("a" + usernameIn, changedPassword, password);
+        var changedPassword = basePassword + "a";
+        userService.changePassword("a" + usernameIn, changedPassword, basePassword);
     }
 
     @Test(expected = InvalidFormatException.class)
     public void changePasswordShouldFailByBadPasswordFormat() {
         var changedPassword = "a";
-        userService.changePassword(usernameIn, changedPassword, password);
+        userService.changePassword(usernameIn, changedPassword, basePassword);
     }
 
     @After

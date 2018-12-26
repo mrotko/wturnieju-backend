@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,8 @@ import lombok.extern.log4j.Log4j2;
 import pl.wturnieju.exception.IncorrectPasswordException;
 import pl.wturnieju.exception.InvalidFormatException;
 import pl.wturnieju.exception.ResourceExistsException;
+import pl.wturnieju.exception.UserNotFoundException;
+import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
@@ -38,17 +41,21 @@ public class UserService implements IUserService {
 
     @Override
     public void changePassword(String username, String newPassword, String oldPassword) {
-        if (!Validators.getPasswordValidator().validate(newPassword)) {
-            throw new InvalidFormatException("Invalid password format");
-        }
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        validatePasswordFormat(newPassword);
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new IncorrectPasswordException("Invalid password");
-        }
-
+        validateCredentials(user, oldPassword);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+
+    private void validatePasswordFormat(String password) {
+        try {
+            Validators.getPasswordValidator().validateAndThrowInvalid(password);
+        } catch (ValidationException e) {
+            throw new InvalidFormatException(e.getMessage());
+        }
     }
 
     @Override
@@ -57,31 +64,43 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean checkCredentials(String email, String password) {
+    public boolean checkCredentials(String email, String rawPassword) {
         log.info("Checking user: {}", email);
 
         return userRepository.findByUsername(email)
                 .map(User::getPassword)
-                .map(encodedPass -> passwordEncoder.matches(password, encodedPass))
+                .map(encodedPass -> passwordEncoder.matches(rawPassword, encodedPass))
                 .orElse(false);
     }
 
     @Override
-    public void changeEmail(String username, String password) {
-        if (!Validators.getEmailValidator().validate(username)) {
-            throw new InvalidFormatException("Invalid email format");
+    public void validateEmailChange(String username, String password) {
+        validateEmailFormat(username);
+        validateThatUserNotExists(username);
+
+        var user = Optional.ofNullable(getCurrentUser()).orElseThrow(
+                () -> new UsernameNotFoundException("Username not found"));
+        validateCredentials(user, password);
+    }
+
+    private void validateCredentials(@NonNull User user, @NonNull String rawPassword) {
+        if (!checkCredentials(user.getUsername(), rawPassword)) {
+            throw new IncorrectPasswordException("Incorrect password");
         }
-        if (userRepository.findAllByUsername(username).size() == 1) {
+    }
+
+    private void validateEmailFormat(String email) {
+        try {
+            Validators.getEmailValidator().validateAndThrowInvalid(email);
+        } catch (ValidationException e) {
+            throw new InvalidFormatException(e.getMessage());
+        }
+    }
+
+    private void validateThatUserNotExists(String email) {
+        if (checkIfUserExists(email)) {
             throw new ResourceExistsException("Email exists");
         }
-        Optional.ofNullable(getCurrentUser()).ifPresent(user -> {
-            if (!checkCredentials(user.getUsername(), password)) {
-                throw new IncorrectPasswordException("Invalid password");
-            }
-            user.setUsername(username);
-            userRepository.save(user);
-            SecurityContextHolder.clearContext();
-        });
     }
 
     @Override
@@ -100,13 +119,10 @@ public class UserService implements IUserService {
 
     @Override
     public void create(String username, String password) {
-        if (!Validators.getEmailValidator().validate(username) ||
-                !Validators.getPasswordValidator().validate(password)) {
-            throw new InvalidFormatException("Bad email or password");
-        }
-        if (checkIfUserExists(username)) {
-            throw new ResourceExistsException("User already exists: " + username);
-        }
+        validateEmailFormat(username);
+        validatePasswordFormat(password);
+        validateThatUserNotExists(username);
+
         userRepository.save(User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
@@ -134,10 +150,23 @@ public class UserService implements IUserService {
         userRepository.save(user);
     }
 
-    private boolean checkIfUserExists(String username) {
-        if (username == null) {
-            return false;
-        }
+    @Override
+    public void confirmNewAccount(String email) {
+        userRepository.findByUsername(email).ifPresent(user -> {
+            user.setEnabled(true);
+            userRepository.save(user);
+        });
+    }
+
+    @Override
+    public void confirmChangedEmail(String email, String newEmail) {
+        userRepository.findByUsername(email).ifPresent(user -> {
+            user.setUsername(newEmail);
+            userRepository.save(user);
+        });
+    }
+
+    private boolean checkIfUserExists(@NonNull String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 

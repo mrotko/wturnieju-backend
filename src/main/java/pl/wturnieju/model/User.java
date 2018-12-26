@@ -30,7 +30,7 @@ public class User extends Persistent implements UserDetails, IProfile {
     private boolean credentialsExpired = false;
 
     @JsonIgnore
-    private boolean enabled = true;
+    private boolean enabled;
 
     private Set<UserGrantedAuthority> authorities = new HashSet<>();
 
@@ -60,7 +60,7 @@ public class User extends Persistent implements UserDetails, IProfile {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     @Transient
