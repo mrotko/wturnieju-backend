@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -81,6 +82,13 @@ public class UserService implements IUserService {
         var user = Optional.ofNullable(getCurrentUser()).orElseThrow(
                 () -> new UsernameNotFoundException("Username not found"));
         validateCredentials(user, password);
+    }
+
+    @Override
+    public boolean isAccountActive(String email) {
+        return userRepository.findByUsername(email)
+                .map(User::isEnabled)
+                .orElseThrow(() -> new ResourceNotFoundException("Username not found"));
     }
 
     private void validateCredentials(@NonNull User user, @NonNull String rawPassword) {

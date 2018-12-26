@@ -1,6 +1,5 @@
 package pl.wturnieju.exception;
 
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +16,7 @@ public class GlobalExceptionHandler {
             UserNotFoundException.class,
             IncorrectPasswordException.class,
             InvalidFormatException.class,
+            ResourceExpiredException.class
     })
     public final ResponseEntity<ExceptionErrorDTO> handleException(Exception e, WebRequest request) {
         if (e instanceof ResourceExistsException) {
@@ -27,8 +27,6 @@ public class GlobalExceptionHandler {
             return new ResponseEntity<>(createDto(e), HttpStatus.UNPROCESSABLE_ENTITY);
         } else if (e instanceof InvalidFormatException) {
             return new ResponseEntity<>(createDto(e), HttpStatus.UNPROCESSABLE_ENTITY);
-        } else if (e instanceof ResourceNotFoundException) {
-            return new ResponseEntity<>(createDto(e), HttpStatus.NOT_FOUND);
         } else if (e instanceof ResourceExpiredException) {
             return new ResponseEntity<>(createDto(e), HttpStatus.GONE);
         } else {

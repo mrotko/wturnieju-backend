@@ -2,9 +2,11 @@ package pl.wturnieju.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,11 @@ public class AuthController {
         var data = new NewAccountVerificationData();
         data.setEmail(registrationDTO.getUsername());
         verificationService.createVerification(data);
+    }
+
+    @GetMapping(value = "/active", params = "email")
+    public boolean isAccountActive(@RequestParam("email") String email) {
+        return userService.isAccountActive(email);
     }
 
     // TODO(mr): 25.12.2018 impl nowej wersji
