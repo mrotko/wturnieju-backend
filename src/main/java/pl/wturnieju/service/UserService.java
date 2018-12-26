@@ -91,6 +91,15 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Username not found"));
     }
 
+    @Override
+    public void resetPassword(String email, String password) {
+        validatePasswordFormat(password);
+        userRepository.findByUsername(email).ifPresent(user -> {
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+        });
+    }
+
     private void validateCredentials(@NonNull User user, @NonNull String rawPassword) {
         if (!checkCredentials(user.getUsername(), rawPassword)) {
             throw new IncorrectPasswordException("Incorrect password");

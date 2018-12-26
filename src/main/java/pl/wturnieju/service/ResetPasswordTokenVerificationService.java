@@ -3,21 +3,22 @@ package pl.wturnieju.service;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
-import pl.wturnieju.model.NewAccountVerificationToken;
+import pl.wturnieju.model.ResetPasswordVerificationToken;
 import pl.wturnieju.repository.TokenVerificationRepository;
 
 @Service
-public class NewAccountTokenVerificationService extends TokenVerificationService<NewAccountVerificationToken> {
+public class ResetPasswordTokenVerificationService extends TokenVerificationService<ResetPasswordVerificationToken> {
 
-    public NewAccountTokenVerificationService(TokenVerificationRepository tokenVerificationRepository,
+    public ResetPasswordTokenVerificationService(TokenVerificationRepository tokenVerificationRepository,
             IEmailService emailService) {
         super(tokenVerificationRepository, emailService);
     }
 
     @Override
     public void createVerification(VerificationData verificationData) {
-        var data = (NewAccountVerificationData) verificationData;
-        var token = new NewAccountVerificationToken();
+        var data = (ResetPasswordVerificationData) verificationData;
+
+        var token = new ResetPasswordVerificationToken();
 
         token.setEmail(data.getEmail());
         token.setExpiryDate(getDefaultTokenExpiryDate());
@@ -25,8 +26,8 @@ public class NewAccountTokenVerificationService extends TokenVerificationService
 
         emailService.sendSimpleMessage(
                 data.getEmail(),
-                "Confirm your account",
-                "Click on this link: " + applicationUrl + "/verification/account?token=" + token.getToken()
+                "Reset your password",
+                "Click on this link: " + applicationUrl + "/verification/password?token=" + token.getToken()
         );
 
         tokenVerificationRepository.save(token);

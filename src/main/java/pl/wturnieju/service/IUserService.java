@@ -21,6 +21,8 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     boolean isAccountActive(String email);
 
+    void resetPassword(String email, String password);
+
     void setName(String name);
 
     void setSurname(String surname);

@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.dto.auth.ForgetPasswordDTO;
 import pl.wturnieju.dto.auth.RegistrationDTO;
 import pl.wturnieju.inserter.UserInserter;
 import pl.wturnieju.model.NewAccountVerificationToken;
+import pl.wturnieju.model.ResetPasswordVerificationToken;
 import pl.wturnieju.repository.UserRepository;
-import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 import pl.wturnieju.service.NewAccountVerificationData;
+import pl.wturnieju.service.ResetPasswordVerificationData;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +32,11 @@ public class AuthController {
 
     private final IUserService userService;
 
-    private final IEmailService emailService;
-
-
     @Qualifier("newAccountTokenVerificationService")
-    private final IVerificationService<NewAccountVerificationToken> verificationService;
+    private final IVerificationService<NewAccountVerificationToken> newAccountVerificationService;
+
+    @Qualifier("resetPasswordTokenVerificationService")
+    private final IVerificationService<ResetPasswordVerificationToken> resetPasswordVerificationService;
 
     @PostMapping("/inserter")
     public void insertUsers() {
@@ -48,7 +50,7 @@ public class AuthController {
 
         var data = new NewAccountVerificationData();
         data.setEmail(registrationDTO.getUsername());
-        verificationService.createVerification(data);
+        newAccountVerificationService.createVerification(data);
     }
 
     @GetMapping(value = "/active", params = "email")
@@ -56,12 +58,10 @@ public class AuthController {
         return userService.isAccountActive(email);
     }
 
-    // TODO(mr): 25.12.2018 impl nowej wersji
-    //    @PostMapping("/forget-password")
-    //    public void forgetPassword(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
-    //        var user = userService.loadUserByUsername(forgetPasswordDTO.getUsername());
-    //        var newPass = RandomStringUtils.random(20, true, true);
-    //                userService.changePassword(user.getUsername(), newPass, );
-    //        emailService.sendSimpleMessage(user.getUsername(), "Zmiana hasła", "nowe hasło " + newPass);
-    //    }
+    @PostMapping("/forget-password")
+    public void forgetPassword(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
+        var data = new ResetPasswordVerificationData();
+        data.setEmail(forgetPasswordDTO.getUsername());
+        resetPasswordVerificationService.createVerification(data);
+    }
 }

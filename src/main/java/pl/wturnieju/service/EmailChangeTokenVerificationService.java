@@ -1,12 +1,9 @@
 package pl.wturnieju.service;
 
-import java.time.LocalDateTime;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import pl.wturnieju.model.ChangeEmailVerificationToken;
-import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.repository.TokenVerificationRepository;
 
 @Service
@@ -24,7 +21,7 @@ public class EmailChangeTokenVerificationService extends TokenVerificationServic
 
         token.setOldEmail(data.getOldEmail());
         token.setNewEmail(data.getNewEmail());
-        token.setExpiryDate(new Timestamp(LocalDateTime.now().plusDays(1)));
+        token.setExpiryDate(getDefaultTokenExpiryDate());
         token.setToken(DigestUtils.sha512Hex(token.toString()));
 
         emailService.sendSimpleMessage(

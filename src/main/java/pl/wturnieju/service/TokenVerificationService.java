@@ -43,4 +43,8 @@ public abstract class TokenVerificationService<T extends VerificationToken> impl
         }
         return true;
     }
+
+    protected Timestamp getDefaultTokenExpiryDate() {
+        return new Timestamp(Timestamp.now().getValue().plusDays(1));
+    }
 }
