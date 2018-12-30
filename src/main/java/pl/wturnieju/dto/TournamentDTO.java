@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Data;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentStatus;
@@ -30,7 +31,7 @@ public class TournamentDTO {
 
     private List<TournamentParticipantDTO> participants = new ArrayList<>();
 
-    private UserDTO owner;
+    private IProfile owner;
 
     private Timestamp startDate;
 

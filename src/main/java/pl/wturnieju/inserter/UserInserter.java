@@ -49,6 +49,7 @@ public class UserInserter {
             var nameAndSurname = iterator.next();
             user.setName(nameAndSurname.getLeft());
             user.setSurname(nameAndSurname.getRight());
+            user.setEnabled(true);
             userRepository.save(user);
         });
     }

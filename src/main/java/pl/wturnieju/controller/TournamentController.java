@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -145,10 +147,23 @@ public class TournamentController {
                 ).collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
-    @PostMapping("/{tournamentId}/invite/{participantId}")
-    public void inviteParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
+    @PatchMapping("/{tournamentId}/participants")
+    public void acceptParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
+            @RequestBody() String participantId) {
+        participantService.accept(tournamentId, participantId);
+    }
+
+    @DeleteMapping("/{tournamentId}/participants/{participantId}")
+    public void deleteParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
             @PathVariable("participantId") @NonNull String participantId) {
-        participantService.invite(tournamentId, participantId);
+        participantService.delete(tournamentId, participantId);
+    }
+
+    @PostMapping("/{tournamentId}/participants")
+    public List<String> inviteParticipants(@PathVariable("tournamentId") String tournamentId,
+            @RequestBody List<String> participantsIds) {
+        participantsIds.forEach(id -> participantService.invite(tournamentId, id));
+        return participantsIds;
     }
 
     @GetMapping("/{tournamentId}/prepareNextRound")

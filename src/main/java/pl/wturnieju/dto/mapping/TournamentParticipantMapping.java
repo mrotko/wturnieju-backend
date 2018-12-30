@@ -16,6 +16,7 @@ public class TournamentParticipantMapping {
         dto.setStatus(participant.getParticipantStatus());
         dto.setFullName(user.getFullName());
         dto.setEmail(user.getUsername());
+        dto.setInvitationStatus(participant.getInvitationStatus());
 
         return dto;
     }

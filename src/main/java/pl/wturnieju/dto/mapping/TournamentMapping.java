@@ -42,7 +42,7 @@ public class TournamentMapping {
                 dto.setImg(tournament.getImg());
                 dto.setMaxParticipants(tournament.getMaxParticipants());
                 dto.setMinParticipants(tournament.getMinParticipants());
-                dto.setOwner(UserMapping.map(userService.getByProfile(tournament.getOwner()).orElse(null)));
+                dto.setOwner(tournament.getOwner());
                 dto.setParticipants(tournament.getParticipants().stream()
                         .map(participant -> TournamentParticipantMapping
                                 .map(userService.getById(participant.getId()).orElse(null), participant))

@@ -1,6 +1,7 @@
 package pl.wturnieju.dto;
 
 import lombok.Data;
+import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.model.ParticipantStatus;
 
 @Data
@@ -15,6 +16,8 @@ public class TournamentParticipantDTO {
     private String fullName;
 
     private ParticipantStatus status;
+
+    private InvitationStatus invitationStatus;
 
     private String email;
 

@@ -14,6 +14,5 @@ public enum ParticipantStatus {
     RESIGNED,
 
     @JsonProperty("PARTICIPANT_STATUS.INVITED")
-    INVITED
-
+    INVITED,
 }

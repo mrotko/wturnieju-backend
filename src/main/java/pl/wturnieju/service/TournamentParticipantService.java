@@ -3,12 +3,15 @@ package pl.wturnieju.service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.model.ParticipantStatus;
 import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.generic.Tournament;
@@ -65,17 +68,13 @@ public class TournamentParticipantService implements ITournamentParticipantServi
     @Override
     public void invite(String tournamentId, String participantId) {
         tournamentService.getById(tournamentId).ifPresent(tournament -> {
-            if (tournament.getMaxParticipants() == tournament.getParticipants().size()) {
-                throw new IllegalArgumentException(
-                        String.format("In tournament %s all places are reserved", tournament.getId()));
-            }
-
             if (getTournamentParticipant(tournament, participantId).isPresent()) {
-                throw new IllegalArgumentException(String.format("%s participants exists", participantId));
+                throw new IllegalArgumentException(String.format("%s participant exists", participantId));
             }
             TournamentParticipant tournamentParticipant = new TournamentParticipant();
             tournamentParticipant.setId(participantId);
             tournamentParticipant.setParticipantStatus(ParticipantStatus.INVITED);
+            tournamentParticipant.setInvitationStatus(InvitationStatus.INVITED);
             tournament.getParticipants().add(tournamentParticipant);
             tournamentService.updateTournament(tournament);
         });
@@ -89,6 +88,24 @@ public class TournamentParticipantService implements ITournamentParticipantServi
                     tournamentParticipant.setParticipantStatus(ParticipantStatus.ACTIVE);
                 }
             });
+            tournamentService.updateTournament(tournament);
+        });
+    }
+
+    @Override
+    public void delete(String tournamentId, String participantId) {
+        tournamentService.getById(tournamentId).ifPresent(tournament -> {
+            tournament.getParticipants().removeIf(p -> Objects.equals(p.getId(), participantId));
+            tournamentService.updateTournament(tournament);
+        });
+    }
+
+    @Override
+    public void accept(String tournamentId, String participantId) {
+        tournamentService.getById(tournamentId).ifPresent(tournament -> {
+            var participant = getTournamentParticipant(tournament, participantId).orElseThrow(
+                    () -> new ResourceNotFoundException("Tournament participant not found"));
+            participant.setInvitationStatus(InvitationStatus.ACCEPTED);
             tournamentService.updateTournament(tournament);
         });
     }

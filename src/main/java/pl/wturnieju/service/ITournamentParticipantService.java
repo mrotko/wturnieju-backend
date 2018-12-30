@@ -18,4 +18,8 @@ public interface ITournamentParticipantService {
     void invite(String tournamentId, String participantId);
 
     void confirm(String tournamentId, String participantId);
+
+    void delete(String tournamentId, String participantId);
+
+    void accept(String tournamentId, String participantId);
 }

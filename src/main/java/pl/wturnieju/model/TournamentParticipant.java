@@ -8,4 +8,6 @@ public class TournamentParticipant implements IProfile {
     private String id;
 
     private ParticipantStatus participantStatus;
+
+    private InvitationStatus invitationStatus;
 }

@@ -69,6 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfiguration.addAllowedMethod(HttpMethod.OPTIONS);
         corsConfiguration.addAllowedMethod(HttpMethod.PUT);
         corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
+        corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
         corsConfiguration.addExposedHeader(HEADER_STRING);
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
