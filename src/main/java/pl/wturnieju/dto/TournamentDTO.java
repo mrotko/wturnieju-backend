@@ -48,4 +48,6 @@ public class TournamentDTO {
     private Integer maxParticipants;
 
     private Integer plannedRounds;
+
+    private String invitationToken;
 }

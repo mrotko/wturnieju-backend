@@ -52,6 +52,7 @@ public class TournamentCreatorService implements ITournamentCreatorService {
         //         TODO(mr): 01.12.2018 fix
         tournament.setPlannedRounds(tournament.getMaxParticipants() - 1);
         tournament.setTournamentSystemState(TournamentStateFactory.getInstance(tournament));
+
         return tournamentRepository.save(tournament);
     }
 

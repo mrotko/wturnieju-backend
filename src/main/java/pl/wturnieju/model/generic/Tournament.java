@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.ToString;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
@@ -19,6 +20,7 @@ import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Data
+@ToString(callSuper = true)
 public abstract class Tournament extends Persistent {
 
     protected String name;
@@ -32,6 +34,8 @@ public abstract class Tournament extends Persistent {
     protected TournamentStatus status;
 
     protected AccessOption accessOption;
+
+    protected String invitationToken;
 
     protected List<TournamentParticipant> participants = new ArrayList<>();
 

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import pl.wturnieju.model.Fixture;
+import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
 import pl.wturnieju.model.generic.GenericTournamentTable;
@@ -65,4 +66,6 @@ public interface ITournamentService {
     Optional<Integer> getCurrentRound(String tournamentId);
 
     List<Tournament> getUserTournaments(String userId);
+
+    Optional<TournamentParticipant> findParticipantByUserId(String tournamentId, String userId);
 }

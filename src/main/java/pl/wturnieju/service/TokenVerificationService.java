@@ -1,5 +1,6 @@
 package pl.wturnieju.service;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,11 @@ public abstract class TokenVerificationService<T extends VerificationToken> impl
             return false;
         }
         return true;
+    }
+
+    protected void setExpiryDateAndGenerateToken(VerificationToken token) {
+        token.setExpiryDate(getDefaultTokenExpiryDate());
+        token.setToken(DigestUtils.sha512Hex(token.toString()));
     }
 
     protected Timestamp getDefaultTokenExpiryDate() {

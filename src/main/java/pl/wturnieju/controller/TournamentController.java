@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +25,14 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentDTO;
 import pl.wturnieju.dto.TournamentParticipantDTO;
 import pl.wturnieju.dto.TournamentTableDTO;
-import pl.wturnieju.dto.mapping.TournamentMapping;
+import pl.wturnieju.dto.mapping.TournamentDTOMapping;
 import pl.wturnieju.dto.mapping.TournamentParticipantMapping;
 import pl.wturnieju.dto.mapping.TournamentTableMapping;
+import pl.wturnieju.exception.UserNotFoundException;
 import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.model.TournamentInviteVerificationToken;
+import pl.wturnieju.model.User;
 import pl.wturnieju.model.generic.ChessBundleResult;
 import pl.wturnieju.model.generic.ResultBundleUpdateContent;
 import pl.wturnieju.model.generic.SwissFixtureUpdateBundle;
@@ -37,6 +41,8 @@ import pl.wturnieju.service.GenericTournamentUpdateBundle;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IVerificationService;
+import pl.wturnieju.service.TournamentInviteVerificationData;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,6 +55,8 @@ public class TournamentController {
 
     private final IUserService userService;
 
+    @Qualifier("tournamentInviteTokenVerificationService")
+    private final IVerificationService<TournamentInviteVerificationToken> tournamentInviteVerificationService;
 
     @GetMapping()
     public UserTournamentsDTO getAllUserTournaments(@RequestParam("userId") String userId) {
@@ -57,7 +65,7 @@ public class TournamentController {
 
         tournamentService.getAllUserTournamentsGroupedByStatus(userId).forEach((status, tournaments) ->
                 dto.getTournaments().put(status, tournaments.stream()
-                        .map(tournament -> TournamentMapping.map(userService, tournament))
+                        .map(tournament -> TournamentDTOMapping.map(userService, tournament))
                         .collect(Collectors.toList())));
         return dto;
     }
@@ -71,7 +79,7 @@ public class TournamentController {
     public TournamentDTO updateTournament(@PathVariable("tournamentId") String tournamentId,
             @RequestBody GenericTournamentUpdateBundle bundle) {
         tournamentService.updateTournament(bundle);
-        return TournamentMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
+        return TournamentDTOMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
     }
 
     //    @PutMapping("/{tournamentId}/fixtures/{fixtureId}")
@@ -135,7 +143,7 @@ public class TournamentController {
 
     @GetMapping("/{tournamentId}")
     public TournamentDTO getTournament(@PathVariable("tournamentId") String tournamentId) {
-        return TournamentMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
+        return TournamentDTOMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
     }
 
     @GetMapping("/{tournamentId}/participants")
@@ -150,20 +158,33 @@ public class TournamentController {
     @PatchMapping("/{tournamentId}/participants")
     public void acceptParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
             @RequestBody() String participantId) {
-        participantService.accept(tournamentId, participantId);
+        participantService.acceptInvitation(tournamentId, participantId);
     }
 
     @DeleteMapping("/{tournamentId}/participants/{participantId}")
     public void deleteParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
             @PathVariable("participantId") @NonNull String participantId) {
-        participantService.delete(tournamentId, participantId);
+        participantService.deleteParticipant(tournamentId, participantId);
     }
 
     @PostMapping("/{tournamentId}/participants")
     public List<String> inviteParticipants(@PathVariable("tournamentId") String tournamentId,
             @RequestBody List<String> participantsIds) {
-        participantsIds.forEach(id -> participantService.invite(tournamentId, id));
+        participantsIds.forEach(id -> {
+            var verificationData = new TournamentInviteVerificationData();
+
+            verificationData.setTournamentId(tournamentId);
+            verificationData.setUserId(id);
+            verificationData.setEmail(getUserById(id).getUsername());
+            tournamentInviteVerificationService.createVerificationToken(verificationData);
+
+            participantService.invite(tournamentId, id);
+        });
         return participantsIds;
+    }
+
+    private User getUserById(String userId) {
+        return userService.getById(userId).orElseThrow(UserNotFoundException::new);
     }
 
     @GetMapping("/{tournamentId}/prepareNextRound")

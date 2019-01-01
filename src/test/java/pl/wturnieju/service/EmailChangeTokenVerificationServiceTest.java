@@ -48,7 +48,7 @@ public class EmailChangeTokenVerificationServiceTest {
 
         data.setOldEmail(oleEmail);
         data.setNewEmail(newEmail);
-        verificationService.createVerification(data);
+        verificationService.createVerificationToken(data);
 
         var token = verificationService.getValidToken(getFirstToken());
 

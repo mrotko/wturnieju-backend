@@ -3,17 +3,15 @@ package pl.wturnieju.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.lang.NonNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class Persistent implements Comparable<Persistent> {
 
     @Id
     protected String id;
+
+    protected Timestamp createdAt = Timestamp.now();
 
     @Override
     public final int compareTo(@NonNull Persistent o) {

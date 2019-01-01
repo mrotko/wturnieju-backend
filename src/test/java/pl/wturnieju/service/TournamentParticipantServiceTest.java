@@ -139,7 +139,7 @@ public class TournamentParticipantServiceTest {
     @Test
     public void confirmParticipationShouldSuccess() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
+        //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
 
         Assert.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(),
@@ -165,7 +165,7 @@ public class TournamentParticipantServiceTest {
     @Test
     public void doResignAfterConfirmationSuccess() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
+        //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
         tournamentParticipantService.doResign(defaultSingleTournament.getId(), defaultUser.getId());
 
         Assert.assertEquals(ParticipantStatus.RESIGNED,
@@ -186,7 +186,7 @@ public class TournamentParticipantServiceTest {
     @Test
     public void doResignShouldDoNothingBecauseIncorrectIds() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
+        //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
 
         tournamentParticipantService.doResign(defaultSingleTournament.getId() + 1, defaultUser.getId());
         tournamentParticipantService.doResign(defaultSingleTournament.getId(), defaultUser.getId() + 1);
@@ -200,7 +200,7 @@ public class TournamentParticipantServiceTest {
     @Test
     public void doDisqualifySuccess() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
+        //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
 
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId(), defaultUser.getId(), "");
 
@@ -213,7 +213,7 @@ public class TournamentParticipantServiceTest {
     @Test
     public void doDisqualifyShouldDoNothingBecauseIncorrectIds() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
+        //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
 
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId() + 1, defaultUser.getId(), "");
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId(), defaultUser.getId() + 1, "");

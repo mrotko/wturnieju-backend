@@ -99,7 +99,7 @@ public class SettingsCommandInterpreter extends CommandInterpreter<SettingsInfoR
                 data.setNewEmail(email.get());
                 data.setOldEmail(userService.getCurrentUser().getUsername());
 
-                verificationService.createVerification(data);
+                verificationService.createVerificationToken(data);
                 dto.setEmail(email.get());
             }
         });

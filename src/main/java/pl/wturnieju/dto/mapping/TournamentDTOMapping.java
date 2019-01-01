@@ -10,7 +10,7 @@ import pl.wturnieju.model.ChessTournament;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.service.IUserService;
 
-public class TournamentMapping {
+public class TournamentDTOMapping {
 
     private static Map<String, Function<Tournament, TournamentDTO>> mappingStrategy = new HashMap<>();
 
@@ -53,6 +53,7 @@ public class TournamentMapping {
                 dto.setStatus(tournament.getStatus());
                 dto.setSystemType(tournament.getSystemType());
                 dto.setPlannedRounds(tournament.getPlannedRounds());
+                dto.setInvitationToken(tournament.getInvitationToken());
 
                 return dto;
             });

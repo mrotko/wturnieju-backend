@@ -136,4 +136,11 @@ public class TournamentService implements ITournamentService {
                 )
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<TournamentParticipant> findParticipantByUserId(String tournamentId, String userId) {
+        return getById(tournamentId).flatMap(tournament -> tournament.getParticipants().stream()
+                .filter(p -> p.getId().equals(userId))
+                .findFirst());
+    }
 }

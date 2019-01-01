@@ -46,7 +46,7 @@ public class NewAccountTokenVerificationServiceTest {
         var email = "admin@admin.com";
 
         data.setEmail(email);
-        verificationService.createVerification(data);
+        verificationService.createVerificationToken(data);
 
         var token = verificationService.getValidToken(getFirstToken());
 

@@ -36,6 +36,8 @@ public class TournamentTemplateDto<T extends Tournament> implements EntityMappin
 
     private AccessOption accessOption;
 
+    private Boolean invitationLink;
+
     @Override
     public void assignFields(T entity) {
         entity.setName(name);

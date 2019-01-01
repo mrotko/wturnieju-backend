@@ -1,6 +1,5 @@
 package pl.wturnieju.service;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import pl.wturnieju.model.ResetPasswordVerificationToken;
@@ -15,14 +14,13 @@ public class ResetPasswordTokenVerificationService extends TokenVerificationServ
     }
 
     @Override
-    public void createVerification(VerificationData verificationData) {
+    public ResetPasswordVerificationToken createVerificationToken(VerificationData verificationData) {
         var data = (ResetPasswordVerificationData) verificationData;
 
         var token = new ResetPasswordVerificationToken();
 
         token.setEmail(data.getEmail());
-        token.setExpiryDate(getDefaultTokenExpiryDate());
-        token.setToken(DigestUtils.sha512Hex(token.toString()));
+        setExpiryDateAndGenerateToken(token);
 
         emailService.sendSimpleMessage(
                 data.getEmail(),
@@ -30,6 +28,6 @@ public class ResetPasswordTokenVerificationService extends TokenVerificationServ
                 "Click on this link: " + applicationUrl + "/verification/password?token=" + token.getToken()
         );
 
-        tokenVerificationRepository.save(token);
+        return tokenVerificationRepository.save(token);
     }
 }

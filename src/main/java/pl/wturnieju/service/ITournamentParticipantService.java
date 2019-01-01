@@ -17,9 +17,11 @@ public interface ITournamentParticipantService {
 
     void invite(String tournamentId, String participantId);
 
-    void confirm(String tournamentId, String participantId);
+    void deleteParticipant(String tournamentId, String participantId);
 
-    void delete(String tournamentId, String participantId);
+    void acceptInvitation(String tournamentId, String participantId);
 
-    void accept(String tournamentId, String participantId);
+    void rejectInvitation(String tournamentId, String participantId);
+
+    void requestParticipation(String tournamentId, String userId);
 }

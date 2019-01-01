@@ -50,7 +50,7 @@ public class AuthController {
 
         var data = new NewAccountVerificationData();
         data.setEmail(registrationDTO.getUsername());
-        newAccountVerificationService.createVerification(data);
+        newAccountVerificationService.createVerificationToken(data);
     }
 
     @GetMapping(value = "/active", params = "email")
@@ -62,6 +62,6 @@ public class AuthController {
     public void forgetPassword(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
         var data = new ResetPasswordVerificationData();
         data.setEmail(forgetPasswordDTO.getUsername());
-        resetPasswordVerificationService.createVerification(data);
+        resetPasswordVerificationService.createVerificationToken(data);
     }
 }

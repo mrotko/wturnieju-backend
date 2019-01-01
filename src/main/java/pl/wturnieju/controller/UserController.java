@@ -45,7 +45,7 @@ public class UserController {
         data.setNewEmail(changeUsernameDTO.getUsername());
         data.setOldEmail(userService.getCurrentUser().getUsername());
 
-        verificationService.createVerification(data);
+        verificationService.createVerificationToken(data);
     }
 
     @PutMapping("/authority")

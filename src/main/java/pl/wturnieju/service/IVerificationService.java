@@ -8,5 +8,5 @@ public interface IVerificationService<T extends VerificationToken> {
 
     void deleteToken(String token);
 
-    void createVerification(VerificationData verificationData);
+    T createVerificationToken(VerificationData verificationData);
 }

@@ -1,6 +1,5 @@
 package pl.wturnieju.service;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import pl.wturnieju.model.NewAccountVerificationToken;
@@ -15,13 +14,12 @@ public class NewAccountTokenVerificationService extends TokenVerificationService
     }
 
     @Override
-    public void createVerification(VerificationData verificationData) {
+    public NewAccountVerificationToken createVerificationToken(VerificationData verificationData) {
         var data = (NewAccountVerificationData) verificationData;
         var token = new NewAccountVerificationToken();
 
         token.setEmail(data.getEmail());
-        token.setExpiryDate(getDefaultTokenExpiryDate());
-        token.setToken(DigestUtils.sha512Hex(token.toString()));
+        setExpiryDateAndGenerateToken(token);
 
         emailService.sendSimpleMessage(
                 data.getEmail(),
@@ -29,6 +27,6 @@ public class NewAccountTokenVerificationService extends TokenVerificationService
                 "Click on this link: " + applicationUrl + "/verification/account?token=" + token.getToken()
         );
 
-        tokenVerificationRepository.save(token);
+        return tokenVerificationRepository.save(token);
     }
 }
