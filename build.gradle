@@ -39,6 +39,10 @@ lombok {
     sha256 = ""
 }
 
+wrapper {
+    gradleVersion = '5.1'
+}
+
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -60,6 +64,13 @@ dependencies {
     testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompile 'org.springframework.security:spring-security-test'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    testCompile('org.junit.jupiter:junit-jupiter-params:5.3.2')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.3.2')
+}
+
+test {
+    useJUnitPlatform()
 }
 
 compileJava.dependsOn(processResources)

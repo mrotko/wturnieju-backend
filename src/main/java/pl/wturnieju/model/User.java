@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 public class User extends Persistent implements UserDetails, IProfile {
 
@@ -21,17 +23,21 @@ public class User extends Persistent implements UserDetails, IProfile {
     private String password;
 
     @JsonIgnore
+    @Builder.Default
     private boolean accountExpired = false;
 
     @JsonIgnore
+    @Builder.Default
     private boolean accountLocked = false;
 
     @JsonIgnore
+    @Builder.Default
     private boolean credentialsExpired = false;
 
     @JsonIgnore
     private boolean enabled;
 
+    @Builder.Default
     private Set<UserGrantedAuthority> authorities = new HashSet<>();
 
     private String name;

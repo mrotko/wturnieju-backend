@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 import pl.wturnieju.model.AccessOption;
@@ -20,6 +21,7 @@ import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public abstract class Tournament extends Persistent {
 

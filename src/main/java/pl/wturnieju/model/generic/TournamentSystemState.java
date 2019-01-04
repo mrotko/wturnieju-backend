@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.Fixture;
 import pl.wturnieju.model.Persistent;
@@ -14,6 +15,7 @@ import pl.wturnieju.service.GenericTournamentUpdateBundle;
 
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = true)
 public abstract class TournamentSystemState extends Persistent {
 
     private int currentRound;

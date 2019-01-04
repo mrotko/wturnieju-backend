@@ -13,12 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import pl.wturnieju.converter.JsonPairDeserializer;
 import pl.wturnieju.converter.JsonPairSerializer;
 import pl.wturnieju.model.chess.ChessFixture;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonTypeInfo(use = Id.NAME, property = "competitionType")
 @JsonSubTypes({
         @Type(value = ChessFixture.class, name = "COMPETITION_TYPE.CHESS"),

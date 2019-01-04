@@ -7,11 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import pl.wturnieju.converter.JsonPairDeserializer;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Fixture;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ChessFixture extends Fixture {
 
     //    private List<ChessMove> moves = new ArrayList<>();
