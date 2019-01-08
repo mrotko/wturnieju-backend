@@ -28,7 +28,6 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 
-//@SpringBootTest
 @Import(value = MongoConfig.class)
 @RunWith(SpringRunner.class)
 @DataMongoTest

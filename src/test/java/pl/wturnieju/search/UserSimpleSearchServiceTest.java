@@ -10,12 +10,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 
-//@SpringBootTest
+@Import(MongoConfig.class)
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class UserSimpleSearchServiceTest {
@@ -23,7 +25,7 @@ public class UserSimpleSearchServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    ISearch<String, User> search;
+    private ISearch<String, User> search;
 
     private User createUser(String name, String surname, String username) {
         return User.builder()
