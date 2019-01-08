@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.handler.TournamentSystem;
 import pl.wturnieju.handler.TournamentSystemFactory;
 import pl.wturnieju.model.Fixture;
+import pl.wturnieju.model.InvitationStatus;
+import pl.wturnieju.model.ParticipantStatus;
 import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
@@ -19,6 +22,7 @@ import pl.wturnieju.model.generic.GenericTournamentTable;
 import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.model.generic.TournamentSystemState;
 import pl.wturnieju.repository.TournamentRepository;
+import pl.wturnieju.validator.Validators;
 
 @Service
 @RequiredArgsConstructor
@@ -35,17 +39,35 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public void updateTournament(GenericTournamentUpdateBundle bundle) {
-        Tournament tournament = tournamentRepository.findById(bundle.getTournamentId()).orElseThrow();
-        TournamentSystem system = TournamentSystemFactory.getInstance(tournament);
-        system.updateTournament(bundle);
-        tournamentRepository.save(tournament);
+        getById(bundle.getTournamentId()).ifPresent(tournament -> {
+            var system = TournamentSystemFactory.getInstance(tournament);
+            validateTournamentParticipants(tournament);
+            prepareParticipantsBeforeStart(tournament);
+            system.updateTournament(bundle);
+            tournamentRepository.save(tournament);
+        });
+    }
+
+    private void validateTournamentParticipants(Tournament tournament) {
+        var validator = Validators.getTournamentParticipantsValidator();
+        try {
+            validator.validateAndThrowInvalid(tournament);
+        } catch (ValidationException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private void prepareParticipantsBeforeStart(Tournament tournament) {
+        var participants = tournament.getParticipants();
+        participants.removeIf(p -> p.getInvitationStatus() != InvitationStatus.ACCEPTED);
+        participants.forEach(p -> p.setParticipantStatus(ParticipantStatus.ACTIVE));
     }
 
     // TODO(mr): 21.11.2018 test
     @Override
     public void updateFixture(GenericFixtureUpdateBundle bundle) {
-        Tournament tournament = tournamentRepository.findById(bundle.getTournamentId()).orElseThrow();
-        TournamentSystem system = TournamentSystemFactory.getInstance(tournament);
+        var tournament = tournamentRepository.findById(bundle.getTournamentId()).orElseThrow();
+        var system = TournamentSystemFactory.getInstance(tournament);
         system.updateFixture(bundle);
         tournamentRepository.save(tournament);
     }
@@ -76,7 +98,6 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public List<Fixture> getFixtures(String tournamentId) {
-
         return tournamentRepository.findById(tournamentId)
                 .map(Tournament::getTournamentSystemState)
                 .map(TournamentSystemState::getFixtures)
