@@ -3,7 +3,7 @@ install: true
 jdk: openjdk11
 
 script:
-  - ./gradlew build --scan -s
+  - ./gradlew clean test
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
