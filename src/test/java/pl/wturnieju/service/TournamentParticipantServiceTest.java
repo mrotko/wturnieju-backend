@@ -2,18 +2,18 @@ package pl.wturnieju.service;
 
 import java.util.Optional;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.inserter.TournamentInserter;
@@ -26,9 +26,8 @@ import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 
-//@SpringBootTest
 @Import(value = MongoConfig.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 public class TournamentParticipantServiceTest {
 
@@ -54,7 +53,7 @@ public class TournamentParticipantServiceTest {
 
     private Tournament defaultSingleTournament;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         userService = new UserService(passwordEncoder, userRepository);
         tournamentService = new TournamentService(tournamentRepository);
@@ -82,23 +81,24 @@ public class TournamentParticipantServiceTest {
 
         var participants = tournamentParticipantService.getAll(defaultSingleTournament.getId());
 
-        Assert.assertEquals(1, participants.size());
+        Assertions.assertEquals(1, participants.size());
 
         var testedParticipant = participants.get(0);
-        Assert.assertEquals(defaultUser.getId(), testedParticipant.getId());
+        Assertions.assertEquals(defaultUser.getId(), testedParticipant.getId());
     }
 
     @Test
     public void invitedParticipantShouldHaveStatusInvited() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
         var testedParticipant = tournamentParticipantService.getAll(defaultSingleTournament.getId()).get(0);
-        Assert.assertEquals(ParticipantStatus.INVITED, testedParticipant.getParticipantStatus());
+        Assertions.assertEquals(ParticipantStatus.INVITED, testedParticipant.getParticipantStatus());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void inviteExistsParticipantShouldFail() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
-        tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId()));
     }
 
     @Test
@@ -106,24 +106,27 @@ public class TournamentParticipantServiceTest {
         userRepository.findAll().stream()
                 .limit(defaultSingleTournament.getMaxParticipants())
                 .forEach(user -> tournamentParticipantService.invite(defaultSingleTournament.getId(), user.getId()));
-        Assert.assertTrue(defaultSingleTournament.getMaxParticipants() > 0);
-        Assert.assertEquals(defaultSingleTournament.getMaxParticipants(),
+        Assertions.assertTrue(defaultSingleTournament.getMaxParticipants() > 0);
+        Assertions.assertEquals(defaultSingleTournament.getMaxParticipants(),
                 tournamentParticipantService.getAll(defaultSingleTournament.getId()).size());
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void inviteParticipantWhenNoPlaceShouldFail() {
-        userRepository.findAll().stream()
-                .limit(defaultSingleTournament.getMaxParticipants() + 1)
-                .forEach(user -> tournamentParticipantService.invite(defaultSingleTournament.getId(), user.getId()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            userRepository.findAll().stream()
+                    .limit(defaultSingleTournament.getMaxParticipants() + 1)
+                    .forEach(
+                            user -> tournamentParticipantService.invite(defaultSingleTournament.getId(), user.getId()));
+        });
     }
 
     @Test
     public void getByIdShouldReturnParticipantSuccess() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertEquals(defaultUser.getId(),
+        Assertions.assertEquals(defaultUser.getId(),
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId()).map(
                         TournamentParticipant::getId).orElse(null));
     }
@@ -132,7 +135,7 @@ public class TournamentParticipantServiceTest {
     public void getByIdShouldReturnEmptyBecauseBadTournamentId() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertEquals(Optional.empty(),
+        Assertions.assertEquals(Optional.empty(),
                 tournamentParticipantService.getById(defaultSingleTournament.getId() + 1, defaultUser.getId()));
     }
 
@@ -141,7 +144,7 @@ public class TournamentParticipantServiceTest {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
         //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertEquals(ParticipantStatus.ACTIVE,
+        Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(),
                         defaultUser.getId())
                         .map(TournamentParticipant::getParticipantStatus)
@@ -150,7 +153,7 @@ public class TournamentParticipantServiceTest {
 
     @Test
     public void getByIdShouldReturnEmptyBecauseEmptyParticipantList() {
-        Assert.assertEquals(Optional.empty(),
+        Assertions.assertEquals(Optional.empty(),
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId()));
     }
 
@@ -158,7 +161,7 @@ public class TournamentParticipantServiceTest {
     public void getByIdShouldReturnEmptyBecauseBadParticipantId() {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertEquals(Optional.empty(),
+        Assertions.assertEquals(Optional.empty(),
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId() + 1));
     }
 
@@ -168,7 +171,7 @@ public class TournamentParticipantServiceTest {
         //        tournamentParticipantService.confirm(defaultSingleTournament.getId(), defaultUser.getId());
         tournamentParticipantService.doResign(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertEquals(ParticipantStatus.RESIGNED,
+        Assertions.assertEquals(ParticipantStatus.RESIGNED,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
                         .map(TournamentParticipant::getParticipantStatus)
                         .orElse(null));
@@ -179,7 +182,7 @@ public class TournamentParticipantServiceTest {
         tournamentParticipantService.invite(defaultSingleTournament.getId(), defaultUser.getId());
         tournamentParticipantService.doResign(defaultSingleTournament.getId(), defaultUser.getId());
 
-        Assert.assertNull(tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
+        Assertions.assertNull(tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
                 .orElse(null));
     }
 
@@ -191,7 +194,7 @@ public class TournamentParticipantServiceTest {
         tournamentParticipantService.doResign(defaultSingleTournament.getId() + 1, defaultUser.getId());
         tournamentParticipantService.doResign(defaultSingleTournament.getId(), defaultUser.getId() + 1);
 
-        Assert.assertEquals(ParticipantStatus.ACTIVE,
+        Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
                         .map(TournamentParticipant::getParticipantStatus)
                         .orElse(null));
@@ -204,7 +207,7 @@ public class TournamentParticipantServiceTest {
 
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId(), defaultUser.getId(), "");
 
-        Assert.assertEquals(ParticipantStatus.DISQUALIFIED,
+        Assertions.assertEquals(ParticipantStatus.DISQUALIFIED,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
                         .map(TournamentParticipant::getParticipantStatus)
                         .orElse(null));
@@ -218,13 +221,13 @@ public class TournamentParticipantServiceTest {
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId() + 1, defaultUser.getId(), "");
         tournamentParticipantService.doDisqualify(defaultSingleTournament.getId(), defaultUser.getId() + 1, "");
 
-        Assert.assertEquals(ParticipantStatus.ACTIVE,
+        Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
                         .map(TournamentParticipant::getParticipantStatus)
                         .orElse(null));
     }
 
-    @After
+    @AfterEach
     public void clean() {
         userRepository.deleteAll();
         tournamentRepository.deleteAll();

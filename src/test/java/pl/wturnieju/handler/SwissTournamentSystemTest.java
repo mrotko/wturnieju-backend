@@ -1,12 +1,13 @@
 package pl.wturnieju.handler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDateTime;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.generator.CurrentUserGenerator;
@@ -35,8 +36,7 @@ import pl.wturnieju.service.TournamentCreatorService;
 import pl.wturnieju.service.TournamentService;
 
 @Import(MongoConfig.class)
-//@SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 public class SwissTournamentSystemTest {
 
@@ -60,7 +60,7 @@ public class SwissTournamentSystemTest {
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         insertUser();
         Mockito.when(currentUserProvider.getCurrentUser()).thenReturn(savedUser);
@@ -89,8 +89,8 @@ public class SwissTournamentSystemTest {
 
         Tournament tournament = tournamentService.getById(savedTournamentId).orElseThrow();
 
-        Assert.assertEquals(TournamentStatus.IN_PROGRESS, tournament.getStatus());
-        Assert.assertEquals(startDate, tournament.getStartDate());
+        assertEquals(TournamentStatus.IN_PROGRESS, tournament.getStatus());
+        assertEquals(startDate, tournament.getStartDate());
     }
 
     @Test
@@ -115,8 +115,8 @@ public class SwissTournamentSystemTest {
 
         Tournament tournament = tournamentService.getById(savedTournamentId).orElseThrow();
 
-        Assert.assertEquals(TournamentStatus.ENDED, tournament.getStatus());
-        Assert.assertEquals(stopDate, tournament.getEndDate());
+        assertEquals(TournamentStatus.ENDED, tournament.getStatus());
+        assertEquals(stopDate, tournament.getEndDate());
     }
 
     private void insertTournament() {
@@ -131,7 +131,7 @@ public class SwissTournamentSystemTest {
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         tournamentRepository.deleteAll();
         userRepository.deleteAll();

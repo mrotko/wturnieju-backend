@@ -1,20 +1,22 @@
 package pl.wturnieju.cli;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.cli.dto.TournamentInfoResponse;
 import pl.wturnieju.config.MongoConfig;
@@ -35,7 +37,7 @@ import pl.wturnieju.service.TournamentService;
 import pl.wturnieju.service.UserService;
 
 @Import(value = MongoConfig.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 @EnableAutoConfiguration
 @WithMockCustomUser(username = "aukjan@yahoo.com")
@@ -59,7 +61,7 @@ public class TournamentCommandInterpreterTest {
 
     private Tournament testedTournament;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         setUpService();
         setUpInserter();
@@ -104,8 +106,8 @@ public class TournamentCommandInterpreterTest {
         expectedResponse.setSystemName(testedTournament.getSystemType().name());
         expectedResponse.setCompetitionName(testedTournament.getCompetitionType().name());
 
-        Assert.assertEquals(expectedResponse, response1);
-        Assert.assertEquals(expectedResponse, response2);
+        assertEquals(expectedResponse, response1);
+        assertEquals(expectedResponse, response2);
     }
 
     @Test
@@ -113,7 +115,7 @@ public class TournamentCommandInterpreterTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         userRepository.deleteAll();
         tournamentRepository.deleteAll();
@@ -131,7 +133,7 @@ public class TournamentCommandInterpreterTest {
             provider.parse();
             return provider;
         } catch (ParseException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
         return null;
     }

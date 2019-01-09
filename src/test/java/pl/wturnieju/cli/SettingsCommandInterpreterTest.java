@@ -1,22 +1,26 @@
 package pl.wturnieju.cli;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.cli.dto.SettingsInfoResponse;
 import pl.wturnieju.config.MongoConfig;
@@ -33,7 +37,7 @@ import pl.wturnieju.service.IVerificationService;
 import pl.wturnieju.service.UserService;
 
 @Import(value = MongoConfig.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 @EnableAutoConfiguration
 @WithMockCustomUser(username = "aukjan@yahoo.com")
@@ -56,7 +60,7 @@ public class SettingsCommandInterpreterTest {
     @Autowired
     private TokenVerificationRepository verificationRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
         verificationService = new EmailChangeTokenVerificationService(verificationRepository, emailService);
@@ -77,10 +81,10 @@ public class SettingsCommandInterpreterTest {
         expectedResponse.setEmail(email);
         var response = interpreter.getResponse();
 
-        Assert.assertEquals(expectedResponse, response);
+        assertEquals(expectedResponse, response);
 
         var token = verificationService.getValidToken(getFirstToken());
-        Assert.assertEquals(email, token.getNewEmail());
+        assertEquals(email, token.getNewEmail());
     }
 
     @Test
@@ -95,10 +99,10 @@ public class SettingsCommandInterpreterTest {
         expectedResponse.setEmail(email);
         var response = interpreter.getResponse();
 
-        Assert.assertEquals(expectedResponse, response);
+        assertEquals(expectedResponse, response);
 
         var token = verificationService.getValidToken(getFirstToken());
-        Assert.assertEquals(email, token.getNewEmail());
+        assertEquals(email, token.getNewEmail());
     }
 
     @Test
@@ -132,15 +136,15 @@ public class SettingsCommandInterpreterTest {
         var interpreter2 = createInitializedSettingsCommandInterpreter(parser2);
 
         var response1 = (SettingsInfoResponse) interpreter1.getResponse();
-        Assert.assertNull(response1.getErrorMessages());
-        Assert.assertTrue(response1.getPasswordChanged());
-        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass1));
+        assertNull(response1.getErrorMessages());
+        assertTrue(response1.getPasswordChanged());
+        assertTrue(userService.checkCredentials(currentUser.getUsername(), pass1));
 
 
         var response2 = (SettingsInfoResponse) interpreter2.getResponse();
-        Assert.assertNull(response2.getErrorMessages());
-        Assert.assertTrue(response2.getPasswordChanged());
-        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass2));
+        assertNull(response2.getErrorMessages());
+        assertTrue(response2.getPasswordChanged());
+        assertTrue(userService.checkCredentials(currentUser.getUsername(), pass2));
     }
 
     @Test
@@ -151,9 +155,9 @@ public class SettingsCommandInterpreterTest {
         var parser1 = createInitializedCommandParser(command1);
         var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
 
-        Assert.assertNull(response.getErrorMessages());
-        Assert.assertTrue(response.getPasswordChanged());
-        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
+        assertNull(response.getErrorMessages());
+        assertTrue(response.getPasswordChanged());
+        assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
     }
 
     @Test
@@ -164,9 +168,9 @@ public class SettingsCommandInterpreterTest {
         var parser1 = createInitializedCommandParser(command1);
         var response = createInitializedSettingsCommandInterpreter(parser1).getResponse();
 
-        Assert.assertNull(response.getErrorMessages());
-        Assert.assertTrue(response.getPasswordChanged());
-        Assert.assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
+        assertNull(response.getErrorMessages());
+        assertTrue(response.getPasswordChanged());
+        assertTrue(userService.checkCredentials(currentUser.getUsername(), pass));
     }
 
     @Test
@@ -227,7 +231,7 @@ public class SettingsCommandInterpreterTest {
                 settingsInfoResponse.setFullName(userService.getCurrentUser().getFullName()));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         userRepository.deleteAll();
         verificationRepository.deleteAll();
@@ -238,7 +242,7 @@ public class SettingsCommandInterpreterTest {
         try {
             parser.parse();
         } catch (ParseException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         return parser;
@@ -261,7 +265,7 @@ public class SettingsCommandInterpreterTest {
             var interpreterResponse = interpreter.getResponse();
             var expectedResponse = new SettingsInfoResponse();
             expectedValue.accept(expectedResponse);
-            Assert.assertEquals(expectedResponse, interpreterResponse);
+            assertEquals(expectedResponse, interpreterResponse);
         });
     }
 
@@ -273,9 +277,9 @@ public class SettingsCommandInterpreterTest {
 
         var expectedResponse = new SettingsInfoResponse();
         expectedResponseValue.accept(expectedResponse);
-        Assert.assertEquals(expectedResponse, response);
+        assertEquals(expectedResponse, response);
 
         var user = userService.getCurrentUser();
-        Assert.assertEquals(expectedUser, user);
+        assertEquals(expectedUser, user);
     }
 }

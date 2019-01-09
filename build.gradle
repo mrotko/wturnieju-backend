@@ -51,7 +51,9 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-mail'
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit'
+    }
     testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompile 'org.springframework.security:spring-security-test'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
@@ -70,6 +72,18 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "failed", "skipped", "passed"
+    }
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            println "\nTest result: ${result.resultType}"
+            println "Test summary: ${result.testCount} tests, " +
+                    "${result.successfulTestCount} succeeded, " +
+                    "${result.failedTestCount} failed, " +
+                    "${result.skippedTestCount} skipped"
+        }
+    }
 }
 
 compileJava.dependsOn(processResources)

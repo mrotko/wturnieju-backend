@@ -3,11 +3,11 @@ package pl.wturnieju.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
@@ -29,7 +29,7 @@ import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 
 @Import(value = MongoConfig.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 @WithMockCustomUser
 public class TournamentCreatorServiceTest {
@@ -55,7 +55,7 @@ public class TournamentCreatorServiceTest {
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
         insertUser();
@@ -74,7 +74,7 @@ public class TournamentCreatorServiceTest {
 
     @Test
     public void allCompetitionsIncludedTest() {
-        Assert.assertEquals(competitionTypeToTournamentDtoMap.size(), CompetitionType.values().length);
+        Assertions.assertEquals(competitionTypeToTournamentDtoMap.size(), CompetitionType.values().length);
     }
 
     @Test
@@ -85,12 +85,12 @@ public class TournamentCreatorServiceTest {
             createdTournamentIdToDto.put(tournament.getId(), dto);
         });
 
-        Assert.assertEquals(createdTournamentIdToDto.size(), competitionTypeToTournamentDtoMap.size());
+        Assertions.assertEquals(createdTournamentIdToDto.size(), competitionTypeToTournamentDtoMap.size());
 
         createdTournamentIdToDto.forEach((id, dto) -> {
             var tournament = tournamentRepository.findById(id).orElse(null);
-            Assert.assertNotNull(tournament);
-            Assert.assertEquals(tournament.getCompetitionType(), dto.getCompetition());
+            Assertions.assertNotNull(tournament);
+            Assertions.assertEquals(tournament.getCompetitionType(), dto.getCompetition());
         });
     }
 
@@ -103,16 +103,16 @@ public class TournamentCreatorServiceTest {
             createdTournamentIdToClassNameMap.put(tournament.getId(), className);
         });
 
-        Assert.assertEquals(createdTournamentIdToClassNameMap.size(), competitionTypeToTournamentDtoMap.size());
+        Assertions.assertEquals(createdTournamentIdToClassNameMap.size(), competitionTypeToTournamentDtoMap.size());
 
         createdTournamentIdToClassNameMap.forEach((id, className) -> {
             var tournament = tournamentRepository.findById(id).orElse(null);
-            Assert.assertNotNull(tournament);
-            Assert.assertEquals(tournament.getClass().getName(), className);
+            Assertions.assertNotNull(tournament);
+            Assertions.assertEquals(tournament.getClass().getName(), className);
         });
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         tournamentRepository.deleteAll();
         userRepository.deleteAll();

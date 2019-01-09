@@ -3,22 +3,22 @@ package pl.wturnieju.search;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.UserRepository;
 
 @Import(MongoConfig.class)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 public class UserSimpleSearchServiceTest {
 
@@ -36,7 +36,7 @@ public class UserSimpleSearchServiceTest {
     }
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         search = new UserSimpleSearchService(userRepository);
         Stream.of(
@@ -59,8 +59,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("andre");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -69,8 +69,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("spencer");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -79,8 +79,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("abAndreabSpencer123@test.com");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("abAndreabSpencer123@test.com            andre");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -99,8 +99,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("andre spencer");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -109,8 +109,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("andre abAndreabSpencer123@test.com");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -119,8 +119,8 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("spencer abAndreabSpencer123@test.com");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
@@ -129,17 +129,17 @@ public class UserSimpleSearchServiceTest {
                 .orElseThrow(AssertionError::new);
         List<User> foundedUsers = search.find("an spe");
 
-        Assert.assertEquals(1, foundedUsers.size());
-        Assert.assertEquals(expectedUser, foundedUsers.get(0));
+        Assertions.assertEquals(1, foundedUsers.size());
+        Assertions.assertEquals(expectedUser, foundedUsers.get(0));
     }
 
     @Test
     public void findShouldNotFindAnyone() {
         List<User> foundedUsers = search.find("dummy");
-        Assert.assertEquals(0, foundedUsers.size());
+        Assertions.assertEquals(0, foundedUsers.size());
     }
 
-    @After
+    @AfterEach
     public void clean() {
         userRepository.deleteAll();
     }

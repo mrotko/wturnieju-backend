@@ -1,9 +1,9 @@
 package pl.wturnieju.service;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,14 +11,14 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(value = MongoConfig.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -43,7 +43,7 @@ public class TokenVerificationServiceTest {
 
     private IUserService userService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         userService = new UserService(passwordEncoder, userRepository);
         //        verificationService = new TokenVerificationService(verificationRepository, emailService);
@@ -76,7 +76,7 @@ public class TokenVerificationServiceTest {
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         userRepository.deleteAll();
         verificationRepository.deleteAll();

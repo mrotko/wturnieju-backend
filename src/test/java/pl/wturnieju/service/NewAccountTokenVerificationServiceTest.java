@@ -1,22 +1,24 @@
 package pl.wturnieju.service;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.model.NewAccountVerificationToken;
 import pl.wturnieju.repository.TokenVerificationRepository;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(value = MongoConfig.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -30,12 +32,12 @@ public class NewAccountTokenVerificationServiceTest {
 
     private IVerificationService<NewAccountVerificationToken> verificationService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         verificationService = new NewAccountTokenVerificationService(verificationRepository, emailService);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         verificationRepository.deleteAll();
     }
@@ -50,8 +52,8 @@ public class NewAccountTokenVerificationServiceTest {
 
         var token = verificationService.getValidToken(getFirstToken());
 
-        Assert.assertNotNull(token);
-        Assert.assertEquals(email, token.getEmail());
+        assertNotNull(token);
+        assertEquals(email, token.getEmail());
     }
 
     private String getFirstToken() {
