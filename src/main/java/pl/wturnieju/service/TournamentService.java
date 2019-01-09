@@ -48,6 +48,7 @@ public class TournamentService implements ITournamentService {
         });
     }
 
+    
     private void validateTournamentParticipants(Tournament tournament) {
         var validator = Validators.getTournamentParticipantsValidator();
         try {
