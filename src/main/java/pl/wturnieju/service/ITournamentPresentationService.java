@@ -1,6 +1,10 @@
 package pl.wturnieju.service;
 
+import pl.wturnieju.tournament.system.table.TournamentTable;
+import pl.wturnieju.tournament.system.table.TournamentTableRow;
+
 public interface ITournamentPresentationService {
-    // TODO(mr): 13.01.2019 impl service
+
+    TournamentTable<TournamentTableRow> getTournamentTable(String tournamentId);
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.dto.TournamentConfigDTO;
+import pl.wturnieju.controller.dto.config.TournamentConfigDto;
 import pl.wturnieju.dto.TournamentTemplateDto;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationData;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
@@ -48,7 +48,7 @@ public class TournamentCreatorController {
     }
 
     @GetMapping("/config")
-    public TournamentConfigDTO getTournamentConfig() {
-        return new TournamentConfigDTO();
+    public TournamentConfigDto getTournamentConfig() {
+        return new TournamentConfigDto();
     }
 }

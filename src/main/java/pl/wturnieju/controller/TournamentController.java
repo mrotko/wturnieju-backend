@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.controller.dto.schedule.ScheduleDto;
-import pl.wturnieju.controller.dto.schedule.ScheduleDtoMapper;
-import pl.wturnieju.controller.dto.schedule.ScheduleElementDto;
-import pl.wturnieju.controller.dto.schedule.ScheduleElementDtoMapper;
 import pl.wturnieju.controller.dto.tournament.UpdateTournamentStatusDTO;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDTO;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDTOBuilder;
+import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDto;
+import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDtoMapper;
+import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDto;
+import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDtoMapper;
+import pl.wturnieju.controller.dto.tournament.table.TournamentTableDto;
+import pl.wturnieju.controller.dto.tournament.table.TournamentTableDtoMapper;
 import pl.wturnieju.dto.TournamentDTO;
 import pl.wturnieju.dto.TournamentParticipantDTO;
 import pl.wturnieju.dto.mapping.TournamentDTOMapping;
@@ -60,6 +62,8 @@ public class TournamentController {
     private final ScheduleDtoMapper scheduleDtoMapper;
 
     private final ScheduleElementDtoMapper scheduleElementDtoMapper;
+
+    private final TournamentTableDtoMapper tournamentTableDtoMapper;
 
     @Qualifier("tournamentInviteTokenVerificationService")
     private final IVerificationService<TournamentInviteVerificationToken> tournamentInviteVerificationService;
@@ -176,7 +180,13 @@ public class TournamentController {
         var tournament = tournamentService.getTournament(tournamentId);
         tournament.setCurrentRound(scheduleDTO.getRound());
         tournamentService.updateTournament(tournament);
-        
+
         return scheduleDTO;
+    }
+
+    @GetMapping("/{tournamentId}/table")
+    public TournamentTableDto getTournamentTable(@PathVariable("tournamentId") String tournamentId) {
+        var table = tournamentPresentationService.getTournamentTable(tournamentId);
+        return tournamentTableDtoMapper.tournamentTableToTournamentTableDto(tournamentId, table);
     }
 }

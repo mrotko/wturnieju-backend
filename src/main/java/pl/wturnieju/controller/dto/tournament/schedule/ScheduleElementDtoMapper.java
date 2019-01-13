@@ -1,4 +1,4 @@
-package pl.wturnieju.controller.dto.schedule;
+package pl.wturnieju.controller.dto.tournament.schedule;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

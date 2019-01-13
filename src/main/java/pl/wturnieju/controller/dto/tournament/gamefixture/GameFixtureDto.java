@@ -1,8 +1,7 @@
-package pl.wturnieju.controller.dto.gamefixture;
+package pl.wturnieju.controller.dto.tournament.gamefixture;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.wturnieju.controller.dto.ScoreDto;
 import pl.wturnieju.controller.dto.TeamDto;
 
 @Getter

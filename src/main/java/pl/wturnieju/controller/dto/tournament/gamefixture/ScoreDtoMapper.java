@@ -1,4 +1,4 @@
-package pl.wturnieju.controller.dto;
+package pl.wturnieju.controller.dto.tournament.gamefixture;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

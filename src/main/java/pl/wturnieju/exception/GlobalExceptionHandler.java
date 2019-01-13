@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
-import pl.wturnieju.dto.ExceptionErrorDTO;
+import pl.wturnieju.controller.dto.ExceptionErrorDTO;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

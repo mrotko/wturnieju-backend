@@ -1,15 +1,13 @@
-package pl.wturnieju.controller.dto.table;
+package pl.wturnieju.controller.dto.tournament.table;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class TournamentTableRowDTO {
+public class TournamentTableRowDto {
 
     private String teamId;
-
-    private Integer lp;
 
     private String name;
 
@@ -20,4 +18,6 @@ public class TournamentTableRowDTO {
     private Integer loses;
 
     private Double points;
+
+    private Integer totalGames;
 }

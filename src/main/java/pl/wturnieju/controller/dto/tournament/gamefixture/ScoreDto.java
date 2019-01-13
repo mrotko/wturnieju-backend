@@ -1,4 +1,4 @@
-package pl.wturnieju.controller.dto;
+package pl.wturnieju.controller.dto.tournament.gamefixture;
 
 import java.util.Map;
 

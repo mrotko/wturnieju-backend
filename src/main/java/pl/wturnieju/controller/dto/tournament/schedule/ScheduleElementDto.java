@@ -1,4 +1,4 @@
-package pl.wturnieju.controller.dto.schedule;
+package pl.wturnieju.controller.dto.tournament.schedule;
 
 import lombok.Getter;
 import lombok.Setter;

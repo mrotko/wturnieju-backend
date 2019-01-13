@@ -3,8 +3,8 @@ package pl.wturnieju.inserter;
 import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.controller.dto.config.TournamentConfigDto;
 import pl.wturnieju.dto.ChessTournamentTemplateDto;
-import pl.wturnieju.dto.TournamentConfigDTO;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Timestamp;
@@ -17,7 +17,7 @@ public class TournamentInserter {
 
     private final ITournamentCreatorService tournamentCreatorService;
 
-    private TournamentConfigDTO config = new TournamentConfigDTO();
+    private TournamentConfigDto config = new TournamentConfigDto();
 
     public void insertTournamentToDatabase() {
         tournamentCreatorService.create(prepareChessTournamentDto());

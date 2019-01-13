@@ -1,4 +1,4 @@
-package pl.wturnieju.dto;
+package pl.wturnieju.controller.dto;
 
 import lombok.Data;
 

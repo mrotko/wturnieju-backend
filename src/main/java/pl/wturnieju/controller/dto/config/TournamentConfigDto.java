@@ -1,4 +1,4 @@
-package pl.wturnieju.dto;
+package pl.wturnieju.controller.dto.config;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -6,12 +6,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
-public class TournamentConfigDTO {
+@Getter
+public class TournamentConfigDto {
 
     private List<AccessOption> accessOptions = Arrays.asList(AccessOption.values());
 
@@ -22,9 +24,24 @@ public class TournamentConfigDTO {
     private Map<CompetitionType, List<TournamentParticipantType>> participantTypes = new EnumMap<>(
             CompetitionType.class);
 
-    public TournamentConfigDTO() {
+    private Map<CompetitionType, List<ColumnType>> tableColumnsTypes = new EnumMap<>(CompetitionType.class);
+
+    public TournamentConfigDto() {
         initAvailableSystems();
         initParticipantTypes();
+        initTableColumnsTypes();
+    }
+
+    private void initTableColumnsTypes() {
+        tableColumnsTypes.put(CompetitionType.CHESS, Arrays.asList(
+                ColumnType.LP,
+                ColumnType.NAME,
+                ColumnType.WINS,
+                ColumnType.TOTAL_GAMES,
+                ColumnType.DRAWS,
+                ColumnType.LOSES,
+                ColumnType.POINTS
+        ));
     }
 
     private void initParticipantTypes() {
@@ -36,37 +53,5 @@ public class TournamentConfigDTO {
                 TournamentSystemType.SWISS,
                 TournamentSystemType.ROUND_ROBIN
         ));
-    }
-
-    public Map<CompetitionType, List<TournamentSystemType>> getSystemTypes() {
-        return systemTypes;
-    }
-
-    public List<AccessOption> getAccessOptions() {
-        return accessOptions;
-    }
-
-    public void setAccessOptions(List<AccessOption> accessOptions) {
-        this.accessOptions = accessOptions;
-    }
-
-    public void setSystemTypes(Map<CompetitionType, List<TournamentSystemType>> systemTypes) {
-        this.systemTypes = systemTypes;
-    }
-
-    public List<CompetitionType> getCompetitionTypes() {
-        return competitionTypes;
-    }
-
-    public void setCompetitionTypes(List<CompetitionType> competitionTypes) {
-        this.competitionTypes = competitionTypes;
-    }
-
-    public Map<CompetitionType, List<TournamentParticipantType>> getParticipantTypes() {
-        return participantTypes;
-    }
-
-    public void setParticipantTypes(Map<CompetitionType, List<TournamentParticipantType>> participantTypes) {
-        this.participantTypes = participantTypes;
     }
 }
