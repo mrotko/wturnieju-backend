@@ -18,7 +18,7 @@ public class TournamentCommandInterpreter extends CommandInterpreter<TournamentI
         var response = new TournamentInfoResponse();
 
         getParameterValue("id", "i").ifPresent(tournamentId -> {
-            tournamentService.getById(tournamentId).ifPresent(tournament -> {
+            tournamentService.findTournament(tournamentId).ifPresent(tournament -> {
                 response.setStatus(tournament.getStatus().name());
                 response.setTournamentId(tournamentId);
                 response.setStartDate(tournament.getStartDate());

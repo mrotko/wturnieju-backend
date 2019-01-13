@@ -1,15 +1,9 @@
 package pl.wturnieju.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import pl.wturnieju.model.Fixture;
-import pl.wturnieju.model.TournamentParticipant;
-import pl.wturnieju.model.TournamentStatus;
-import pl.wturnieju.model.generic.GenericFixtureUpdateBundle;
-import pl.wturnieju.model.generic.GenericTournamentTable;
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.Tournament;
 
 
 // TODO(mr): 12.11.2018 impl serwisu do dashboard
@@ -41,31 +35,46 @@ import pl.wturnieju.model.generic.Tournament;
 
 public interface ITournamentService {
 
-    void updateTournament(Tournament tournament);
+    void startTournament(String tournamentId);
 
-    void updateTournament(GenericTournamentUpdateBundle bundle);
+    void finishTournament(String tournamentId);
 
-    void updateFixture(GenericFixtureUpdateBundle bundle);
+    Tournament getTournament(String tournamentId);
 
-    Optional<Tournament> getById(String tournamentId);
+    Optional<Tournament> findTournament(String tournamentId);
 
-    Map<TournamentStatus, List<Tournament>> getAllUserTournamentsGroupedByStatus(String userId);
-
-    Fixture getFixtureById(String tournamentId, String fixtureId);
-
-    List<Fixture> getFixtures(String tournamentId);
-
-    GenericTournamentTable getTournamentTable(String tournamentId);
-
-    List<Fixture> getCurrentFixtures(String tournamentId);
-
-    List<Fixture> prepareNextRound(String tournamentId);
-
-    void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures);
-
-    Optional<Integer> getCurrentRound(String tournamentId);
+    void deleteTournament(String tournamentId);
 
     List<Tournament> getUserTournaments(String userId);
 
-    Optional<TournamentParticipant> findParticipantByUserId(String tournamentId, String userId);
+    void updateTournament(Tournament tournament);
+
+
+    //    void updateTournament(Tournament tournament);
+
+    //    void updateTournament(GenericTournamentUpdateBundle bundle);
+
+    //    void updateFixture(GenericFixtureUpdateBundle bundle);
+
+    //    Optional<Tournament> getById(String tournamentId);
+
+    //    Map<TournamentStatus, List<Tournament>> getAllUserTournamentsGroupedByStatus(String userId);
+
+    //    Fixture getFixtureById(String tournamentId, String fixtureId);
+
+    //    List<Fixture> getFixtures(String tournamentId);
+
+    //    GenericTournamentTable getTournamentTable(String tournamentId);
+
+    //    List<Fixture> getCurrentFixtures(String tournamentId);
+
+    //    List<Fixture> prepareNextRound(String tournamentId);
+
+    //    void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures);
+
+    //    Optional<Integer> getCurrentRound(String tournamentId);
+
+    //    List<Tournament> getUserTournaments(String userId);
+
+    //    Optional<Participant> findParticipantByUserId(String tournamentId, String userId);
 }

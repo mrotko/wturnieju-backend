@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import pl.wturnieju.model.VerificationToken;
+import pl.wturnieju.model.verification.VerificationToken;
 
 @Repository
 public interface TokenVerificationRepository extends MongoRepository<VerificationToken, String> {

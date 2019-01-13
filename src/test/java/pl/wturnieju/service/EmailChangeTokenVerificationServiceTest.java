@@ -15,8 +15,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
-import pl.wturnieju.model.ChangeEmailVerificationToken;
+import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
+import pl.wturnieju.model.verification.EmailChangeVerificationData;
 import pl.wturnieju.repository.TokenVerificationRepository;
+import pl.wturnieju.service.impl.verification.EmailChangeTokenVerificationService;
 
 @ExtendWith(SpringExtension.class)
 @Import(value = MongoConfig.class)

@@ -1,6 +1,7 @@
 package pl.wturnieju.service;
 
-import pl.wturnieju.model.VerificationToken;
+import pl.wturnieju.model.verification.VerificationData;
+import pl.wturnieju.model.verification.VerificationToken;
 
 public interface IVerificationService<T extends VerificationToken> {
 

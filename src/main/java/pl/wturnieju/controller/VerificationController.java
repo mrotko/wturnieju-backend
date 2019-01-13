@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.model.ChangeEmailVerificationToken;
-import pl.wturnieju.model.NewAccountVerificationToken;
-import pl.wturnieju.model.ResetPasswordVerificationToken;
-import pl.wturnieju.model.TournamentInviteVerificationToken;
-import pl.wturnieju.model.TournamentParticipationRequestVerificationToken;
+import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
+import pl.wturnieju.model.verification.NewAccountVerificationToken;
+import pl.wturnieju.model.verification.ResetPasswordVerificationToken;
+import pl.wturnieju.model.verification.TournamentInviteVerificationToken;
+import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;

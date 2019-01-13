@@ -17,6 +17,7 @@ import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.impl.UserService;
 
 @ExtendWith(SpringExtension.class)
 @Import(value = MongoConfig.class)

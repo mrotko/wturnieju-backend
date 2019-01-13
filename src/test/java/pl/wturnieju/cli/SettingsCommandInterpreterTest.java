@@ -26,15 +26,15 @@ import pl.wturnieju.cli.dto.SettingsInfoResponse;
 import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.inserter.UserInserter;
-import pl.wturnieju.model.ChangeEmailVerificationToken;
 import pl.wturnieju.model.User;
+import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
 import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
-import pl.wturnieju.service.EmailChangeTokenVerificationService;
 import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
-import pl.wturnieju.service.UserService;
+import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.service.impl.verification.EmailChangeTokenVerificationService;
 
 @Import(value = MongoConfig.class)
 @ExtendWith(SpringExtension.class)

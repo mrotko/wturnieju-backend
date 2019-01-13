@@ -9,7 +9,7 @@ import lombok.Data;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.Tournament;
 
 
 @Data

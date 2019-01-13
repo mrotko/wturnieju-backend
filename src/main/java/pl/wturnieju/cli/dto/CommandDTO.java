@@ -1,8 +1,10 @@
 package pl.wturnieju.cli.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CommandDTO {
     private String command;
 }

@@ -17,6 +17,7 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version '2.1.1.RELEASE'
     id "io.spring.dependency-management" version '1.0.6.RELEASE'
+    id 'net.ltgt.apt' version '0.15'
 }
 
 group = 'pl.wturnieju'
@@ -41,6 +42,8 @@ lombok {
 wrapper {
     gradleVersion = '5.1'
 }
+
+apply plugin: 'net.ltgt.apt-idea'
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -68,6 +71,11 @@ dependencies {
     testCompile('org.junit.jupiter:junit-jupiter-api:5.3.2')
     testCompile('org.junit.jupiter:junit-jupiter-params:5.3.2')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.3.2')
+
+
+    compile 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
 }
 
 test {

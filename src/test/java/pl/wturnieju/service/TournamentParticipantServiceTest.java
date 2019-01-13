@@ -16,15 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
-import pl.wturnieju.inserter.TournamentInserter;
-import pl.wturnieju.inserter.UserInserter;
-import pl.wturnieju.model.ParticipantStatus;
-import pl.wturnieju.model.TournamentParticipant;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.User;
-import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.tournament.Participant;
+import pl.wturnieju.tournament.ParticipantStatus;
+import pl.wturnieju.tournament.Tournament;
 
 @Import(value = MongoConfig.class)
 @ExtendWith(SpringExtension.class)
@@ -55,24 +53,24 @@ public class TournamentParticipantServiceTest {
 
     @BeforeEach
     public void setUp() {
-        userService = new UserService(passwordEncoder, userRepository);
-        tournamentService = new TournamentService(tournamentRepository);
-        tournamentParticipantService = new TournamentParticipantService(tournamentService);
-
-        var userInserter = new UserInserter(userService, userRepository);
-        userInserter.insertUsersToDatabase();
-        defaultUser = userRepository.findByUsername("aukjan@yahoo.com").orElse(null);
-
-        Mockito.when(currentUserProvider.getCurrentUser()).thenReturn(defaultUser);
-        tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUserProvider);
-
-        var tournamentInserter = new TournamentInserter(tournamentCreatorService);
-        tournamentInserter.insertTournamentToDatabase();
-
-        defaultSingleTournament = tournamentRepository.findAll().stream()
-                .filter(tournament -> tournament.getTournamentParticipantType() == TournamentParticipantType.SINGLE)
-                .findFirst()
-                .orElse(null);
+        //        userService = new UserService(passwordEncoder, userRepository);
+        //        tournamentService = new TournamentService(tournamentRepository);
+        //        tournamentParticipantService = new TournamentParticipantService(tournamentService);
+        //
+        //        var userInserter = new UserInserter(userService, userRepository);
+        //        userInserter.insertUsersToDatabase();
+        //        defaultUser = userRepository.findByUsername("aukjan@yahoo.com").orElse(null);
+        //
+        //        Mockito.when(currentUserProvider.getCurrentUser()).thenReturn(defaultUser);
+        //        tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUserProvider);
+        //
+        //        var tournamentInserter = new TournamentInserter(tournamentCreatorService);
+        //        tournamentInserter.insertTournamentToDatabase();
+        //
+        //        defaultSingleTournament = tournamentRepository.findAll().stream()
+        //                .filter(tournament -> tournament.getTournamentParticipantType() == TournamentParticipantType.SINGLE)
+        //                .findFirst()
+        //                .orElse(null);
     }
 
     @Test
@@ -128,7 +126,7 @@ public class TournamentParticipantServiceTest {
 
         Assertions.assertEquals(defaultUser.getId(),
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId()).map(
-                        TournamentParticipant::getId).orElse(null));
+                        Participant::getId).orElse(null));
     }
 
     @Test
@@ -147,7 +145,7 @@ public class TournamentParticipantServiceTest {
         Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(),
                         defaultUser.getId())
-                        .map(TournamentParticipant::getParticipantStatus)
+                        .map(Participant::getParticipantStatus)
                         .orElse(null));
     }
 
@@ -173,7 +171,7 @@ public class TournamentParticipantServiceTest {
 
         Assertions.assertEquals(ParticipantStatus.RESIGNED,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
-                        .map(TournamentParticipant::getParticipantStatus)
+                        .map(Participant::getParticipantStatus)
                         .orElse(null));
     }
 
@@ -196,7 +194,7 @@ public class TournamentParticipantServiceTest {
 
         Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
-                        .map(TournamentParticipant::getParticipantStatus)
+                        .map(Participant::getParticipantStatus)
                         .orElse(null));
     }
 
@@ -209,7 +207,7 @@ public class TournamentParticipantServiceTest {
 
         Assertions.assertEquals(ParticipantStatus.DISQUALIFIED,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
-                        .map(TournamentParticipant::getParticipantStatus)
+                        .map(Participant::getParticipantStatus)
                         .orElse(null));
     }
 
@@ -223,7 +221,7 @@ public class TournamentParticipantServiceTest {
 
         Assertions.assertEquals(ParticipantStatus.ACTIVE,
                 tournamentParticipantService.getById(defaultSingleTournament.getId(), defaultUser.getId())
-                        .map(TournamentParticipant::getParticipantStatus)
+                        .map(Participant::getParticipantStatus)
                         .orElse(null));
     }
 

@@ -1,6 +1,7 @@
 package pl.wturnieju.model;
 
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.ChessTournament;
+import pl.wturnieju.tournament.Tournament;
 
 public class TournamentFactory {
 

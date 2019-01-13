@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.config.AuthorityType;
-import pl.wturnieju.dto.user.ChangePasswordDTO;
-import pl.wturnieju.dto.user.ChangeUsernameDTO;
-import pl.wturnieju.dto.user.UserConfigDTO;
-import pl.wturnieju.model.ChangeEmailVerificationToken;
+import pl.wturnieju.controller.dto.user.ChangePasswordDTO;
+import pl.wturnieju.controller.dto.user.ChangeUsernameDTO;
+import pl.wturnieju.controller.dto.user.UserConfigDTO;
 import pl.wturnieju.model.UserGrantedAuthority;
-import pl.wturnieju.service.EmailChangeVerificationData;
+import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
+import pl.wturnieju.model.verification.EmailChangeVerificationData;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 

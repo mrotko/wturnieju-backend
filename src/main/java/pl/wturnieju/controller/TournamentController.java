@@ -2,14 +2,11 @@ package pl.wturnieju.controller;
 
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.lang.NonNull;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,27 +19,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.controller.dto.schedule.ScheduleDto;
+import pl.wturnieju.controller.dto.schedule.ScheduleDtoMapper;
+import pl.wturnieju.controller.dto.schedule.ScheduleElementDto;
+import pl.wturnieju.controller.dto.schedule.ScheduleElementDtoMapper;
+import pl.wturnieju.controller.dto.tournament.UpdateTournamentStatusDTO;
+import pl.wturnieju.controller.dto.tournament.UserTournamentsDTO;
+import pl.wturnieju.controller.dto.tournament.UserTournamentsDTOBuilder;
 import pl.wturnieju.dto.TournamentDTO;
 import pl.wturnieju.dto.TournamentParticipantDTO;
-import pl.wturnieju.dto.TournamentTableDTO;
 import pl.wturnieju.dto.mapping.TournamentDTOMapping;
 import pl.wturnieju.dto.mapping.TournamentParticipantMapping;
-import pl.wturnieju.dto.mapping.TournamentTableMapping;
 import pl.wturnieju.exception.UserNotFoundException;
-import pl.wturnieju.model.Fixture;
-import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentInviteVerificationToken;
+import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.model.User;
-import pl.wturnieju.model.generic.ChessBundleResult;
-import pl.wturnieju.model.generic.ResultBundleUpdateContent;
-import pl.wturnieju.model.generic.SwissFixtureUpdateBundle;
-import pl.wturnieju.model.generic.Tournament;
-import pl.wturnieju.service.GenericTournamentUpdateBundle;
+import pl.wturnieju.model.verification.TournamentInviteVerificationData;
+import pl.wturnieju.model.verification.TournamentInviteVerificationToken;
 import pl.wturnieju.service.ITournamentParticipantService;
+import pl.wturnieju.service.ITournamentPresentationService;
+import pl.wturnieju.service.ITournamentScheduleService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
-import pl.wturnieju.service.TournamentInviteVerificationData;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,104 +49,65 @@ public class TournamentController {
 
     private final ITournamentService tournamentService;
 
+    private final ITournamentScheduleService scheduleService;
+
     private final ITournamentParticipantService participantService;
 
+    private final ITournamentPresentationService tournamentPresentationService;
+
     private final IUserService userService;
+
+    private final ScheduleDtoMapper scheduleDtoMapper;
+
+    private final ScheduleElementDtoMapper scheduleElementDtoMapper;
 
     @Qualifier("tournamentInviteTokenVerificationService")
     private final IVerificationService<TournamentInviteVerificationToken> tournamentInviteVerificationService;
 
-    @GetMapping()
-    public UserTournamentsDTO getAllUserTournaments(@RequestParam("userId") String userId) {
-        var dto = new UserTournamentsDTO();
-        dto.setTournaments(new HashMap<>());
-
-        tournamentService.getAllUserTournamentsGroupedByStatus(userId).forEach((status, tournaments) ->
-                dto.getTournaments().put(status, tournaments.stream()
-                        .map(tournament -> TournamentDTOMapping.map(userService, tournament))
-                        .collect(Collectors.toList())));
-        return dto;
+    @GetMapping
+    public UserTournamentsDTO getUserTournaments(@RequestParam("userId") String userId) {
+        var userTournaments = tournamentService.getUserTournaments(userId);
+        return new UserTournamentsDTOBuilder()
+                .userId(userId)
+                .tournaments(userService, userTournaments)
+                .build();
     }
 
-    @GetMapping("/{tournamentId}/table")
-    public TournamentTableDTO getTournamentTable(@PathVariable("tournamentId") String tournamentId) {
-        return TournamentTableMapping.map(tournamentService.getTournamentTable(tournamentId));
-    }
-
-    @PutMapping("/{tournamentId}")
-    public TournamentDTO updateTournament(@PathVariable("tournamentId") String tournamentId,
-            @RequestBody GenericTournamentUpdateBundle bundle) {
-        tournamentService.updateTournament(bundle);
-        return TournamentDTOMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
-    }
-
-    //    @PutMapping("/{tournamentId}/fixtures/{fixtureId}")
-    //    public Fixture updateFixtureResult(@PathVariable("tournamentId") String tournamentId,
-    //            @PathVariable("fixtureId") String fixtureId,
-    //            @RequestBody GenericFixtureUpdateBundle bundle) {
-    //        tournamentService.updateFixtureResult(bundle);
-    //        return tournamentService.getFixtureById(tournamentId, fixtureId);
-    //    }
-
-    @PutMapping("/{tournamentId}/fixture/{fixtureId}/result")
-    public Fixture updateFixtureResult(@PathVariable("tournamentId") String tournamentId,
-            @PathVariable("fixtureId") String fixtureId,
-            @RequestBody MutablePair<Double, Double> result) {
-        // TODO(mr): 01.12.2018 impl factory
-
-        var bundle = new SwissFixtureUpdateBundle();
-        bundle.setChangedById(userService.getCurrentUser().getId());
-        bundle.setFixtureId(fixtureId);
-        bundle.setTimestamp(Timestamp.now());
-        bundle.setTournamentId(tournamentId);
-        bundle.setType(tournamentService.getById(tournamentId).map(Tournament::getSystemType).orElse(null));
-
-        {
-            var content = new ResultBundleUpdateContent<ChessBundleResult>();
-
-            {
-                var newResult = new ChessBundleResult();
-                newResult.setResult(result);
-
-                var oldResult = new ChessBundleResult();
-                oldResult.setResult(tournamentService.getFixtureById(tournamentId, fixtureId).getResult());
-
-                content.setNewResult(newResult);
-                content.setOldResult(oldResult);
-            }
-
-            bundle.setContent(content);
+    @PostMapping("/{tournamentId}")
+    public UpdateTournamentStatusDTO updateTournamentStatus(
+            @PathVariable("tournamentId") String tournamentId,
+            @RequestBody UpdateTournamentStatusDTO dto) {
+        switch (dto.getStatus()) {
+        case "START":
+            tournamentService.startTournament(tournamentId);
+            break;
+        case "FINISH":
+            tournamentService.finishTournament(tournamentId);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown property - " + dto.getStatus());
         }
-
-        tournamentService.updateFixture(bundle);
-        return tournamentService.getFixtureById(tournamentId, fixtureId);
-    }
-
-    @GetMapping("/{tournamentId}/fixtures")
-    public List<Fixture> getFixtures(@PathVariable("tournamentId") String tournamentId) {
-        return tournamentService.getFixtures(tournamentId);
-    }
-
-    @GetMapping("/{tournamentId}/roundToFixtures")
-    public Map<Integer, List<Fixture>> getRoundToFixtures(@PathVariable("tournamentId") String tournamentId) {
-        return tournamentService.getFixtures(tournamentId).stream()
-                .collect(Collectors.groupingBy(Fixture::getRound, Collectors.toList()));
-    }
-
-
-    @GetMapping("/{tournamentId}/fixtures/current")
-    public List<Fixture> getCurrentFixtures(@PathVariable("tournamentId") String tournamentId) {
-        return tournamentService.getCurrentFixtures(tournamentId);
+        return dto;
     }
 
     @GetMapping("/{tournamentId}")
     public TournamentDTO getTournament(@PathVariable("tournamentId") String tournamentId) {
-        return TournamentDTOMapping.map(userService, tournamentService.getById(tournamentId).orElse(null));
+        var tournament = tournamentService.getTournament(tournamentId);
+        if (tournament == null) {
+            throw new ResourceNotFoundException();
+        }
+        return TournamentDTOMapping.map(userService, tournament);
+    }
+
+    @DeleteMapping("/{tournamentId}")
+    public String deleteTournament(@PathVariable("tournamentId") String tournamentId) {
+        tournamentService.deleteTournament(tournamentId);
+        return tournamentId;
     }
 
     @GetMapping("/{tournamentId}/participants")
     public List<TournamentParticipantDTO> getTournamentParticipants(@PathVariable("tournamentId") String tournamentId) {
-        return tournamentService.getById(tournamentId).map(tournament -> tournament.getParticipants().stream()
+        return tournamentService.findTournament(tournamentId).map(tournament -> tournament.getParticipants().stream()
                 .map(participant ->
                         TournamentParticipantMapping.map(userService.getById(participant.getId()).orElse(null),
                                 participant)
@@ -156,14 +115,14 @@ public class TournamentController {
     }
 
     @PatchMapping("/{tournamentId}/participants")
-    public void acceptParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
+    public void acceptParticipant(@PathVariable("tournamentId") String tournamentId,
             @RequestBody() String participantId) {
         participantService.acceptInvitation(tournamentId, participantId);
     }
 
     @DeleteMapping("/{tournamentId}/participants/{participantId}")
-    public void deleteParticipant(@PathVariable("tournamentId") @NonNull String tournamentId,
-            @PathVariable("participantId") @NonNull String participantId) {
+    public void deleteParticipant(@PathVariable("tournamentId") String tournamentId,
+            @PathVariable("participantId") String participantId) {
         participantService.deleteParticipant(tournamentId, participantId);
     }
 
@@ -187,19 +146,37 @@ public class TournamentController {
         return userService.getById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    @GetMapping("/{tournamentId}/prepareNextRound")
-    public List<Fixture> prepareNextRound(@PathVariable("tournamentId") @NonNull String tournamentId) {
-        return tournamentService.prepareNextRound(tournamentId);
+    @GetMapping("/{tournamentId}/schedule")
+    public ScheduleDto generateSchedule(@PathVariable("tournamentId") String tournamentId) {
+        var schedule = scheduleService.generateSchedule(tournamentId);
+        var round = schedule.stream()
+                .findFirst()
+                .map(GameFixture::getRound).orElse(null);
+        return scheduleDtoMapper.toScheduleDto(
+                tournamentId,
+                round,
+                schedule);
     }
 
-    @PostMapping("/{tournamentId}/prepareNextRound")
-    public void addNextRound(@PathVariable("tournamentId") String tournamentId,
-            @NonNull @RequestBody List<Fixture> fixtures) {
-        tournamentService.addNextRoundFixtures(tournamentId, fixtures);
-    }
+    @PutMapping("/{tournamentId}/schedule")
+    public ScheduleDto saveSchedule(@PathVariable("tournamentId") String tournamentId,
+            @RequestBody ScheduleDto scheduleDTO) {
 
-    @GetMapping("/{tournamentId}/currentRound")
-    public Integer getCurrentRound(@PathVariable("tournamentId") String tournamentId) {
-        return tournamentService.getCurrentRound(tournamentId).orElse(null);
+        var gamesIds = scheduleDTO.getElements().stream()
+                .map(ScheduleElementDto::getGameId)
+                .collect(Collectors.toList());
+
+        var cachedGames = scheduleService.getGeneratedSchedule(tournamentId, gamesIds);
+        var elements = scheduleDTO.getElements();
+        elements.forEach(element -> cachedGames.stream().filter(g -> g.getId().equals(element.getGameId())).findFirst()
+                .ifPresent(cachedGame -> scheduleElementDtoMapper.updateGameFixture(element, cachedGame)));
+
+        scheduleService.saveSchedule(tournamentId, cachedGames);
+
+        var tournament = tournamentService.getTournament(tournamentId);
+        tournament.setCurrentRound(scheduleDTO.getRound());
+        tournamentService.updateTournament(tournament);
+        
+        return scheduleDTO;
     }
 }

@@ -27,6 +27,7 @@ import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.impl.TournamentCreatorService;
 
 @Import(value = MongoConfig.class)
 @ExtendWith(SpringExtension.class)

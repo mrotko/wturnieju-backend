@@ -1,8 +1,8 @@
 package pl.wturnieju.cli;
 
 import pl.wturnieju.cli.dto.SettingsInfoResponse;
-import pl.wturnieju.model.ChangeEmailVerificationToken;
-import pl.wturnieju.service.EmailChangeVerificationData;
+import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
+import pl.wturnieju.model.verification.EmailChangeVerificationData;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 

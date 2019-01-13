@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.dto.auth.ForgetPasswordDTO;
-import pl.wturnieju.dto.auth.RegistrationDTO;
+import pl.wturnieju.controller.dto.auth.ForgetPasswordDTO;
+import pl.wturnieju.controller.dto.auth.RegistrationDTO;
 import pl.wturnieju.inserter.UserInserter;
-import pl.wturnieju.model.NewAccountVerificationToken;
-import pl.wturnieju.model.ResetPasswordVerificationToken;
+import pl.wturnieju.model.verification.NewAccountVerificationData;
+import pl.wturnieju.model.verification.NewAccountVerificationToken;
+import pl.wturnieju.model.verification.ResetPasswordVerificationData;
+import pl.wturnieju.model.verification.ResetPasswordVerificationToken;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
-import pl.wturnieju.service.NewAccountVerificationData;
-import pl.wturnieju.service.ResetPasswordVerificationData;
 
 @RestController
 @RequiredArgsConstructor

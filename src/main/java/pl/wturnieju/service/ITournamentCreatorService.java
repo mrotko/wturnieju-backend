@@ -1,7 +1,7 @@
 package pl.wturnieju.service;
 
 import pl.wturnieju.dto.TournamentTemplateDto;
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.Tournament;
 
 public interface ITournamentCreatorService {
 

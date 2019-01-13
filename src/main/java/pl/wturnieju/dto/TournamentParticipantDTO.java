@@ -2,7 +2,7 @@ package pl.wturnieju.dto;
 
 import lombok.Data;
 import pl.wturnieju.model.InvitationStatus;
-import pl.wturnieju.model.ParticipantStatus;
+import pl.wturnieju.tournament.ParticipantStatus;
 
 @Data
 public class TournamentParticipantDTO {

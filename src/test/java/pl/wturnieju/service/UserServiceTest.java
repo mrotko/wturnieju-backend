@@ -31,6 +31,7 @@ import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.impl.UserService;
 
 
 @ExtendWith(SpringExtension.class)

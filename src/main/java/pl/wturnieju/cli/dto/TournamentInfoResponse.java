@@ -3,12 +3,12 @@ package pl.wturnieju.cli.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import pl.wturnieju.model.Timestamp;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class TournamentInfoResponse extends CliResponse {
 
     private String tournamentId;

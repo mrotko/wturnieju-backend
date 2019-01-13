@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,17 +25,17 @@ import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.inserter.TournamentInserter;
 import pl.wturnieju.inserter.UserInserter;
 import pl.wturnieju.model.Persistent;
-import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.ITournamentCreatorService;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
-import pl.wturnieju.service.TournamentCreatorService;
-import pl.wturnieju.service.TournamentParticipantService;
-import pl.wturnieju.service.TournamentService;
-import pl.wturnieju.service.UserService;
+import pl.wturnieju.service.impl.TournamentCreatorService;
+import pl.wturnieju.service.impl.TournamentParticipantService;
+import pl.wturnieju.service.impl.TournamentService;
+import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.tournament.Tournament;
 
 @Import(value = MongoConfig.class)
 @ExtendWith(SpringExtension.class)
@@ -48,6 +49,9 @@ public class TournamentCommandInterpreterTest {
 
     @Autowired
     private TournamentRepository tournamentRepository;
+
+    @Autowired
+    private ApplicationContext context;
 
     private IUserService userService;
 
@@ -70,9 +74,9 @@ public class TournamentCommandInterpreterTest {
 
     private void setUpService() {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
-        tournamentService = new TournamentService(tournamentRepository);
+        tournamentService = new TournamentService(tournamentRepository, context);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, userService);
-        tournamentParticipantService = new TournamentParticipantService(tournamentService);
+        tournamentParticipantService = new TournamentParticipantService(tournamentService, userService);
     }
 
     private void setUpInserter() {

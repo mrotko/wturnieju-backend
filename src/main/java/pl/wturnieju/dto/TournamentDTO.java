@@ -9,8 +9,8 @@ import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentParticipantType;
-import pl.wturnieju.model.TournamentStatus;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.tournament.TournamentStatus;
 
 @Data
 public class TournamentDTO {

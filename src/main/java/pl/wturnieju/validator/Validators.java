@@ -1,6 +1,6 @@
 package pl.wturnieju.validator;
 
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.Tournament;
 
 public class Validators {
 

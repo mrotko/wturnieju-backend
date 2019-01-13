@@ -6,9 +6,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import pl.wturnieju.dto.TournamentDTO;
-import pl.wturnieju.model.ChessTournament;
-import pl.wturnieju.model.generic.Tournament;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.tournament.ChessTournament;
+import pl.wturnieju.tournament.Tournament;
 
 public class TournamentDTOMapping {
 

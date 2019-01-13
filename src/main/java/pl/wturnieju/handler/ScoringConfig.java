@@ -9,6 +9,7 @@ import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Data
+@Deprecated
 public class ScoringConfig {
 
     private static TournamentSystemConfig config;

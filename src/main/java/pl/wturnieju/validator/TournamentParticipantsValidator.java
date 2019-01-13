@@ -2,8 +2,8 @@ package pl.wturnieju.validator;
 
 import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.InvitationStatus;
-import pl.wturnieju.model.ParticipantStatus;
-import pl.wturnieju.model.generic.Tournament;
+import pl.wturnieju.tournament.ParticipantStatus;
+import pl.wturnieju.tournament.Tournament;
 
 public class TournamentParticipantsValidator implements IValidator<Tournament> {
     @Override

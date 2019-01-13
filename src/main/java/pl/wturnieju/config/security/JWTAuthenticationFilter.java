@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.wturnieju.dto.auth.LoginDTO;
+import pl.wturnieju.controller.dto.auth.LoginDTO;
 import pl.wturnieju.model.User;
 
 @AllArgsConstructor

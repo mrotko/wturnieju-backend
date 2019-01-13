@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.dto.TournamentConfigDTO;
 import pl.wturnieju.dto.TournamentTemplateDto;
-import pl.wturnieju.model.TournamentParticipationRequestVerificationToken;
+import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationData;
+import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
 import pl.wturnieju.service.ITournamentCreatorService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IVerificationService;
-import pl.wturnieju.service.TournamentParticipationRequestVerificationData;
 
 @RequiredArgsConstructor
 @RestController

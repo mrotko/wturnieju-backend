@@ -1,11 +1,11 @@
 package pl.wturnieju.dto.mapping;
 
 import pl.wturnieju.dto.TournamentParticipantDTO;
-import pl.wturnieju.model.TournamentParticipant;
 import pl.wturnieju.model.User;
+import pl.wturnieju.tournament.Participant;
 
 public class TournamentParticipantMapping {
-    public static TournamentParticipantDTO map(User user, TournamentParticipant participant) {
+    public static TournamentParticipantDTO map(User user, Participant participant) {
         if (user == null || participant == null) {
             return null;
         }

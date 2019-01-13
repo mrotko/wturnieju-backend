@@ -3,11 +3,11 @@ package pl.wturnieju.cli.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class SettingsInfoResponse extends CliResponse {
 
     @JsonInclude(Include.NON_NULL)
