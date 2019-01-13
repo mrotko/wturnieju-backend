@@ -61,6 +61,10 @@ public abstract class TournamentSystem<T extends SystemState> {
     protected TournamentTable<TournamentTableRow> createTournamentTable(Collection<? extends TournamentTableRow> rows) {
         var table = new TournamentTable<>();
         table.getRows().addAll(rows.stream().sorted().collect(Collectors.toList()));
+        int lpCounter = 1;
+        for (TournamentTableRow row : table.getRows()) {
+            row.setLp(lpCounter++);
+        }
         return table;
     }
 
