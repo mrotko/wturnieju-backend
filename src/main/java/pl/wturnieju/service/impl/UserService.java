@@ -149,16 +149,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> getById(String userId) {
+    public Optional<User> findUserById(String userId) {
         return userRepository.findById(userId);
     }
 
     @Override
-    public Optional<User> getByProfile(IProfile profile) {
+    public User getUserById(String userId) {
+        return findUserById(userId).orElse(null);
+    }
+
+    @Override
+    public Optional<User> findUseByProfile(IProfile profile) {
         if (profile == null) {
             return Optional.empty();
         }
-        return getById(profile.getId());
+        return findUserById(profile.getId());
+    }
+
+    @Override
+    public User getUserByProfile(IProfile profile) {
+        return findUseByProfile(profile).orElse(null);
     }
 
     @Override

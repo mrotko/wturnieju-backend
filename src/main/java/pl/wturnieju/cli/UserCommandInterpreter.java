@@ -35,7 +35,7 @@ public class UserCommandInterpreter extends CommandInterpreter<UserInfoResponse>
         List<User> users = new ArrayList<>();
 
         if (isParameterExists("id", "i")) {
-            users.add(userService.getById(getParameterValue("id", "i").orElse(null)).orElse(null));
+            users.add(userService.findUserById(getParameterValue("id", "i").orElse(null)).orElse(null));
         } else if (isParameterExists("query", "q")) {
             users.addAll(userSearch.find(getParameterValue("query", "q").orElse(null)));
         }

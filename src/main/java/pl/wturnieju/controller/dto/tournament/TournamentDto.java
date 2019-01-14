@@ -1,4 +1,4 @@
-package pl.wturnieju.dto;
+package pl.wturnieju.controller.dto.tournament;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.tournament.TournamentStatus;
 
 @Data
-public class TournamentDTO {
+public class TournamentDto {
 
     private String id;
 
@@ -29,7 +29,7 @@ public class TournamentDTO {
 
     private AccessOption accessOption;
 
-    private List<TournamentParticipantDTO> participants = new ArrayList<>();
+    private List<TournamentParticipantDto> participants = new ArrayList<>();
 
     private IProfile owner;
 

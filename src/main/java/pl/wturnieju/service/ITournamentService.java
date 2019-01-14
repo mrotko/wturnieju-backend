@@ -56,7 +56,7 @@ public interface ITournamentService {
 
     //    void updateFixture(GenericFixtureUpdateBundle bundle);
 
-    //    Optional<Tournament> getById(String tournamentId);
+    //    Optional<Tournament> findUserById(String tournamentId);
 
     //    Map<TournamentStatus, List<Tournament>> getAllUserTournamentsGroupedByStatus(String userId);
 

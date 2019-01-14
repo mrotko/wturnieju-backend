@@ -83,15 +83,15 @@ public class TournamentService implements ITournamentService {
     //    // TODO(mr): 21.11.2018 test
     //    @Override
     //    public void updateFixture(GenericFixtureUpdateBundle bundle) {
-    //        var tournament = tournamentRepository.findById(bundle.getTournamentId()).orElseThrow();
+    //        var tournament = tournamentRepository.findUserById(bundle.getTournamentId()).orElseThrow();
     //        var system = TournamentSystemFactory.create(tournament);
     //        system.updateFixture(bundle);
     //        tournamentRepository.save(tournament);
     //    }
 
     //    @Override
-    //    public Optional<Tournament> getById(String tournamentId) {
-    //        return tournamentRepository.findById(tournamentId);
+    //    public Optional<Tournament> findUserById(String tournamentId) {
+    //        return tournamentRepository.findUserById(tournamentId);
     //    }
     //
     //    @Override
@@ -115,7 +115,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public List<Fixture> getFixtures(String tournamentId) {
-    //        return tournamentRepository.findById(tournamentId)
+    //        return tournamentRepository.findUserById(tournamentId)
     //                .map(Tournament::getSystemState)
     //                .map(SystemState::getFixtures)
     //                .orElse(Collections.emptyList());
@@ -123,7 +123,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public GenericTournamentTable getTournamentTable(String tournamentId) {
-    //        return tournamentRepository.findById(tournamentId)
+    //        return tournamentRepository.findUserById(tournamentId)
     //                .map(Tournament::getSystemState)
     //                .map(SystemState::getTournamentTable)
     //                .orElse(null);
@@ -140,7 +140,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public List<Fixture> prepareNextRound(String tournamentId) {
-    //        return tournamentRepository.findById(tournamentId)
+    //        return tournamentRepository.findUserById(tournamentId)
     //                .map(TournamentSystemFactory::create)
     //                .map(TournamentSystem::prepareNextRound)
     //                .orElse(Collections.emptyList());
@@ -148,7 +148,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public void addNextRoundFixtures(String tournamentId, List<Fixture> fixtures) {
-    //        var tournament = tournamentRepository.findById(tournamentId);
+    //        var tournament = tournamentRepository.findUserById(tournamentId);
     //        tournament.ifPresent(t -> {
     //            var system = TournamentSystemFactory.create(t);
     //            system.createNextRoundFixtures(fixtures);
@@ -158,7 +158,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public Optional<Integer> getCurrentRound(String tournamentId) {
-    //        return tournamentRepository.findById(tournamentId)
+    //        return tournamentRepository.findUserById(tournamentId)
     //                .map(Tournament::getSystemState)
     //                .map(SystemState::getCurrentRound);
     //    }
@@ -177,7 +177,7 @@ public class TournamentService implements ITournamentService {
 
     //    @Override
     //    public Optional<Participant> findParticipantByUserId(String tournamentId, String userId) {
-    //        return getById(tournamentId).flatMap(tournament -> tournament.getParticipants().stream()
+    //        return findUserById(tournamentId).flatMap(tournament -> tournament.getParticipants().stream()
     //                .filter(p -> p.getId().equals(userId))
     //                .findFirst());
     //    }

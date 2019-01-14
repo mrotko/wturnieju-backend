@@ -75,7 +75,7 @@ public class SwissTournamentSystemTest {
         //
         //        tournamentService.updateTournament(bundle);
         //
-        //        Tournament tournament = tournamentService.getById(savedTournamentId).orElseThrow();
+        //        Tournament tournament = tournamentService.findUserById(savedTournamentId).orElseThrow();
         //
         //        assertEquals(TournamentStatus.IN_PROGRESS, tournament.getStatus());
         //        assertEquals(startDate, tournament.getStartDate());
@@ -101,7 +101,7 @@ public class SwissTournamentSystemTest {
     //
     //        tournamentService.updateTournament(bundle);
     //
-    //        Tournament tournament = tournamentService.getById(savedTournamentId).orElseThrow();
+    //        Tournament tournament = tournamentService.findUserById(savedTournamentId).orElseThrow();
     //
     //        assertEquals(TournamentStatus.ENDED, tournament.getStatus());
     //        assertEquals(stopDate, tournament.getEndDate());

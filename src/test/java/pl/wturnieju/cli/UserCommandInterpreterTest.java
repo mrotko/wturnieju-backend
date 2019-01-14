@@ -113,7 +113,7 @@ public class UserCommandInterpreterTest {
         var expectedResponse = new UserInfoResponse();
         var item = new UserInfoResponseItem();
         item.setId(testedUserId);
-        item.setEmail(userService.getById(testedUserId).map(User::getUsername).orElseThrow());
+        item.setEmail(userService.findUserById(testedUserId).map(User::getUsername).orElseThrow());
         expectedResponse.setItems(Collections.singletonList(item));
 
         assertEquals(expectedResponse, response1);
@@ -131,7 +131,7 @@ public class UserCommandInterpreterTest {
         var expectedResponse = new UserInfoResponse();
         var item = new UserInfoResponseItem();
         item.setId(testedUserId);
-        item.setName(userService.getById(testedUserId).map(User::getName).orElseThrow());
+        item.setName(userService.findUserById(testedUserId).map(User::getName).orElseThrow());
         expectedResponse.setItems(Collections.singletonList(item));
 
         assertEquals(expectedResponse, response1);
@@ -149,7 +149,7 @@ public class UserCommandInterpreterTest {
         var expectedResponse = new UserInfoResponse();
         var item = new UserInfoResponseItem();
         item.setId(testedUserId);
-        item.setSurname(userService.getById(testedUserId).map(User::getSurname).orElseThrow());
+        item.setSurname(userService.findUserById(testedUserId).map(User::getSurname).orElseThrow());
         expectedResponse.setItems(Collections.singletonList(item));
 
         assertEquals(expectedResponse, response1);
@@ -167,7 +167,7 @@ public class UserCommandInterpreterTest {
         var expectedResponse = new UserInfoResponse();
         var item = new UserInfoResponseItem();
         item.setId(testedUserId);
-        item.setFullName(userService.getById(testedUserId).map(User::getFullName).orElseThrow());
+        item.setFullName(userService.findUserById(testedUserId).map(User::getFullName).orElseThrow());
         expectedResponse.setItems(Collections.singletonList(item));
 
         assertEquals(expectedResponse, response1);

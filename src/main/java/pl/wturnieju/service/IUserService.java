@@ -29,9 +29,13 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     void create(String username, String password);
 
-    Optional<User> getById(String userId);
+    Optional<User> findUserById(String userId);
 
-    Optional<User> getByProfile(IProfile profile);
+    User getUserById(String userId);
+
+    Optional<User> findUseByProfile(IProfile profile);
+
+    User getUserByProfile(IProfile profile);
 
     void setAuthorities(Collection<UserGrantedAuthority> authorities);
 

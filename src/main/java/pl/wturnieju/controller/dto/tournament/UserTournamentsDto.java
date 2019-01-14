@@ -5,14 +5,13 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.wturnieju.dto.TournamentDTO;
 import pl.wturnieju.tournament.TournamentStatus;
 
 @Getter
 @Setter
-public class UserTournamentsDTO {
+public class UserTournamentsDto {
 
     private String userId;
 
-    private Map<TournamentStatus, List<TournamentDTO>> tournaments;
+    private Map<TournamentStatus, List<TournamentDto>> tournaments;
 }

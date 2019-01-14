@@ -1,11 +1,13 @@
-package pl.wturnieju.dto;
+package pl.wturnieju.controller.dto.tournament;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.tournament.ParticipantStatus;
 
-@Data
-public class TournamentParticipantDTO {
+@Getter
+@Setter
+public class TournamentParticipantDto {
 
     private String id;
 

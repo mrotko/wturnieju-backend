@@ -225,7 +225,7 @@ public class UserServiceTest {
     @Test
     public void getByProfileShouldPass() {
         var profile = (IProfile) savedActiveUser;
-        var user = userService.getByProfile(profile).orElseThrow();
+        var user = userService.findUseByProfile(profile).orElseThrow();
         assertEquals(savedActiveUser, user);
     }
 
