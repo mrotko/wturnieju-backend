@@ -1,5 +1,7 @@
 package pl.wturnieju.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.repository.SystemStateRepository;
@@ -7,6 +9,7 @@ import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.system.state.SystemState;
 
 @RequiredArgsConstructor
+@Service
 public abstract class SystemStateService<T extends SystemState> implements ISystemStateService<T> {
 
     private final SystemStateRepository<T> repository;

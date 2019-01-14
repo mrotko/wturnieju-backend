@@ -1,8 +1,8 @@
 package pl.wturnieju.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.exception.ValidationException;
-import pl.wturnieju.model.IProfile;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.service.ITournamentService;
+import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
+import pl.wturnieju.tournament.TournamentStatus;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
 import pl.wturnieju.validator.Validators;
 
@@ -27,8 +28,9 @@ public class TournamentService implements ITournamentService {
 
     @Override
     public List<Tournament> getUserTournaments(String userId) {
-        IProfile profile = () -> userId;
-        return tournamentRepository.getAllByOwnerOrParticipants(profile, Collections.singletonList(profile));
+        return tournamentRepository.findAll().stream()
+                .filter(t -> isUserInParticipants(t.getParticipants(), userId) || t.getOwner().getId().equals(userId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -37,6 +39,7 @@ public class TournamentService implements ITournamentService {
         validateTournamentParticipants(tournament);
         var system = TournamentSystemFactory.create(context, tournament);
         system.startTournament();
+        tournament.setStatus(TournamentStatus.IN_PROGRESS);
         tournamentRepository.save(tournament);
     }
 
@@ -45,16 +48,8 @@ public class TournamentService implements ITournamentService {
         var tournament = findTournament(tournamentId).orElseThrow(ResourceNotFoundException::new);
         var system = TournamentSystemFactory.create(context, tournament);
         system.finishTournament();
+        tournament.setStatus(TournamentStatus.ENDED);
         tournamentRepository.save(tournament);
-    }
-
-    private void validateTournamentParticipants(Tournament tournament) {
-        var validator = Validators.getTournamentParticipantsValidator();
-        try {
-            validator.validateAndThrowInvalid(tournament);
-        } catch (ValidationException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
     }
 
     @Override
@@ -76,6 +71,19 @@ public class TournamentService implements ITournamentService {
     public void updateTournament(Tournament tournament) {
         if (tournament != null) {
             tournamentRepository.save(tournament);
+        }
+    }
+
+    private boolean isUserInParticipants(List<Participant> participants, String userId) {
+        return participants.stream().anyMatch(p -> p.getId().equals(userId));
+    }
+
+    private void validateTournamentParticipants(Tournament tournament) {
+        var validator = Validators.getTournamentParticipantsValidator();
+        try {
+            validator.validateAndThrowInvalid(tournament);
+        } catch (ValidationException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

@@ -20,6 +20,6 @@ public class TournamentSystemFactory {
     }
 
     private static SwissSystemStateService getSwissStateService(ApplicationContext context) {
-        return (SwissSystemStateService) context.getBean("SwissSystemStateService");
+        return context.getBean(SwissSystemStateService.class);
     }
 }

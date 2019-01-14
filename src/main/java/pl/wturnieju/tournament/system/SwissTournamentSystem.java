@@ -27,6 +27,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     protected void createSystemState() {
         var state = new SwissSystemState();
 
+        state.setTournamentId(getTournament().getId());
         state.setTeamsWithBye(Collections.emptyList());
         state.setGameFixtures(Collections.emptyList());
         state.setTeamsPlayedEachOther(Collections.emptyMap());
@@ -35,8 +36,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     }
 
     @Override
-    public TournamentTable<TournamentTableRow>
-    buildTournamentTable() {
+    public TournamentTable<TournamentTableRow> buildTournamentTable() {
         // TODO(mr): 14.01.2019 fix impl
         Map<String, SwissTournamentTableRow> teamIdToRow = new HashMap<>();
 
@@ -45,7 +45,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         games.forEach(game -> {
             createRowsIfNotExists(teamIdToRow, game);
             var homeRow = teamIdToRow.get(game.getHomeTeam().getId());
-            var awayRow = (SwissTournamentTableRow) null;
+            SwissTournamentTableRow awayRow = null;
             if (game.getAwayTeam() != null) {
                 awayRow = teamIdToRow.get(game.getAwayTeam().getId());
             }

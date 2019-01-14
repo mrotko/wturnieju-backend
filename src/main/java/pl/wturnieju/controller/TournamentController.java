@@ -64,8 +64,8 @@ public class TournamentController {
         return mappers.createUserTournamentDto(userId, userTournaments);
     }
 
-    @PostMapping("/{tournamentId}")
-    public UpdateTournamentStatusDTO updateTournamentStatus(
+    @PutMapping("/{tournamentId}")
+    public TournamentDto updateTournamentStatus(
             @PathVariable("tournamentId") String tournamentId,
             @RequestBody UpdateTournamentStatusDTO dto) {
         switch (dto.getStatus()) {
@@ -78,7 +78,8 @@ public class TournamentController {
         default:
             throw new IllegalArgumentException("Unknown property - " + dto.getStatus());
         }
-        return dto;
+        var tournament = tournamentService.getTournament(tournamentId);
+        return mappers.createTournamentDto(tournament);
     }
 
     @GetMapping("/{tournamentId}")

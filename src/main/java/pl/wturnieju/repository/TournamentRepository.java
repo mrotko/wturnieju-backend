@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import pl.wturnieju.model.IProfile;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.TournamentStatus;
 
@@ -16,5 +15,5 @@ public interface TournamentRepository extends MongoRepository<Tournament, String
 
     List<Tournament> getAllByStatus(TournamentStatus status);
 
-    List<Tournament> getAllByOwnerOrParticipants(IProfile owner, List<IProfile> participants);
+    //    List<Tournament> getAllByOwnerOrParticipants(IProfile owner, List<IProfile> participants);
 }
