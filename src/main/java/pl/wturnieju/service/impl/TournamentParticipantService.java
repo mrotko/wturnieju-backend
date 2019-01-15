@@ -80,10 +80,10 @@ public class TournamentParticipantService implements ITournamentParticipantServi
             }
             Participant tournamentParticipant = new Participant();
             tournamentParticipant.setId(participantId);
+            tournamentParticipant.setName(userService.findUserById(participantId).map(User::getFullName).orElse(null));
             tournamentParticipant.setParticipantStatus(ParticipantStatus.INVITED);
             tournamentParticipant.setInvitationStatus(InvitationStatus.INVITED);
             tournament.getParticipants().add(tournamentParticipant);
-            tournament.setName(userService.findUserById(participantId).map(User::getFullName).orElse(null));
             tournamentService.updateTournament(tournament);
         });
     }

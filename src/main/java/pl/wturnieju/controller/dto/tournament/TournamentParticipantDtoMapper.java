@@ -21,8 +21,9 @@ public abstract class TournamentParticipantDtoMapper {
     @Mapping(source = "participant.id", target = "id")
     @Mapping(source = "participant.participantStatus", target = "status")
     @Mapping(source = "participant.invitationStatus", target = "invitationStatus")
-    @Mapping(source = "participant.name", target = "name")
-    @Mapping(source = "user.fullName", target = "fullName")
+    @Mapping(source = "participant.name", target = "fullName")
+    @Mapping(source = "user.name", target = "name")
+    @Mapping(source = "user.surname", target = "surname")
     @Mapping(source = "user.username", target = "email")
     protected abstract TournamentParticipantDto participantToTournamentParticipantDto(User user,
             Participant participant);
