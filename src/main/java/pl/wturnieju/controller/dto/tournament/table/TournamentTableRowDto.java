@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 public class TournamentTableRowDto {
 
+    private Integer baseOrderNum;
+
     private String teamId;
 
     private String name;

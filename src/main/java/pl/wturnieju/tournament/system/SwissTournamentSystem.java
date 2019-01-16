@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pl.wturnieju.service.impl.SwissSystemStateService;
+import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.SwissSystemState;
 import pl.wturnieju.tournament.system.table.SwissTournamentTableRow;
@@ -40,10 +41,11 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         // TODO(mr): 14.01.2019 fix impl
         Map<String, SwissTournamentTableRow> teamIdToRow = new HashMap<>();
 
+        getTournament().getParticipants().forEach(p -> teamIdToRow.put(p.getId(), createRowForParticipant(p)));
+
         var games = getSystemState().getGameFixtures();
 
         games.forEach(game -> {
-            createRowsIfNotExists(teamIdToRow, game);
             var homeRow = teamIdToRow.get(game.getHomeTeam().getId());
             SwissTournamentTableRow awayRow = null;
             if (game.getAwayTeam() != null) {
@@ -73,5 +75,9 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
             homeRow.incTotalGames();
         });
         return createTournamentTable(teamIdToRow.values());
+    }
+
+    private SwissTournamentTableRow createRowForParticipant(Participant participant) {
+        return new SwissTournamentTableRow(participant.getId(), participant.getName());
     }
 }

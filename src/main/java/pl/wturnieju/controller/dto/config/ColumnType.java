@@ -24,4 +24,7 @@ public enum ColumnType {
 
     @JsonProperty("COLUMN_TYPE.TOTAL_GAMES")
     TOTAL_GAMES,
+
+    @JsonProperty("COLUMN_TYPE.SMALL_POINTS")
+    SMALL_POINTS
 }
