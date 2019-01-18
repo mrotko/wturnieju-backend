@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.schedule.IScheduleEditor;
 import pl.wturnieju.schedule.ScheduleEditorFactory;
+import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
+import pl.wturnieju.tournament.system.state.SystemState;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +27,20 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     public List<GameFixture> generateSchedule(String tournamentId) {
         var editor = createScheduleEditor(tournamentId);
         return editor.generateGames();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<GameFixture> getGameFixtures(String tournamentId) {
+        var state = (SystemState<GameFixture>) createTournamentSystem(tournamentId).getSystemState();
+        return state.getGameFixtures();
+    }
+
+    @Override
+    public List<GameFixture> getGameFixturesBeforeStart(String tournamentId) {
+        return getGameFixtures(tournamentId).stream()
+                .filter(gameFixture -> gameFixture.getGameStatus() == GameStatus.BEFORE_START)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -47,9 +64,13 @@ public class TournamentScheduleService implements ITournamentScheduleService {
 
     @SuppressWarnings("unchecked")
     private IScheduleEditor<GameFixture> createScheduleEditor(String tournamentId) {
-        var tournament = tournamentService.getTournament(tournamentId);
-        var system = TournamentSystemFactory.create(context, tournament);
+        var system = createTournamentSystem(tournamentId);
         var scheduleEditor = ScheduleEditorFactory.create(system);
         return (IScheduleEditor<GameFixture>) scheduleEditor;
+    }
+
+    private TournamentSystem createTournamentSystem(String tournamentId) {
+        var tournament = tournamentService.getTournament(tournamentId);
+        return TournamentSystemFactory.create(context, tournament);
     }
 }

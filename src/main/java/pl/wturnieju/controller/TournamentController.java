@@ -167,6 +167,17 @@ public class TournamentController {
         return scheduleDTO;
     }
 
+    @GetMapping("/{tournamentId}/schedule")
+    public List<ScheduleDto> getSchedule(@PathVariable("tournamentId") String tournamentId) {
+        var games = scheduleService.getGameFixturesBeforeStart(tournamentId);
+
+        var fixturesGroupedByRound = games.stream()
+                .collect(Collectors.groupingBy(GameFixture::getRound, Collectors.toList()));
+        return fixturesGroupedByRound.entrySet().stream()
+                .map(entry -> mappers.createScheduleDto(tournamentId, entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/{tournamentId}/table")
     @Transactional(readOnly = true)
     public TournamentTableDto getTournamentTable(@PathVariable("tournamentId") String tournamentId) {

@@ -8,6 +8,10 @@ public interface ITournamentScheduleService {
 
     List<GameFixture> generateSchedule(String tournamentId);
 
+    List<GameFixture> getGameFixtures(String tournamentId);
+
+    List<GameFixture> getGameFixturesBeforeStart(String tournamentId);
+
     GameFixture updateGameFixture(String tournamentId, GameFixture gameFixture);
 
     List<GameFixture> saveSchedule(String tournamentId, List<GameFixture> games);
