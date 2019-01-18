@@ -153,8 +153,8 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
             vertices.values().forEach(v -> {
                 if (!visitedVertices.contains(v)) {
                     visitedVertices.addLast(v);
-                    visitedVertices.addLast(v.getEdge());
-                    v.removeEdge(v.getEdge());
+                    visitedVertices.addLast(v.getFirstEdge());
+                    v.removeEdge(v.getFirstEdge());
                 }
             });
         } else {
@@ -165,7 +165,7 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
 
                 SimpleVertex<String> v = null;
 
-                for (var edge : visitedVertex.getEdges().keySet()) {
+                for (var edge : visitedVertex.getNotVisitedEdges()) {
                     if (!visitedVertices.contains(edge)) {
                         v = edge;
                         break;
@@ -173,13 +173,14 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
                 }
 
                 if (v != null) {
+                    visitedVertices.getLast().markAsVisited(v);
                     visitedVertices.add(v);
                 } else {
+                    visitedVertices.getLast().getVisitedEdges().clear();
                     visitedVertices.removeLast();
                     if (visitedVertices.isEmpty()) {
                         break;
                     }
-                    visitedVertices.getLast().removeEdge(visitedVertex);
                 }
             }
         }

@@ -15,13 +15,4 @@ public class SimpleVertex<T> extends Vertex<T, SimpleVertex<T>> {
         edges.remove(vertex);
         vertex.edges.remove(this);
     }
-
-    @Override
-    public SimpleVertex<T> getEdge() {
-        var it = edges.entrySet().iterator();
-        if (it.hasNext()) {
-            return it.next().getKey();
-        }
-        return null;
-    }
 }
