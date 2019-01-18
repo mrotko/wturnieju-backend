@@ -1,6 +1,7 @@
 package pl.wturnieju.controller;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -167,9 +168,17 @@ public class TournamentController {
         return scheduleDTO;
     }
 
-    @GetMapping("/{tournamentId}/schedule")
-    public List<ScheduleDto> getSchedule(@PathVariable("tournamentId") String tournamentId) {
-        var games = scheduleService.getGameFixturesBeforeStart(tournamentId);
+    @GetMapping(path = "/{tournamentId}/schedule", params = {"game_status"})
+    public List<ScheduleDto> getSchedule(@PathVariable("tournamentId") String tournamentId,
+            @RequestParam("game_status") String gameStatus) {
+
+        List<GameFixture> games = new ArrayList<>();
+
+        if (gameStatus.equals("BEFORE_START")) {
+            games.addAll(scheduleService.getGameFixturesBeforeStart(tournamentId));
+        } else if (gameStatus.equals("ENDED")) {
+            games.addAll(scheduleService.getEndedGameFixtures(tournamentId));
+        }
 
         var fixturesGroupedByRound = games.stream()
                 .collect(Collectors.groupingBy(GameFixture::getRound, Collectors.toList()));

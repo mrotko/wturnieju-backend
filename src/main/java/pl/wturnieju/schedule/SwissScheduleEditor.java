@@ -18,6 +18,7 @@ import pl.wturnieju.gamefixture.Score;
 import pl.wturnieju.gamefixture.SwissGameFixture;
 import pl.wturnieju.gamefixture.Team;
 import pl.wturnieju.graph.SimpleVertex;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.system.SwissTournamentSystem;
 
 @RequiredArgsConstructor
@@ -64,6 +65,9 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
         gameFixtures.forEach(game -> {
             if (game.getBye()) {
                 state.getTeamsWithBye().add(game.getHomeTeam().getId());
+                game.setGameStatus(GameStatus.ENDED);
+                game.setWinner(1);
+                game.setFinishedDate(Timestamp.now());
             } else {
                 state.getTeamsPlayedEachOther().computeIfAbsent(
                         game.getHomeTeam().getId(),

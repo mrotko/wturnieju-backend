@@ -12,6 +12,8 @@ public interface ITournamentScheduleService {
 
     List<GameFixture> getGameFixturesBeforeStart(String tournamentId);
 
+    List<GameFixture> getEndedGameFixtures(String tournamentId);
+
     GameFixture updateGameFixture(String tournamentId, GameFixture gameFixture);
 
     List<GameFixture> saveSchedule(String tournamentId, List<GameFixture> games);

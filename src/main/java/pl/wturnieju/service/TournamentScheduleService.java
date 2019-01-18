@@ -44,6 +44,13 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     }
 
     @Override
+    public List<GameFixture> getEndedGameFixtures(String tournamentId) {
+        return getGameFixtures(tournamentId).stream()
+                .filter(gameFixture -> gameFixture.getGameStatus() == GameStatus.ENDED)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public GameFixture updateGameFixture(String tournamentId, GameFixture gameFixture) {
         var editor = createScheduleEditor(tournamentId);
         return editor.updateGame(gameFixture);
