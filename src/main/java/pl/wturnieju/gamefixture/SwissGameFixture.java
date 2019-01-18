@@ -7,5 +7,4 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SwissGameFixture extends GameFixture {
 
-    private boolean bye;
 }

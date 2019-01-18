@@ -22,5 +22,7 @@ public class ScheduleElementDto {
 
     private TeamDto awayTeam;
 
+    private Boolean bye;
+
     private GameStatus gameStatus;
 }

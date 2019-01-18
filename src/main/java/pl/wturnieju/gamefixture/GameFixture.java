@@ -29,4 +29,6 @@ public class GameFixture {
     private int winner;
 
     private Integer round;
+
+    private Boolean bye;
 }

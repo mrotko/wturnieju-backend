@@ -136,7 +136,7 @@ public class TournamentController {
         return userService.findUserById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    @GetMapping("/{tournamentId}/schedule")
+    @GetMapping("/{tournamentId}/schedule/generate")
     public ScheduleDto generateSchedule(@PathVariable("tournamentId") String tournamentId) {
         var schedule = scheduleService.generateSchedule(tournamentId);
         var round = schedule.stream()

@@ -1,10 +1,12 @@
 package pl.wturnieju.schedule;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
@@ -15,7 +17,7 @@ import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.gamefixture.Score;
 import pl.wturnieju.gamefixture.SwissGameFixture;
 import pl.wturnieju.gamefixture.Team;
-import pl.wturnieju.tournament.Participant;
+import pl.wturnieju.graph.SimpleVertex;
 import pl.wturnieju.tournament.system.SwissTournamentSystem;
 
 @RequiredArgsConstructor
@@ -59,6 +61,22 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
     public List<SwissGameFixture> addGames(List<SwissGameFixture> gameFixtures) {
         var state = tournamentSystem.getSystemState();
 
+        gameFixtures.forEach(game -> {
+            if (game.getBye()) {
+                state.getTeamsWithBye().add(game.getHomeTeam().getId());
+            } else {
+                state.getTeamsPlayedEachOther().computeIfAbsent(
+                        game.getHomeTeam().getId(),
+                        k -> new ArrayList<>()
+                ).add(game.getAwayTeam().getId());
+
+                state.getTeamsPlayedEachOther().computeIfAbsent(
+                        game.getAwayTeam().getId(),
+                        k -> new ArrayList<>()
+                ).add(game.getHomeTeam().getId());
+            }
+        });
+
         state.getGameFixtures().addAll(gameFixtures);
         tournamentSystem.getStateService().updateSystemState(state);
 
@@ -87,34 +105,100 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
 
     @Override
     public List<SwissGameFixture> generateGames() {
-        var participants = tournamentSystem.getTournament().getParticipants().stream()
-                .map(Participant::getId)
-                .collect(Collectors.toList());
+        var state = tournamentSystem.getSystemState();
+        var playedEachOther = state.getTeamsPlayedEachOther();
 
-        Map<String, List<String>> availableOpponents = participants.stream()
-                .collect(Collectors.toMap(Function.identity(), id -> getAvailableOpponents(id, participants)));
+        Map<String, SimpleVertex<String>> vertices = new HashMap<>();
 
-        List<String> availablePlayers = new ArrayList<>();
-        List<SwissGameFixture> games = new ArrayList<>();
-
-        participants.forEach(pId -> {
-            if (availablePlayers.contains(pId)) {
-                var opponentId = availableOpponents.get(pId).stream()
-                        .filter(availablePlayers::contains)
-                        .findFirst().orElse(null);
-
-                if (opponentId != null) {
-                    availablePlayers.remove(pId);
-                    availablePlayers.remove(opponentId);
-                    games.add(createGame(pId, opponentId));
-                }
-            }
-        });
-        if (!availablePlayers.isEmpty()) {
-            games.add(createGame(availablePlayers.get(0), null));
+        var idCounter = 0;
+        for (var p : tournamentSystem.getTournament().getParticipants()) {
+            var vertex = new SimpleVertex<>(idCounter++, p.getId());
+            vertices.put(p.getId(), vertex);
         }
 
-        var state = tournamentSystem.getSystemState();
+        List<String> addedVertices = new ArrayList<>();
+        vertices.forEach((id, v) -> {
+            if (!addedVertices.contains(id)) {
+                vertices.forEach((oId, oV) -> {
+                    if (!oId.equals(id) && !oV.hasEdge(v) && !playedEachOther.getOrDefault(id, Collections.emptyList())
+                            .contains(oId)) {
+                        v.addEdge(oV);
+                    }
+                });
+                addedVertices.add(id);
+            }
+        });
+
+        if (vertices.size() % 2 == 1) {
+            SimpleVertex<String> byeVertex = new SimpleVertex<>(idCounter, null);
+            vertices.values().forEach(v -> {
+                if (!state.getTeamsWithBye().contains(v.getValue())) {
+                    v.addEdge(byeVertex);
+                }
+            });
+            vertices.put(null, byeVertex);
+        }
+
+        boolean allVerticesHasOneEdge = true;
+
+        for (var v : vertices.values()) {
+            if (v.getEdges().size() != 1) {
+                allVerticesHasOneEdge = false;
+                break;
+            }
+        }
+
+        Deque<SimpleVertex<String>> visitedVertices = new ArrayDeque<>();
+        if (allVerticesHasOneEdge) {
+            vertices.values().forEach(v -> {
+                if (!visitedVertices.contains(v)) {
+                    visitedVertices.addLast(v);
+                    visitedVertices.addLast(v.getEdge());
+                    v.removeEdge(v.getEdge());
+                }
+            });
+        } else {
+            visitedVertices.addLast(vertices.entrySet().iterator().next().getValue());
+            var treeSize = vertices.size();
+            while (visitedVertices.size() < treeSize) {
+                var visitedVertex = visitedVertices.getLast();
+
+                SimpleVertex<String> v = null;
+
+                for (var edge : visitedVertex.getEdges().keySet()) {
+                    if (!visitedVertices.contains(edge)) {
+                        v = edge;
+                        break;
+                    }
+                }
+
+                if (v != null) {
+                    visitedVertices.add(v);
+                } else {
+                    visitedVertices.removeLast();
+                    if (visitedVertices.isEmpty()) {
+                        break;
+                    }
+                    visitedVertices.getLast().removeEdge(visitedVertex);
+                }
+            }
+        }
+
+        if (visitedVertices.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<SwissGameFixture> games = new ArrayList<>();
+        var it = visitedVertices.iterator();
+        while (it.hasNext()) {
+            var homeId = it.next().getValue();
+            var awayId = it.next().getValue();
+            if (homeId == null) {
+                games.add(createGame(awayId, null));
+            } else {
+                games.add(createGame(homeId, awayId));
+            }
+        }
         state.setGeneratedGameFixtures(games);
         tournamentSystem.getStateService().updateSystemState(state);
         return games;
@@ -135,18 +219,10 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
         return gamesIds;
     }
 
-    private List<String> getAvailableOpponents(String participantId, List<String> opponentsIds) {
-        var state = tournamentSystem.getSystemState();
-        var playedList = state.getTeamsPlayedEachOther().get(participantId);
-        return opponentsIds.stream()
-                .filter(id -> !playedList.contains(id))
-                .collect(Collectors.toList());
-    }
-
     private SwissGameFixture createGame(String participantId, String opponentId) {
         var game = new SwissGameFixture();
 
-        game.setBye(false);
+        game.setBye(opponentId == null);
         game.setId(new ObjectId().toString());
         game.setStartDate(null);
         game.setEndDate(null);
@@ -159,10 +235,6 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
         game.setGameStatus(GameStatus.BEFORE_START);
         game.setWinner(0);
         game.setRound(tournamentSystem.getTournament().getCurrentRound() + 1);
-
-        if (opponentId == null) {
-            game.setBye(true);
-        }
 
         return game;
     }
