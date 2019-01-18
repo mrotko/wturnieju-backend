@@ -247,7 +247,7 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
     private Score createScore() {
         var score = new Score();
 
-        score.setCurrent(0.0D);
+        score.setCurrent(null);
         score.setPeriods(Collections.emptyMap());
 
         return score;
