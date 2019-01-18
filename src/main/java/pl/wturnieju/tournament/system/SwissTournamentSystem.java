@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.service.impl.SwissSystemStateService;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
@@ -45,35 +46,37 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
         var games = getSystemState().getGameFixtures();
 
-        games.forEach(game -> {
-            var homeRow = teamIdToRow.get(game.getHomeTeam().getId());
-            SwissTournamentTableRow awayRow = null;
-            if (game.getAwayTeam() != null) {
-                awayRow = teamIdToRow.get(game.getAwayTeam().getId());
-            }
+        games.stream()
+                .filter(game -> game.getGameStatus() == GameStatus.ENDED)
+                .forEach(game -> {
+                    var homeRow = teamIdToRow.get(game.getHomeTeam().getId());
+                    SwissTournamentTableRow awayRow = null;
+                    if (game.getAwayTeam() != null) {
+                        awayRow = teamIdToRow.get(game.getAwayTeam().getId());
+                    }
 
-            if (awayRow == null) {
-                homeRow.incWins();
-                homeRow.addPoints(1.0);
-            } else {
-                if (game.getWinner() == 0) {
-                    homeRow.incDraws();
-                    awayRow.incDraws();
-                    homeRow.addPoints(0.5);
-                    awayRow.addPoints(0.5);
-                } else if (game.getWinner() == 1) {
-                    homeRow.incWins();
-                    awayRow.incLoses();
-                    homeRow.addPoints(1.0);
-                } else {
-                    homeRow.incLoses();
-                    awayRow.incWins();
-                    awayRow.addPoints(1.0);
-                }
-                awayRow.incTotalGames();
-            }
-            homeRow.incTotalGames();
-        });
+                    if (awayRow == null) {
+                        homeRow.incWins();
+                        homeRow.addPoints(1.0);
+                    } else {
+                        if (game.getWinner() == 0) {
+                            homeRow.incDraws();
+                            awayRow.incDraws();
+                            homeRow.addPoints(0.5);
+                            awayRow.addPoints(0.5);
+                        } else if (game.getWinner() == 1) {
+                            homeRow.incWins();
+                            awayRow.incLoses();
+                            homeRow.addPoints(1.0);
+                        } else {
+                            homeRow.incLoses();
+                            awayRow.incWins();
+                            awayRow.addPoints(1.0);
+                        }
+                        awayRow.incTotalGames();
+                    }
+                    homeRow.incTotalGames();
+                });
         return createTournamentTable(teamIdToRow.values());
     }
 
