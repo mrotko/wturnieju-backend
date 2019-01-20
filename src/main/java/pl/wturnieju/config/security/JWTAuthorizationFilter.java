@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -33,8 +34,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        var authentication = getAuthentication(header);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            var authentication = getAuthentication(header);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JWTVerificationException e) {
+            response.setHeader(SecurityConstants.AUTH_ACTION_HEADER, "LOGOUT");
+            response.setHeader(SecurityConstants.LOGOUT_REASON_HEADER, "TOKEN");
+        }
         chain.doFilter(request, response);
     }
 

@@ -1,6 +1,8 @@
 package pl.wturnieju.config.security;
 
+import static pl.wturnieju.config.security.SecurityConstants.AUTH_ACTION_HEADER;
 import static pl.wturnieju.config.security.SecurityConstants.HEADER_STRING;
+import static pl.wturnieju.config.security.SecurityConstants.LOGOUT_REASON_HEADER;
 
 import java.util.Optional;
 
@@ -71,6 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
         corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
         corsConfiguration.addExposedHeader(HEADER_STRING);
+        corsConfiguration.addExposedHeader(AUTH_ACTION_HEADER);
+        corsConfiguration.addExposedHeader(LOGOUT_REASON_HEADER);
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
