@@ -18,7 +18,7 @@ import pl.wturnieju.model.CompetitionType;
 )
 @JsonSubTypes({
         @Type(value = StartGameEventDto.class, name = "GAME_EVENT_TYPE.GAME_START"),
-        @Type(value = FinishGameEventDto.class, name = "GAME_EVENT_TYPE.FINISH_GAME"),
+        @Type(value = FinishGameEventDto.class, name = "GAME_EVENT_TYPE.GAME_FINISHED"),
         @Type(value = TeamEventDto.class, name = "GAME_EVENT_TYPE.TEAM_EVENT")
 })
 public abstract class GameEventDto {
