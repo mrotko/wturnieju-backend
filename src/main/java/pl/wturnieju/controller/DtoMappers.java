@@ -12,6 +12,7 @@ import pl.wturnieju.controller.dto.tournament.TournamentParticipantDto;
 import pl.wturnieju.controller.dto.tournament.TournamentParticipantDtoMapper;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDto;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDtoMapper;
+import pl.wturnieju.controller.dto.tournament.gamefixture.GameFixtureDtoMapper;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDto;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDtoMapper;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDtoMapper;
@@ -39,6 +40,8 @@ public class DtoMappers {
     private final TournamentDtoMapper tournamentDtoMapper;
 
     private final UserTournamentsDtoMapper userTournamentsDtoMapper;
+
+    private final GameFixtureDtoMapper gameFixtureDtoMapper;
 
 
     public UserTournamentsDto createUserTournamentDto(String userId, List<Tournament> tournaments) {

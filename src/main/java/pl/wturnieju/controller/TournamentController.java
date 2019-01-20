@@ -24,6 +24,7 @@ import pl.wturnieju.controller.dto.tournament.TournamentDto;
 import pl.wturnieju.controller.dto.tournament.TournamentParticipantDto;
 import pl.wturnieju.controller.dto.tournament.UpdateTournamentStatusDTO;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDto;
+import pl.wturnieju.controller.dto.tournament.gamefixture.GameFixtureDto;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDto;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDto;
 import pl.wturnieju.controller.dto.tournament.table.TournamentTableDto;
@@ -185,6 +186,13 @@ public class TournamentController {
         return fixturesGroupedByRound.entrySet().stream()
                 .map(entry -> mappers.createScheduleDto(tournamentId, entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/{tournamentId}/game-fixtures")
+    public List<GameFixtureDto> getGameFixtures(@PathVariable("tournamentId") String tournamentId) {
+        var games = scheduleService.getGameFixtures(tournamentId);
+        var tournament = tournamentService.getTournament(tournamentId);
+        return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games, tournament);
     }
 
     @GetMapping("/{tournamentId}/table")

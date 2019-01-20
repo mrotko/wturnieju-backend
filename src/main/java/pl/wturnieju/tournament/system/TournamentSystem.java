@@ -3,6 +3,9 @@ package pl.wturnieju.tournament.system;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
+import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
+import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.ParticipantStatus;
@@ -49,6 +52,12 @@ public abstract class TournamentSystem<T extends SystemState> {
         }
         return table;
     }
+
+    public abstract GameFixture startGame(StartGameUpdateEvent startGameUpdateEvent);
+
+    public abstract GameFixture finishGame(FinishGameUpdateEvent finishGameUpdateEvent);
+
+
 
     public ISystemStateService<T> getStateService() {
         return stateService;

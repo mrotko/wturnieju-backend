@@ -31,4 +31,6 @@ public class GameFixture {
     private Integer round;
 
     private Boolean bye;
+
+    private Boolean live;
 }
