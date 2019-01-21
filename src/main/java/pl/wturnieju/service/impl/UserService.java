@@ -66,6 +66,17 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User changePersonalData(String name, String surname) {
+        var user = getCurrentUser();
+        if (user != null) {
+            user.setName(name);
+            user.setSurname(surname);
+            userRepository.save(user);
+        }
+        return user;
+    }
+
+    @Override
     public boolean checkCredentials(String email, String rawPassword) {
         log.info("Checking user: {}", email);
 

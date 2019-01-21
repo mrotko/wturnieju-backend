@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.config.AuthorityType;
 import pl.wturnieju.controller.dto.user.ChangePasswordDTO;
+import pl.wturnieju.controller.dto.user.ChangePersonalDataDto;
 import pl.wturnieju.controller.dto.user.ChangeUsernameDTO;
 import pl.wturnieju.controller.dto.user.UserConfigDTO;
+import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
 import pl.wturnieju.model.verification.EmailChangeVerificationData;
@@ -46,6 +49,11 @@ public class UserController {
         data.setOldEmail(userService.getCurrentUser().getUsername());
 
         verificationService.createVerificationToken(data);
+    }
+
+    @PatchMapping("/personal")
+    public User changePersonalData(@RequestBody ChangePersonalDataDto dto) {
+        return userService.changePersonalData(dto.getName(), dto.getSurname());
     }
 
     @PutMapping("/authority")

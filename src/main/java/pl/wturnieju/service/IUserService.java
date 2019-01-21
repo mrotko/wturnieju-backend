@@ -15,6 +15,8 @@ public interface IUserService extends UserDetailsService, ICurrentUserProvider {
 
     void changePassword(String newPassword, String oldPassword);
 
+    User changePersonalData(String name, String surname);
+
     boolean checkCredentials(String email, String password);
 
     void validateEmailChange(String username, String password);
