@@ -1,6 +1,8 @@
 package pl.wturnieju.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
@@ -33,7 +35,7 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     @Override
     public List<GameFixture> getGameFixtures(String tournamentId) {
         var state = (SystemState<GameFixture>) createTournamentSystem(tournamentId).getSystemState();
-        return state.getGameFixtures();
+        return Optional.ofNullable(state).map(SystemState::getGameFixtures).orElse(Collections.emptyList());
     }
 
     @Override
