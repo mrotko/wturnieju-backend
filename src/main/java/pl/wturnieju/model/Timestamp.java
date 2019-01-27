@@ -1,10 +1,10 @@
 package pl.wturnieju.model;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -29,6 +29,19 @@ public class Timestamp {
     @Transient
     public static Timestamp now() {
         return new Timestamp(LocalDateTime.now());
+    }
+
+    @Transient
+    public boolean isBetweenIncluded(Timestamp lower, Timestamp upper) {
+        if (isBetween(lower, upper)) {
+            return true;
+        }
+        return value.isEqual(lower.value) || value.isEqual(upper.value);
+    }
+
+    @Transient
+    public boolean isBetween(Timestamp lower, Timestamp upper) {
+        return value.isAfter(lower.value) && value.isBefore(upper.value);
     }
 
     @Override

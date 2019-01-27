@@ -2,6 +2,7 @@ package pl.wturnieju.controller;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,8 @@ import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDto;
 import pl.wturnieju.controller.dto.tournament.table.TournamentTableDto;
 import pl.wturnieju.exception.UserNotFoundException;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.model.AccessOption;
+import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.verification.TournamentInviteVerificationData;
 import pl.wturnieju.model.verification.TournamentInviteVerificationToken;
@@ -200,5 +203,16 @@ public class TournamentController {
     public TournamentTableDto getTournamentTable(@PathVariable("tournamentId") String tournamentId) {
         var table = tournamentPresentationService.getTournamentTable(tournamentId);
         return mappers.createTournamentTableDto(tournamentId, table);
+    }
+
+    @GetMapping(value = "/", params = {"access"})
+    public List<String> getTournamentsIdsByAccess(@RequestParam("access") String access) {
+        if (access.equals("PUBLIC")) {
+            return tournamentService.getTournamentsByAccess(AccessOption.PUBLIC).stream()
+                    .map(Persistent::getId)
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
     }
 }

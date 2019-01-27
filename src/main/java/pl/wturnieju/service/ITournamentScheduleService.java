@@ -3,6 +3,7 @@ package pl.wturnieju.service;
 import java.util.List;
 
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.model.Timestamp;
 
 public interface ITournamentScheduleService {
 
@@ -19,4 +20,6 @@ public interface ITournamentScheduleService {
     List<GameFixture> saveSchedule(String tournamentId, List<GameFixture> games);
 
     List<GameFixture> getGeneratedSchedule(String tournamentId, List<String> gameIds);
+
+    List<GameFixture> getGameFixturesBetweenDates(String tournamentId, Timestamp dateFrom, Timestamp dateTo);
 }

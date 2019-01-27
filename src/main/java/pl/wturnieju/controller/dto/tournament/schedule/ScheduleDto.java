@@ -11,6 +11,8 @@ public class ScheduleDto {
 
     private String tournamentId;
 
+    private String tournamentName;
+
     private Integer round;
 
     private List<ScheduleElementDto> elements;

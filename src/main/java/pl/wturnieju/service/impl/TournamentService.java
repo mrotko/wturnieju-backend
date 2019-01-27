@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.exception.ValidationException;
+import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.tournament.Participant;
@@ -72,6 +73,20 @@ public class TournamentService implements ITournamentService {
         if (tournament != null) {
             tournamentRepository.save(tournament);
         }
+    }
+
+    @Override
+    public List<Tournament> getTournamentsByAccess(AccessOption accessOption) {
+        return tournamentRepository.getAllByAccessOption(accessOption);
+    }
+
+    @Override
+    public String getTournamentName(String tournamentId) {
+        var tournament = tournamentRepository.getById(tournamentId);
+        if (tournament == null) {
+            return null;
+        }
+        return tournament.getName();
     }
 
     private boolean isUserInParticipants(List<Participant> participants, String userId) {

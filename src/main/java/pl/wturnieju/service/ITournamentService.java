@@ -3,6 +3,7 @@ package pl.wturnieju.service;
 import java.util.List;
 import java.util.Optional;
 
+import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.tournament.Tournament;
 
 
@@ -48,6 +49,10 @@ public interface ITournamentService {
     List<Tournament> getUserTournaments(String userId);
 
     void updateTournament(Tournament tournament);
+
+    List<Tournament> getTournamentsByAccess(AccessOption accessOption);
+
+    String getTournamentName(String tournamentId);
 
 
     //    void updateTournament(Tournament tournament);

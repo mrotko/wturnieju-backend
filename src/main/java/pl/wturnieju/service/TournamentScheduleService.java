@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.gamefixture.GameStatus;
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.schedule.IScheduleEditor;
 import pl.wturnieju.schedule.ScheduleEditorFactory;
 import pl.wturnieju.tournament.system.TournamentSystem;
@@ -69,6 +70,14 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     public List<GameFixture> getGeneratedSchedule(String tournamentId, List<String> gameIds) {
         var editor = createScheduleEditor(tournamentId);
         return editor.getGeneratedGames(gameIds);
+    }
+
+    @Override
+    public List<GameFixture> getGameFixturesBetweenDates(String tournamentId, Timestamp dateFrom, Timestamp dateTo) {
+        return getGameFixtures(tournamentId).stream()
+                .filter(gameFixture -> gameFixture.getStartDate() != null)
+                .filter(gameFixture -> gameFixture.getStartDate().isBetweenIncluded(dateFrom, dateTo))
+                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
