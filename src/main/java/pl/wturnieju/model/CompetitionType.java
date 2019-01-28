@@ -10,5 +10,8 @@ public enum CompetitionType {
     FOOTBALL,
 
     @JsonProperty("COMPETITION_TYPE.TENNIS")
-    TENNIS
+    TENNIS,
+
+    @JsonProperty("COMPETITION_TYPE.CUSTOM")
+    CUSTOM
 }

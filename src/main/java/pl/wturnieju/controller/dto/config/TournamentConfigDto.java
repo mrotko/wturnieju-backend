@@ -45,13 +45,51 @@ public class TournamentConfigDto {
     }
 
     private void initParticipantTypes() {
-        participantTypes.put(CompetitionType.CHESS, Collections.singletonList(TournamentParticipantType.SINGLE));
+        participantTypes.put(CompetitionType.CHESS, Collections.singletonList(
+                TournamentParticipantType.SINGLE
+        ));
+
+        participantTypes.put(CompetitionType.FOOTBALL, Arrays.asList(
+                TournamentParticipantType.SINGLE,
+                TournamentParticipantType.TEAM
+        ));
+
+        participantTypes.put(CompetitionType.TENNIS, Arrays.asList(
+                TournamentParticipantType.SINGLE,
+                TournamentParticipantType.TEAM
+        ));
+
+        participantTypes.put(CompetitionType.CUSTOM, Arrays.asList(
+                TournamentParticipantType.SINGLE,
+                TournamentParticipantType.TEAM
+        ));
     }
 
     private void initAvailableSystems() {
-        systemTypes.put(CompetitionType.CHESS, Arrays.asList(
-                TournamentSystemType.SWISS,
+        systemTypes.put(CompetitionType.CHESS, Collections.singletonList(
+                TournamentSystemType.SWISS
+        ));
+
+        systemTypes.put(CompetitionType.TENNIS, Arrays.asList(
+                TournamentSystemType.LEAGUE,
+                TournamentSystemType.KNOCKOUT,
+                TournamentSystemType.GROUP,
                 TournamentSystemType.ROUND_ROBIN
+        ));
+
+        systemTypes.put(CompetitionType.FOOTBALL, Arrays.asList(
+                TournamentSystemType.LEAGUE,
+                TournamentSystemType.KNOCKOUT,
+                TournamentSystemType.GROUP,
+                TournamentSystemType.ROUND_ROBIN
+        ));
+
+        systemTypes.put(CompetitionType.CUSTOM, Arrays.asList(
+                TournamentSystemType.LEAGUE,
+                TournamentSystemType.KNOCKOUT,
+                TournamentSystemType.GROUP,
+                TournamentSystemType.ROUND_ROBIN,
+                TournamentSystemType.SWISS
         ));
     }
 }

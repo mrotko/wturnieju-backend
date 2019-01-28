@@ -206,6 +206,7 @@ public class TournamentController {
     }
 
     @GetMapping(value = "/", params = {"access"})
+    @Transactional(readOnly = true)
     public List<String> getTournamentsIdsByAccess(@RequestParam("access") String access) {
         if (access.equals("PUBLIC")) {
             return tournamentService.getTournamentsByAccess(AccessOption.PUBLIC).stream()
