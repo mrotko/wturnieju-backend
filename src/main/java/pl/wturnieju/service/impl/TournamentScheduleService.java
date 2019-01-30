@@ -1,4 +1,4 @@
-package pl.wturnieju.service;
+package pl.wturnieju.service.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +14,8 @@ import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.schedule.IScheduleEditor;
 import pl.wturnieju.schedule.ScheduleEditorFactory;
+import pl.wturnieju.service.ITournamentScheduleService;
+import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
 import pl.wturnieju.tournament.system.state.SystemState;

@@ -1,10 +1,10 @@
-package pl.wturnieju.service;
+package pl.wturnieju.service.impl;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.service.impl.TournamentService;
+import pl.wturnieju.service.ITournamentPresentationService;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
 import pl.wturnieju.tournament.system.table.TournamentTable;

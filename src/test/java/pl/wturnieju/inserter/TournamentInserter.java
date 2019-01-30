@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.controller.dto.config.TournamentConfigDto;
-import pl.wturnieju.dto.ChessTournamentTemplateDto;
+import pl.wturnieju.controller.dto.tournament.creator.ChessTournamentTemplateDto;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Timestamp;
@@ -20,23 +20,23 @@ public class TournamentInserter {
     private TournamentConfigDto config = new TournamentConfigDto();
 
     public void insertTournamentToDatabase() {
-        tournamentCreatorService.create(prepareChessTournamentDto());
+        //        tournamentCreatorService.create(prepareChessTournamentDto());
     }
 
     private ChessTournamentTemplateDto prepareChessTournamentDto() {
         var dto = new ChessTournamentTemplateDto();
 
-        dto.setParticipantType(TournamentParticipantType.SINGLE);
-        dto.setCompetition(CompetitionType.CHESS);
-        dto.setTournamentSystem(TournamentSystemType.SWISS);
+        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
+        dto.setCompetitionType(CompetitionType.CHESS);
+        dto.setSystemType(TournamentSystemType.SWISS);
         dto.setAccessOption(AccessOption.PRIVATE);
         dto.setDescription("");
-        dto.setFromDate(new Timestamp(LocalDateTime.now().minusDays(1)));
+        dto.setStartDate(new Timestamp(LocalDateTime.now().minusDays(1)));
         dto.setMaxParticipants(5);
         dto.setMinParticipants(2);
         dto.setName("TURNIEJ SZACHOWY");
         dto.setPlace("");
-        dto.setToDate(new Timestamp(LocalDateTime.now().plusDays(1)));
+        dto.setEndDate(new Timestamp(LocalDateTime.now().plusDays(1)));
 
         return dto;
     }

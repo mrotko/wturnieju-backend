@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.controller.dto.config.TournamentConfigDto;
-import pl.wturnieju.dto.TournamentTemplateDto;
+import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateDto;
+import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateMapperStrategy;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationData;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
 import pl.wturnieju.service.ITournamentCreatorService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IVerificationService;
+import pl.wturnieju.tournament.Tournament;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,18 +35,25 @@ public class TournamentCreatorController {
 
     private final ITournamentService tournamentService;
 
+    private final TournamentTemplateMapperStrategy templateMapperStrategy;
+
     @PostMapping(value = "/create")
     public Map<String, String> createTournament(@RequestBody TournamentTemplateDto dto) {
-        var tournament = tournamentCreatorService.create(dto);
+        var tournament = templateMapperStrategy.mapToTournament(dto);
+        tournamentCreatorService.create(tournament);
         if (Optional.ofNullable(dto.getInvitationLink()).orElse(false)) {
-            var verificationData = new TournamentParticipationRequestVerificationData();
-            verificationData.setTournamentId(tournament.getId());
-            var token = tournamentParticipationRequestVerificationService.createVerificationToken(verificationData);
-            tournament.setInvitationToken(token.getToken());
-            tournamentService.updateTournament(tournament);
+            createInvitationToken(tournament);
         }
 
         return Collections.singletonMap("tournamentId", tournament.getId());
+    }
+
+    private void createInvitationToken(Tournament tournament) {
+        var verificationData = new TournamentParticipationRequestVerificationData();
+        verificationData.setTournamentId(tournament.getId());
+        var token = tournamentParticipationRequestVerificationService.createVerificationToken(verificationData);
+        tournament.setInvitationToken(token.getToken());
+        tournamentService.updateTournament(tournament);
     }
 
     @GetMapping("/config")

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Requirements {
 
-    private int rounds;
+    private int plannedRounds;
 
     private int minParticipants;
 

@@ -22,13 +22,13 @@ public class TournamentParticipantsValidator implements IValidator<Tournament> {
                 .filter(p -> p.getParticipantStatus() == ParticipantStatus.INVITED)
                 .filter(p -> p.getInvitationStatus() == InvitationStatus.ACCEPTED)
                 .count();
-        if (acceptedParticipantsNumber < tested.getMinParticipants()) {
+        if (acceptedParticipantsNumber < tested.getRequirements().getMinParticipants()) {
             throw new ValidationException("Participant validation error. Required min " + tested
-                    .getMinParticipants() + " but received " + acceptedParticipantsNumber);
+                    .getRequirements().getMinParticipants() + " but received " + acceptedParticipantsNumber);
         }
-        if (acceptedParticipantsNumber > tested.getMaxParticipants()) {
+        if (acceptedParticipantsNumber > tested.getRequirements().getMaxParticipants()) {
             throw new ValidationException("Participant validation error. Required max " + tested
-                    .getMaxParticipants() + " but received " + acceptedParticipantsNumber);
+                    .getRequirements().getMaxParticipants() + " but received " + acceptedParticipantsNumber);
         }
     }
 }

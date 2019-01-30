@@ -11,6 +11,9 @@ import pl.wturnieju.tournament.Tournament;
 public interface TournamentDtoMapper {
 
     @Mapping(source = "tournamentParticipantType", target = "participantType")
+    @Mapping(source = "requirements.minParticipants", target = "minParticipants")
+    @Mapping(source = "requirements.maxParticipants", target = "maxParticipants")
+    @Mapping(source = "requirements.plannedRounds", target = "plannedRounds")
     TournamentDto tournamentToTournamentDto(Tournament tournament);
 
     List<TournamentDto> tournamentToTournamentDtos(List<Tournament> tournament);

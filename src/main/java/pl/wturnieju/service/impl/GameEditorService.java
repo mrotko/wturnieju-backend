@@ -1,4 +1,4 @@
-package pl.wturnieju.service;
+package pl.wturnieju.service.impl;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
 import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.service.IGameEditorService;
+import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
 

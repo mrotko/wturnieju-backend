@@ -102,10 +102,10 @@ public class TournamentParticipantServiceTest {
     @Test
     public void inviteAsManyAsPossibleParticipantsShouldSuccess() {
         userRepository.findAll().stream()
-                .limit(defaultSingleTournament.getMaxParticipants())
+                .limit(defaultSingleTournament.getRequirements().getMaxParticipants())
                 .forEach(user -> tournamentParticipantService.invite(defaultSingleTournament.getId(), user.getId()));
-        Assertions.assertTrue(defaultSingleTournament.getMaxParticipants() > 0);
-        Assertions.assertEquals(defaultSingleTournament.getMaxParticipants(),
+        Assertions.assertTrue(defaultSingleTournament.getRequirements().getMaxParticipants() > 0);
+        Assertions.assertEquals(defaultSingleTournament.getRequirements().getMaxParticipants(),
                 tournamentParticipantService.getAll(defaultSingleTournament.getId()).size());
     }
 
@@ -114,7 +114,7 @@ public class TournamentParticipantServiceTest {
     public void inviteParticipantWhenNoPlaceShouldFail() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             userRepository.findAll().stream()
-                    .limit(defaultSingleTournament.getMaxParticipants() + 1)
+                    .limit(defaultSingleTournament.getRequirements().getMaxParticipants() + 1)
                     .forEach(
                             user -> tournamentParticipantService.invite(defaultSingleTournament.getId(), user.getId()));
         });

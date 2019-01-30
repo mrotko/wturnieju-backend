@@ -50,20 +50,6 @@ public abstract class Tournament extends Persistent {
 
     protected TournamentParticipantType tournamentParticipantType;
 
-    //    protected List<String> staffIds = new ArrayList<>();
-
-    //    protected List<String> contributorsIds = new ArrayList<>();
-
-    @Deprecated
-    protected int minParticipants;
-
-    @Deprecated
-    protected int maxParticipants;
-
-    @Deprecated
-    protected int plannedRounds;
-
-
     protected int currentRound;
 
     protected Requirements requirements;
