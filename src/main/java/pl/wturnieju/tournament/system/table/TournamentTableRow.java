@@ -1,7 +1,5 @@
 package pl.wturnieju.tournament.system.table;
 
-import org.springframework.lang.NonNull;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,23 +9,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-public class TournamentTableRow implements Comparable<TournamentTableRow> {
+public class TournamentTableRow {
 
-    private Integer lp = 0;
+    protected String teamId = null;
 
-    private String teamId = null;
+    protected String name = null;
 
-    private String name = null;
+    protected Integer loses = 0;
 
-    private Integer loses = 0;
+    protected Integer wins = 0;
 
-    private Integer wins = 0;
+    protected Integer draws = 0;
 
-    private Integer draws = 0;
+    protected Double points = 0.;
 
-    private Double points = 0.;
+    protected Integer totalGames = 0;
 
-    private Integer totalGames = 0;
+    private Double smallPoints = 0.;
 
     public void incTotalGames() {
         totalGames++;
@@ -52,10 +50,5 @@ public class TournamentTableRow implements Comparable<TournamentTableRow> {
     public TournamentTableRow(String teamId, String name) {
         this.teamId = teamId;
         this.name = name;
-    }
-
-    @Override
-    public int compareTo(@NonNull TournamentTableRow o) {
-        return o.getPoints().compareTo(points);
     }
 }

@@ -21,5 +21,7 @@ public class TournamentTableRowDto {
 
     private Double points;
 
+    private Double smallPoints;
+
     private Integer totalGames;
 }

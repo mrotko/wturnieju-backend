@@ -1,8 +1,9 @@
 package pl.wturnieju.tournament.system;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ComparisonChain;
 
 import pl.wturnieju.gameeditor.GameEditorFactory;
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
@@ -10,12 +11,10 @@ import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.service.impl.SwissSystemStateService;
-import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.SwissSystemState;
-import pl.wturnieju.tournament.system.table.SwissTournamentTableRow;
 import pl.wturnieju.tournament.system.table.TournamentTable;
-import pl.wturnieju.tournament.system.table.TournamentTableRow;
+import pl.wturnieju.tournament.system.table.TournamentTableGeneratorBuilder;
 
 public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
@@ -33,55 +32,32 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     protected void createSystemState() {
         var state = new SwissSystemState();
 
-        state.setTournamentId(getTournament().getId());
-        state.setTeamsWithBye(Collections.emptyList());
-        state.setGameFixtures(Collections.emptyList());
-        state.setTeamsPlayedEachOther(Collections.emptyMap());
+        initCommonSystemStateFields(state);
 
         stateService.insertSystemState(state);
     }
 
     @Override
-    public TournamentTable<TournamentTableRow> buildTournamentTable() {
-        // TODO(mr): 14.01.2019 fix impl
-        Map<String, SwissTournamentTableRow> teamIdToRow = new HashMap<>();
+    public TournamentTable buildTournamentTable() {
+        var tableGenerator = TournamentTableGeneratorBuilder.builder()
+                .withGames(getEndedGames())
+                .withPointsForWin(1.)
+                .withPointsForDraw(0.5)
+                .withPointsForLose(0.)
+                .withRowComparator(((o1, o2) -> ComparisonChain.start()
+                        .compare(o2.getPoints(), o1.getPoints())
+                        .compare(o2.getSmallPoints(), o2.getSmallPoints())
+                        .result()))
+                .withParticipants(getTournament().getParticipants())
+                .build();
 
-        getTournament().getParticipants().forEach(p -> teamIdToRow.put(p.getId(), createRowForParticipant(p)));
+        return tableGenerator.generateTable();
+    }
 
-        var games = getSystemState().getGameFixtures();
-
-        games.stream()
-                .filter(game -> game.getGameStatus() == GameStatus.ENDED)
-                .forEach(game -> {
-                    var homeRow = teamIdToRow.get(game.getHomeTeam().getId());
-                    SwissTournamentTableRow awayRow = null;
-                    if (game.getAwayTeam() != null) {
-                        awayRow = teamIdToRow.get(game.getAwayTeam().getId());
-                    }
-
-                    if (awayRow == null) {
-                        homeRow.incWins();
-                        homeRow.addPoints(1.0);
-                    } else {
-                        if (game.getWinner() == 0) {
-                            homeRow.incDraws();
-                            awayRow.incDraws();
-                            homeRow.addPoints(0.5);
-                            awayRow.addPoints(0.5);
-                        } else if (game.getWinner() == 1) {
-                            homeRow.incWins();
-                            awayRow.incLoses();
-                            homeRow.addPoints(1.0);
-                        } else {
-                            homeRow.incLoses();
-                            awayRow.incWins();
-                            awayRow.addPoints(1.0);
-                        }
-                        awayRow.incTotalGames();
-                    }
-                    homeRow.incTotalGames();
-                });
-        return createTournamentTable(teamIdToRow.values());
+    private List<GameFixture> getEndedGames() {
+        return getSystemState().getGameFixtures().stream()
+                .filter(game -> game.getGameStatus().equals(GameStatus.ENDED)).collect(
+                        Collectors.toList());
     }
 
     @Override
@@ -110,7 +86,4 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
         return game;
     }
 
-    private SwissTournamentTableRow createRowForParticipant(Participant participant) {
-        return new SwissTournamentTableRow(participant.getId(), participant.getName());
-    }
 }

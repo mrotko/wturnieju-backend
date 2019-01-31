@@ -6,7 +6,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import pl.wturnieju.tournament.system.table.TournamentTable;
-import pl.wturnieju.tournament.system.table.TournamentTableRow;
 
 @Mapper(componentModel = "spring", uses = {TournamentTableRowDtoMapper.class})
 public interface TournamentTableDtoMapper {
@@ -15,7 +14,7 @@ public interface TournamentTableDtoMapper {
     @Mapping(source = "table.rows", target = "rows")
     TournamentTableDto tournamentTableToTournamentTableDto(
             String tournamentId,
-            TournamentTable<TournamentTableRow> table);
+            TournamentTable table);
 
     @AfterMapping
     default TournamentTableDto setOrderFields(@MappingTarget TournamentTableDto dto) {

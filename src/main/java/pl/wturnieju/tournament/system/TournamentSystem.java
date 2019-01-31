@@ -1,7 +1,6 @@
 package pl.wturnieju.tournament.system;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
 import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
@@ -12,7 +11,6 @@ import pl.wturnieju.tournament.ParticipantStatus;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.SystemState;
 import pl.wturnieju.tournament.system.table.TournamentTable;
-import pl.wturnieju.tournament.system.table.TournamentTableRow;
 
 public abstract class TournamentSystem<T extends SystemState> {
 
@@ -36,27 +34,22 @@ public abstract class TournamentSystem<T extends SystemState> {
         createSystemState();
     }
 
+    protected void initCommonSystemStateFields(SystemState<? extends GameFixture> state) {
+        state.setTournamentId(getTournament().getId());
+        state.setTeamsWithBye(Collections.emptyList());
+        state.setGameFixtures(Collections.emptyList());
+        state.setTeamsPlayedEachOther(Collections.emptyMap());
+    }
 
     protected abstract void createSystemState();
 
     public abstract void finishTournament();
 
-    public abstract TournamentTable<TournamentTableRow> buildTournamentTable();
-
-    protected TournamentTable<TournamentTableRow> createTournamentTable(Collection<? extends TournamentTableRow> rows) {
-        var table = new TournamentTable<>();
-        table.getRows().addAll(rows.stream().sorted().collect(Collectors.toList()));
-        int lpCounter = 1;
-        for (TournamentTableRow row : table.getRows()) {
-            row.setLp(lpCounter++);
-        }
-        return table;
-    }
+    public abstract TournamentTable buildTournamentTable();
 
     public abstract GameFixture startGame(StartGameUpdateEvent startGameUpdateEvent);
 
     public abstract GameFixture finishGame(FinishGameUpdateEvent finishGameUpdateEvent);
-
 
 
     public ISystemStateService<T> getStateService() {

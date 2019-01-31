@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TournamentTable<T extends TournamentTableRow> {
+public class TournamentTable {
 
-    private List<T> rows = new ArrayList<>();
+    private List<TournamentTableRow> rows = new ArrayList<>();
 }

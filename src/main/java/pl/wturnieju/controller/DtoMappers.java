@@ -22,7 +22,6 @@ import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.table.TournamentTable;
-import pl.wturnieju.tournament.system.table.TournamentTableRow;
 
 @Component
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class DtoMappers {
         return tournamentDtoMapper.tournamentToTournamentDto(tournament);
     }
 
-    public TournamentTableDto createTournamentTableDto(String tournamentId, TournamentTable<TournamentTableRow> table) {
+    public TournamentTableDto createTournamentTableDto(String tournamentId, TournamentTable table) {
         return tournamentTableDtoMapper.tournamentTableToTournamentTableDto(tournamentId, table);
     }
 

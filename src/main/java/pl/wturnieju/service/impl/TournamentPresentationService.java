@@ -8,7 +8,6 @@ import pl.wturnieju.service.ITournamentPresentationService;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
 import pl.wturnieju.tournament.system.table.TournamentTable;
-import pl.wturnieju.tournament.system.table.TournamentTableRow;
 
 @RequiredArgsConstructor
 @Service
@@ -19,7 +18,7 @@ public class TournamentPresentationService implements ITournamentPresentationSer
     private final ApplicationContext context;
 
     @Override
-    public TournamentTable<TournamentTableRow> getTournamentTable(String tournamentId) {
+    public TournamentTable getTournamentTable(String tournamentId) {
         var tournament = tournamentService.getTournament(tournamentId);
         var system = (TournamentSystem<?>) TournamentSystemFactory.create(context, tournament);
         return system.buildTournamentTable();
