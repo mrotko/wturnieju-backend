@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class TeamEventDto extends GameEventDto {
+public abstract class ParticipantEventDto extends GameEventDto {
 
-    private String teamId;
+    private String participantId;
 }

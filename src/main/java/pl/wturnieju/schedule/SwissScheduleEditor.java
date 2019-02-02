@@ -1,30 +1,30 @@
 package pl.wturnieju.schedule;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.bson.types.ObjectId;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.gamefixture.GameStatus;
-import pl.wturnieju.gamefixture.Score;
 import pl.wturnieju.gamefixture.SwissGameFixture;
-import pl.wturnieju.gamefixture.Team;
-import pl.wturnieju.graph.SimpleVertex;
+import pl.wturnieju.gamefixture.SwissGameFixtureFactory;
+import pl.wturnieju.graph.CompleteGraph;
+import pl.wturnieju.graph.GraphFactory;
+import pl.wturnieju.graph.Vertex;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.system.SwissTournamentSystem;
 
 @RequiredArgsConstructor
 public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
 
     private final SwissTournamentSystem tournamentSystem;
+
+    private GameFixtureFactory<SwissGameFixture> gameFixtureFactory = new SwissGameFixtureFactory();
 
     @Override
     public SwissGameFixture updateGame(SwissGameFixture gameFixture) {
@@ -64,20 +64,20 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
 
         gameFixtures.forEach(game -> {
             if (game.getBye()) {
-                state.getTeamsWithBye().add(game.getHomeTeam().getId());
+                state.getParticipantsWithBye().add(game.getHomeParticipant().getId());
                 game.setGameStatus(GameStatus.ENDED);
                 game.setWinner(1);
                 game.setFinishedDate(Timestamp.now());
             } else {
-                state.getTeamsPlayedEachOther().computeIfAbsent(
-                        game.getHomeTeam().getId(),
+                state.getParticipantsPlayedEachOther().computeIfAbsent(
+                        game.getHomeParticipant().getId(),
                         k -> new ArrayList<>()
-                ).add(game.getAwayTeam().getId());
+                ).add(game.getAwayParticipant().getId());
 
-                state.getTeamsPlayedEachOther().computeIfAbsent(
-                        game.getAwayTeam().getId(),
+                state.getParticipantsPlayedEachOther().computeIfAbsent(
+                        game.getAwayParticipant().getId(),
                         k -> new ArrayList<>()
-                ).add(game.getHomeTeam().getId());
+                ).add(game.getHomeParticipant().getId());
             }
         });
 
@@ -110,103 +110,85 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
     @Override
     public List<SwissGameFixture> generateGames() {
         var state = tournamentSystem.getSystemState();
-        var playedEachOther = state.getTeamsPlayedEachOther();
+        var playedEachOtherPairs = getParticipantsPlayedEachOtherPairs();
 
-        Map<String, SimpleVertex<String>> vertices = new HashMap<>();
+        // TODO(mr): 02.02.2019 kalkulator do obliczania wag
+        var graph = new CompleteGraph<String>((a, b) -> 0., new GraphFactory<>());
 
-        var idCounter = 0;
-        for (var p : tournamentSystem.getTournament().getParticipants()) {
-            var vertex = new SimpleVertex<>(idCounter++, p.getId());
-            vertices.put(p.getId(), vertex);
+        var participantsIds = getTournamentParticipantsIds();
+        if (participantsIds.size() % 2 != 0) {
+            participantsIds.add(null);
         }
 
-        List<String> addedVertices = new ArrayList<>();
-        vertices.forEach((id, v) -> {
-            if (!addedVertices.contains(id)) {
-                vertices.forEach((oId, oV) -> {
-                    if (!oId.equals(id) && !oV.hasEdge(v) && !playedEachOther.getOrDefault(id, Collections.emptyList())
-                            .contains(oId)) {
-                        v.addEdge(oV);
-                    }
-                });
-                addedVertices.add(id);
-            }
-        });
+        graph.generateGraph(participantsIds);
+        graph.unlinkVertexesWithValues(playedEachOtherPairs);
+        graph.unlinkVertexesWithValues(getParticipantsWithByAsNullOpponent());
+        graph.makeFinalSetup();
+        graph.findShortestPath();
 
-        if (vertices.size() % 2 == 1) {
-            SimpleVertex<String> byeVertex = new SimpleVertex<>(idCounter, null);
-            vertices.values().forEach(v -> {
-                if (!state.getTeamsWithBye().contains(v.getValue())) {
-                    v.addEdge(byeVertex);
-                }
-            });
-            vertices.put(null, byeVertex);
-        }
-
-        boolean allVerticesHasOneEdge = true;
-
-        for (var v : vertices.values()) {
-            if (v.getEdges().size() != 1) {
-                allVerticesHasOneEdge = false;
-                break;
-            }
-        }
-
-        Deque<SimpleVertex<String>> visitedVertices = new ArrayDeque<>();
-        if (allVerticesHasOneEdge) {
-            vertices.values().forEach(v -> {
-                if (!visitedVertices.contains(v)) {
-                    visitedVertices.addLast(v);
-                    visitedVertices.addLast(v.getFirstEdge());
-                    v.removeEdge(v.getFirstEdge());
-                }
-            });
-        } else {
-            visitedVertices.addLast(vertices.entrySet().iterator().next().getValue());
-            var treeSize = vertices.size();
-            while (visitedVertices.size() < treeSize) {
-                var visitedVertex = visitedVertices.getLast();
-
-                SimpleVertex<String> v = null;
-
-                for (var edge : visitedVertex.getNotVisitedEdges()) {
-                    if (!visitedVertices.contains(edge)) {
-                        v = edge;
-                        break;
-                    }
-                }
-
-                if (v != null) {
-                    visitedVertices.getLast().markAsVisited(v);
-                    visitedVertices.add(v);
-                } else {
-                    visitedVertices.getLast().getVisitedEdges().clear();
-                    visitedVertices.removeLast();
-                    if (visitedVertices.isEmpty()) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (visitedVertices.isEmpty()) {
-            return Collections.emptyList();
-        }
+        List<String> shortestPath = graph.getShortestPath().stream()
+                .map(Vertex::getValue)
+                .collect(Collectors.toList());
 
         List<SwissGameFixture> games = new ArrayList<>();
-        var it = visitedVertices.iterator();
-        while (it.hasNext()) {
-            var homeId = it.next().getValue();
-            var awayId = it.next().getValue();
-            if (homeId == null) {
-                games.add(createGame(awayId, null));
-            } else {
-                games.add(createGame(homeId, awayId));
+        if (shortestPath.isEmpty()) {
+            var edges = graph.getEdges();
+            if (!edges.isEmpty() && (edges.size() == participantsIds.size() / 2)) {
+                List<String> path = new ArrayList<>();
+                edges.forEach(edge -> {
+                    path.add(edge.getFirst().getValue());
+                    path.add(edge.getSecond().getValue());
+                });
+                games.addAll(createGameFixtures(path));
             }
+        } else {
+            games.addAll(createGameFixtures(shortestPath));
         }
+
         state.setGeneratedGameFixtures(games);
         tournamentSystem.getStateService().updateSystemState(state);
         return games;
+    }
+
+    private List<ImmutablePair<String, String>> getParticipantsWithByAsNullOpponent() {
+        return tournamentSystem.getSystemState().getParticipantsWithBye().stream()
+                .map(id -> ImmutablePair.of(id, (String) null))
+                .collect(Collectors.toList());
+    }
+
+    private List<SwissGameFixture> createGameFixtures(List<String> shortestPath) {
+        var games = new ArrayList<SwissGameFixture>();
+        for (int i = 0; i < shortestPath.size(); i += 2) {
+            var homeId = shortestPath.get(i);
+            var awayId = shortestPath.get(i + 1);
+
+            var home = getParticipantById(homeId);
+            var away = getParticipantById(awayId);
+
+            if (home == null) {
+                games.add(gameFixtureFactory.createGameFixture(away, null));
+            } else {
+                games.add(gameFixtureFactory.createGameFixture(home, away));
+            }
+        }
+
+        int currentRound = tournamentSystem.getTournament().getCurrentRound() + 1;
+        games.forEach(game -> game.setRound(currentRound));
+
+        return games;
+    }
+
+    private List<ImmutablePair<String, String>> getParticipantsPlayedEachOtherPairs() {
+        return tournamentSystem.getSystemState().getParticipantsPlayedEachOther().entrySet().stream()
+                .flatMap(participantIdToPlayedEntry -> participantIdToPlayedEntry.getValue().stream()
+                        .map(played -> ImmutablePair.of(participantIdToPlayedEntry.getKey(), played)))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getTournamentParticipantsIds() {
+        return tournamentSystem.getTournament().getParticipants().stream()
+                .map(Participant::getId)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -224,52 +206,12 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
         return gamesIds;
     }
 
-    private SwissGameFixture createGame(String participantId, String opponentId) {
-        var game = new SwissGameFixture();
-
-        game.setBye(opponentId == null);
-        game.setId(new ObjectId().toString());
-        game.setStartDate(null);
-        game.setEndDate(null);
-        game.setFinishedDate(null);
-        game.setShortDate(null);
-        game.setHomeTeam(createTeam(participantId));
-        game.setHomeScore(createScore());
-        game.setAwayTeam(createTeam(opponentId));
-        game.setAwayScore(createScore());
-        game.setGameStatus(GameStatus.BEFORE_START);
-        game.setWinner(0);
-        game.setRound(tournamentSystem.getTournament().getCurrentRound() + 1);
-
-        return game;
-    }
-
-    private Score createScore() {
-        var score = new Score();
-
-        score.setCurrent(null);
-        score.setPeriods(Collections.emptyMap());
-
-        return score;
-    }
-
-    private Team createTeam(String participantId) {
+    private Participant getParticipantById(String participantId) {
         if (participantId == null) {
             return null;
         }
-        var participant = tournamentSystem.getTournament().getParticipants().stream()
+        return tournamentSystem.getTournament().getParticipants().stream()
                 .filter(p -> p.getId().equals(participantId))
                 .findFirst().orElse(null);
-
-        if (participant == null) {
-            return null;
-        }
-
-        var team = new Team();
-        team.setId(participantId);
-        team.setMembersIds(Collections.singletonList(participantId));
-        team.setName(participant.getName());
-
-        return team;
     }
 }

@@ -9,6 +9,7 @@ public class ScheduleEditorFactory {
         switch (tournamentSystem.getTournament().getSystemType()) {
         case SWISS:
             return new SwissScheduleEditor((SwissTournamentSystem) tournamentSystem);
+        case ROUND_ROBIN:
         default:
             throw new IllegalArgumentException("Unknown enum " + tournamentSystem.getTournament().getSystemType());
         }

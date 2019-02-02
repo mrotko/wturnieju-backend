@@ -5,11 +5,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import pl.wturnieju.controller.dto.TeamDtoMapper;
+import pl.wturnieju.controller.dto.tournament.ParticipantDtoMapper;
 import pl.wturnieju.controller.dto.tournament.gamefixture.ScoreDtoMapper;
 import pl.wturnieju.gamefixture.GameFixture;
 
-@Mapper(componentModel = "spring", uses = {TeamDtoMapper.class, ScoreDtoMapper.class})
+@Mapper(componentModel = "spring", uses = {ParticipantDtoMapper.class, ScoreDtoMapper.class})
 public interface ScheduleElementDtoMapper {
 
     @Mapping(source = "id", target = "gameId")

@@ -2,25 +2,31 @@ package pl.wturnieju.tournament.system.table;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.Setter;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.tournament.Participant;
 
 public class TournamentTableGenerator {
 
-    private Map<GameResultType, Double> resultToPointsMapping = new HashMap<>();
+    @Setter
+    private Map<GameResultType, Double> resultToPointsMapping = new EnumMap<>(GameResultType.class);
 
-    private List<GameFixture> games = new ArrayList<>();
+    @Setter
+    private List<? extends GameFixture> games = new ArrayList<>();
 
+    @Setter
     private List<Participant> participants = new ArrayList<>();
 
+    @Setter
     private Comparator<TournamentTableRow> rowComparator;
 
-    private Map<String, TournamentTableRow> teamIdToRowMapping = new HashMap<>();
+    private Map<String, TournamentTableRow> idToRowMapping = new HashMap<>();
 
     public TournamentTable generateTable() {
         generateRows();
@@ -39,7 +45,7 @@ public class TournamentTableGenerator {
     }
 
     private List<TournamentTableRow> getSortedRows() {
-        return teamIdToRowMapping.values().stream()
+        return idToRowMapping.values().stream()
                 .sorted(rowComparator)
                 .collect(Collectors.toList());
     }
@@ -57,46 +63,49 @@ public class TournamentTableGenerator {
     }
 
     private void addDrawGame(GameFixture game) {
-        var homeTeamRow = teamIdToRowMapping.get(game.getHomeTeam().getId());
-        var awayTeamRow = teamIdToRowMapping.get(game.getAwayTeam().getId());
+        var homeParticipantRow = idToRowMapping.get(game.getHomeParticipant().getId());
+        var awayParticipantRow = idToRowMapping.get(game.getAwayParticipant().getId());
 
-        addToRowDraw(homeTeamRow);
-        addToRowDraw(awayTeamRow);
+        addToRowDraw(homeParticipantRow);
+        addToRowDraw(awayParticipantRow);
     }
 
     private void addByeGame(GameFixture game) {
-        var row = teamIdToRowMapping.get(game.getHomeTeam().getId());
+        var row = idToRowMapping.get(game.getHomeParticipant().getId());
         addToRowWin(row);
     }
 
     private void addWinGame(GameFixture game) {
-        var homeTeamRow = teamIdToRowMapping.get(game.getHomeTeam().getId());
-        var awayTeamRow = teamIdToRowMapping.get(game.getAwayTeam().getId());
+        var homeParticipantRow = idToRowMapping.get(game.getHomeParticipant().getId());
+        var awayParticipantRow = idToRowMapping.get(game.getAwayParticipant().getId());
 
         if (game.getWinner() == 1) {
-            addToRowWin(homeTeamRow);
-            addToRowLose(awayTeamRow);
+            addToRowWin(homeParticipantRow);
+            addToRowLose(awayParticipantRow);
         } else {
-            addToRowWin(awayTeamRow);
-            addToRowLose(homeTeamRow);
+            addToRowWin(awayParticipantRow);
+            addToRowLose(homeParticipantRow);
         }
     }
 
     private void addToRowWin(TournamentTableRow row) {
-        row.addPoints(getPoints(GameResultType.WIN));
-        row.incWins();
-        row.incTotalGames();
+        var manager = new TournamentTableRowManager(row);
+        manager.addPoints(getPoints(GameResultType.WIN));
+        manager.increaseWins();
+        manager.increaseTotalGames();
     }
 
     private void addToRowDraw(TournamentTableRow row) {
-        row.addPoints(getPoints(GameResultType.DRAW));
-        row.incDraws();
-        row.incTotalGames();
+        var manager = new TournamentTableRowManager(row);
+        manager.addPoints(getPoints(GameResultType.DRAW));
+        manager.increaseDraws();
+        manager.increaseTotalGames();
     }
 
     private void addToRowLose(TournamentTableRow row) {
-        row.incLoses();
-        row.incTotalGames();
+        var manager = new TournamentTableRowManager(row);
+        manager.increaseLoses();
+        manager.increaseTotalGames();
     }
 
     private Double getPoints(GameResultType resultType) {
@@ -104,41 +113,9 @@ public class TournamentTableGenerator {
     }
 
     private void generateRows() {
-        participants.forEach(team -> {
-            var row = new TournamentTableRow(team.getId(), team.getName());
-            teamIdToRowMapping.put(team.getId(), row);
+        participants.forEach(participant -> {
+            var row = new TournamentTableRow(participant.getId(), participant.getName());
+            idToRowMapping.put(participant.getId(), row);
         });
-    }
-
-    public Map<GameResultType, Double> getResultToPointsMapping() {
-        return resultToPointsMapping;
-    }
-
-    public void setResultToPointsMapping(Map<GameResultType, Double> resultToPointsMapping) {
-        this.resultToPointsMapping = resultToPointsMapping;
-    }
-
-    public List<GameFixture> getGames() {
-        return games;
-    }
-
-    public void setGames(List<GameFixture> games) {
-        this.games = games;
-    }
-
-    public List<Participant> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
-
-    public Comparator<TournamentTableRow> getRowComparator() {
-        return rowComparator;
-    }
-
-    public void setRowComparator(Comparator<TournamentTableRow> rowComparator) {
-        this.rowComparator = rowComparator;
     }
 }

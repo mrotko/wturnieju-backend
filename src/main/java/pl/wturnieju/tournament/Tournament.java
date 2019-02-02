@@ -11,9 +11,9 @@ import lombok.ToString;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Data
@@ -48,7 +48,7 @@ public abstract class Tournament extends Persistent {
     @Setter(value = AccessLevel.PROTECTED)
     protected CompetitionType competitionType;
 
-    protected TournamentParticipantType tournamentParticipantType;
+    protected ParticipantType participantType;
 
     protected int currentRound;
 

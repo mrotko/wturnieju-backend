@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.controller.dto.tournament.ParticipantDto;
+import pl.wturnieju.controller.dto.tournament.ParticipantDtoMapper;
 import pl.wturnieju.controller.dto.tournament.TournamentDto;
 import pl.wturnieju.controller.dto.tournament.TournamentDtoMapper;
-import pl.wturnieju.controller.dto.tournament.TournamentParticipantDto;
-import pl.wturnieju.controller.dto.tournament.TournamentParticipantDtoMapper;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDto;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDtoMapper;
 import pl.wturnieju.controller.dto.tournament.gamefixture.GameFixtureDtoMapper;
@@ -34,7 +34,7 @@ public class DtoMappers {
 
     private final TournamentTableDtoMapper tournamentTableDtoMapper;
 
-    private final TournamentParticipantDtoMapper tournamentParticipantDtoMapper;
+    private final ParticipantDtoMapper participantDtoMapper;
 
     private final TournamentDtoMapper tournamentDtoMapper;
 
@@ -47,8 +47,8 @@ public class DtoMappers {
         return userTournamentsDtoMapper.tournamentsToUserTournamentDto(userId, tournaments);
     }
 
-    public TournamentParticipantDto createTournamentParticipantDto(Participant participant) {
-        return tournamentParticipantDtoMapper.participantToTournamentParticipantDto(participant);
+    public ParticipantDto createTournamentParticipantDto(Participant participant) {
+        return participantDtoMapper.participantToParticipantDto(participant);
     }
 
     public TournamentDto createTournamentDto(Tournament tournament) {

@@ -10,6 +10,6 @@ public enum GameEventType {
     @JsonProperty("GAME_EVENT_TYPE.GAME_FINISHED")
     GAME_FINISHED,
 
-    @JsonProperty("GAME_EVENT_TYPE.TEAM_EVENT")
-    TEAM_EVENT
+    @JsonProperty("GAME_EVENT_TYPE.PARTICIPANT_EVENT")
+    PARTICIPANT_EVENT
 }

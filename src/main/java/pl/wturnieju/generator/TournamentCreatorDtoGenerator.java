@@ -7,8 +7,8 @@ import java.util.List;
 import pl.wturnieju.controller.dto.tournament.creator.ChessTournamentTemplateDto;
 import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateDto;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
 public class TournamentCreatorDtoGenerator {
@@ -37,7 +37,7 @@ public class TournamentCreatorDtoGenerator {
         dto.setName("chess tournament");
         dto.setPlace("some place");
         dto.setSystemType(TournamentSystemType.SWISS);
-        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
+        dto.setParticipantType(ParticipantType.SINGLE);
 
         dtos.add(dto);
         return dtos;

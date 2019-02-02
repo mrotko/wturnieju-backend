@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TournamentInviteVerificationData extends VerificationData {
 
-    private String userId;
+    private String participantId;
 
     private String email;
 

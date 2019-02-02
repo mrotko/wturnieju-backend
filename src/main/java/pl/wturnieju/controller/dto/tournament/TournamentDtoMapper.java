@@ -7,10 +7,9 @@ import org.mapstruct.Mapping;
 
 import pl.wturnieju.tournament.Tournament;
 
-@Mapper(componentModel = "spring", uses = {TournamentParticipantDtoMapper.class})
+@Mapper(componentModel = "spring", uses = {ParticipantDtoMapper.class})
 public interface TournamentDtoMapper {
 
-    @Mapping(source = "tournamentParticipantType", target = "participantType")
     @Mapping(source = "requirements.minParticipants", target = "minParticipants")
     @Mapping(source = "requirements.maxParticipants", target = "maxParticipants")
     @Mapping(source = "requirements.plannedRounds", target = "plannedRounds")

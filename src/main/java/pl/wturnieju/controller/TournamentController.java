@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.controller.dto.tournament.TournamentDto;
-import pl.wturnieju.controller.dto.tournament.TournamentParticipantDto;
 import pl.wturnieju.controller.dto.tournament.UpdateTournamentStatusDTO;
 import pl.wturnieju.controller.dto.tournament.UserTournamentsDto;
 import pl.wturnieju.controller.dto.tournament.gamefixture.GameFixtureDto;
@@ -103,7 +103,7 @@ public class TournamentController {
     }
 
     @GetMapping("/{tournamentId}/participants")
-    public List<TournamentParticipantDto> getTournamentParticipants(@PathVariable("tournamentId") String tournamentId) {
+    public List<ParticipantDto> getTournamentParticipants(@PathVariable("tournamentId") String tournamentId) {
         return participantService.getAll(tournamentId).stream()
                 .map(mappers::createTournamentParticipantDto)
                 .collect(Collectors.toList());
@@ -123,18 +123,18 @@ public class TournamentController {
 
     @PostMapping("/{tournamentId}/participants")
     public List<String> inviteParticipants(@PathVariable("tournamentId") String tournamentId,
-            @RequestBody List<String> participantsIds) {
-        participantsIds.forEach(id -> {
+            @RequestBody List<String> userIds) {
+        userIds.forEach(userId -> {
+            var participant = participantService.invite(tournamentId, userId);
+
             var verificationData = new TournamentInviteVerificationData();
 
             verificationData.setTournamentId(tournamentId);
-            verificationData.setUserId(id);
-            verificationData.setEmail(getUserByIdOrThrow(id).getUsername());
+            verificationData.setParticipantId(participant.getId());
+            verificationData.setEmail(getUserByIdOrThrow(userId).getUsername());
             tournamentInviteVerificationService.createVerificationToken(verificationData);
-
-            participantService.invite(tournamentId, id);
         });
-        return participantsIds;
+        return userIds;
     }
 
     private User getUserByIdOrThrow(String userId) {

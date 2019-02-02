@@ -68,7 +68,7 @@ public class TournamentParticipantServiceTest {
         //        tournamentInserter.insertTournamentToDatabase();
         //
         //        defaultSingleTournament = tournamentRepository.findAll().stream()
-        //                .filter(tournament -> tournament.getTournamentParticipantType() == TournamentParticipantType.SINGLE)
+        //                .filter(tournament -> tournament.getParticipantType() == ParticipantType.SINGLE)
         //                .findFirst()
         //                .orElse(null);
     }

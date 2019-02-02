@@ -1,11 +1,8 @@
 package pl.wturnieju.graph;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,51 +13,46 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-public abstract class Vertex<T, V extends Vertex<T, V>> {
+public class Vertex<T> {
 
-    protected final int id;
+    private final int id;
 
-    protected final T value;
+    private final T value;
 
-    protected Map<V, Double> edges = new HashMap<>();
+    private List<Edge<T>> edges = new ArrayList<>();
 
-    protected Set<V> visitedEdges = new HashSet<>();
+    private List<Edge<T>> visitedEdges = new ArrayList<>();
 
-    public boolean hasEdge(V vertex) {
-        return edges.containsKey(vertex);
+    private boolean used = false;
+
+    public void resetVisitedEdges() {
+        visitedEdges.clear();
     }
 
-    public V getFirstEdge() {
-        var it = edges.entrySet().iterator();
-        if (it.hasNext()) {
-            return it.next().getKey();
-        }
-        return null;
+    public void addEdge(Edge<T> edge) {
+        edges.add(edge);
     }
 
-    public V getEdgeAndVisit() {
-        V v = getNotVisitedEdge();
-        markAsVisited(v);
-        return v;
-    }
-
-    public V getNotVisitedEdge() {
-        for (var entry : edges.entrySet()) {
-            var v = entry.getKey();
-            if (!visitedEdges.contains(v)) {
-                return v;
-            }
-        }
-        return null;
-    }
-
-    public List<V> getNotVisitedEdges() {
-        return edges.keySet().stream()
-                .filter(e -> !visitedEdges.contains(e))
-                .collect(Collectors.toList());
-    }
-
-    public void markAsVisited(V edge) {
+    public void markEdgeAsVisited(Edge<T> edge) {
         visitedEdges.add(edge);
+    }
+
+    public Edge<T> getLightestAvailableEdge() {
+        return edges.stream()
+                .filter(e -> !getOtherVertexFromEdge(e).isUsed())
+                .filter(e -> !isEdgeVisited(e))
+                .min(Comparator.comparing(Edge::getWeight))
+                .orElse(null);
+    }
+
+    private boolean isEdgeVisited(Edge<T> e) {
+        return visitedEdges.contains(e);
+    }
+
+    public Vertex<T> getOtherVertexFromEdge(Edge<T> edge) {
+        if (!edge.getFirst().equals(this)) {
+            return edge.getFirst();
+        }
+        return edge.getSecond();
     }
 }

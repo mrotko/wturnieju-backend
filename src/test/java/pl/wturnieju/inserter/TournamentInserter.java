@@ -7,8 +7,8 @@ import pl.wturnieju.controller.dto.config.TournamentConfigDto;
 import pl.wturnieju.controller.dto.tournament.creator.ChessTournamentTemplateDto;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.service.ITournamentCreatorService;
 
@@ -26,7 +26,7 @@ public class TournamentInserter {
     private ChessTournamentTemplateDto prepareChessTournamentDto() {
         var dto = new ChessTournamentTemplateDto();
 
-        dto.setTournamentParticipantType(TournamentParticipantType.SINGLE);
+        dto.setParticipantType(ParticipantType.SINGLE);
         dto.setCompetitionType(CompetitionType.CHESS);
         dto.setSystemType(TournamentSystemType.SWISS);
         dto.setAccessOption(AccessOption.PRIVATE);

@@ -7,8 +7,8 @@ import lombok.Data;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.tournament.TournamentStatus;
 
@@ -29,7 +29,7 @@ public class TournamentDto {
 
     private AccessOption accessOption;
 
-    private List<TournamentParticipantDto> participants = new ArrayList<>();
+    private List<ParticipantDto> participants = new ArrayList<>();
 
     private IProfile owner;
 
@@ -41,7 +41,7 @@ public class TournamentDto {
 
     private CompetitionType competitionType;
 
-    private TournamentParticipantType participantType;
+    private ParticipantType participantType;
 
     private Integer minParticipants;
 

@@ -2,6 +2,7 @@ package pl.wturnieju.gamefixture;
 
 import lombok.Data;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.Participant;
 
 @Data
 public class GameFixture {
@@ -16,11 +17,11 @@ public class GameFixture {
 
     private Boolean shortDate;
 
-    private Team homeTeam;
+    private Participant homeParticipant;
 
     private Score homeScore;
 
-    private Team awayTeam;
+    private Participant awayParticipant;
 
     private Score awayScore;
 

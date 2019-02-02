@@ -9,7 +9,7 @@ import java.util.Map;
 import lombok.Getter;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
-import pl.wturnieju.model.TournamentParticipantType;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
 @Getter
@@ -21,7 +21,7 @@ public class TournamentConfigDto {
 
     private Map<CompetitionType, List<TournamentSystemType>> systemTypes = new EnumMap<>(CompetitionType.class);
 
-    private Map<CompetitionType, List<TournamentParticipantType>> participantTypes = new EnumMap<>(
+    private Map<CompetitionType, List<ParticipantType>> participantTypes = new EnumMap<>(
             CompetitionType.class);
 
     private Map<CompetitionType, List<ColumnType>> tableColumnsTypes = new EnumMap<>(CompetitionType.class);
@@ -46,22 +46,22 @@ public class TournamentConfigDto {
 
     private void initParticipantTypes() {
         participantTypes.put(CompetitionType.CHESS, Collections.singletonList(
-                TournamentParticipantType.SINGLE
+                ParticipantType.SINGLE
         ));
 
         participantTypes.put(CompetitionType.FOOTBALL, Arrays.asList(
-                TournamentParticipantType.SINGLE,
-                TournamentParticipantType.TEAM
+                ParticipantType.SINGLE,
+                ParticipantType.TEAM
         ));
 
         participantTypes.put(CompetitionType.TENNIS, Arrays.asList(
-                TournamentParticipantType.SINGLE,
-                TournamentParticipantType.TEAM
+                ParticipantType.SINGLE,
+                ParticipantType.TEAM
         ));
 
         participantTypes.put(CompetitionType.CUSTOM, Arrays.asList(
-                TournamentParticipantType.SINGLE,
-                TournamentParticipantType.TEAM
+                ParticipantType.SINGLE,
+                ParticipantType.TEAM
         ));
     }
 

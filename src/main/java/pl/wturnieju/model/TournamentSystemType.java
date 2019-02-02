@@ -18,5 +18,8 @@ public enum TournamentSystemType {
     LEAGUE,
 
     @JsonProperty("TOURNAMENT_SYSTEM_TYPE.ROUND_ROBIN")
-    ROUND_ROBIN
+    ROUND_ROBIN,
+
+    @JsonProperty("TOURNAMENT_SYSTEM_TYPE.CUSTOM")
+    CUSTOM,
 }

@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import pl.wturnieju.controller.dto.TeamDtoMapper;
+import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.tournament.Tournament;
 
-@Mapper(componentModel = "spring", uses = {ScoreDtoMapper.class, TeamDtoMapper.class})
+@Mapper(componentModel = "spring", uses = {ScoreDtoMapper.class, ParticipantDto.class})
 public interface GameFixtureDtoMapper {
 
     @Mapping(source = "gameFixture.id", target = "gameId")

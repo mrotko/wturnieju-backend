@@ -22,7 +22,7 @@ public class TournamentInviteTokenVerificationService extends TokenVerificationS
         TournamentInviteVerificationToken token = new TournamentInviteVerificationToken();
 
         token.setTournamentId(data.getTournamentId());
-        token.setParticipantId(data.getUserId());
+        token.setParticipantId(data.getParticipantId());
 
         setExpiryDateAndGenerateToken(token);
 

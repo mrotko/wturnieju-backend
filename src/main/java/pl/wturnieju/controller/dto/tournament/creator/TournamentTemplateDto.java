@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import lombok.Data;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
-import pl.wturnieju.model.TournamentParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
 
 
@@ -45,5 +45,5 @@ public class TournamentTemplateDto {
 
     private TournamentSystemType systemType;
 
-    private TournamentParticipantType tournamentParticipantType;
+    private ParticipantType participantType;
 }

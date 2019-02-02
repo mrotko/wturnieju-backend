@@ -20,7 +20,7 @@ public class TournamentTableGeneratorBuilder {
 
     private List<Participant> participants = new ArrayList<>();
 
-    private List<GameFixture> games = new ArrayList<>();
+    private List<? extends GameFixture> games = new ArrayList<>();
 
     private Comparator<TournamentTableRow> rowComparator = comparing(TournamentTableRow::getPoints).reversed();
 
@@ -48,7 +48,7 @@ public class TournamentTableGeneratorBuilder {
         return this;
     }
 
-    public TournamentTableGeneratorBuilder withGames(List<GameFixture> games) {
+    public TournamentTableGeneratorBuilder withGames(List<? extends GameFixture> games) {
         this.games = games;
         return this;
     }

@@ -15,7 +15,7 @@ public interface ITournamentParticipantService {
 
     Optional<Participant> getById(String tournamentId, String participantId);
 
-    void invite(String tournamentId, String participantId);
+    Participant invite(String tournamentId, String participantId);
 
     void deleteParticipant(String tournamentId, String participantId);
 

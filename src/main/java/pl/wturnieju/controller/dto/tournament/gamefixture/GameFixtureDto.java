@@ -2,7 +2,7 @@ package pl.wturnieju.controller.dto.tournament.gamefixture;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.wturnieju.controller.dto.TeamDto;
+import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Timestamp;
@@ -19,11 +19,11 @@ public class GameFixtureDto {
 
     private Timestamp finishedDate;
 
-    private TeamDto homeTeam;
+    private ParticipantDto homeParticipant;
 
     private ScoreDto homeScore;
 
-    private TeamDto awayTeam;
+    private ParticipantDto awayParticipant;
 
     private ScoreDto awayScore;
 

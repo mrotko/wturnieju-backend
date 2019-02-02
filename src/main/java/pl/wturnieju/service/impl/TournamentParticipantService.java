@@ -7,12 +7,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.exception.ResourceExistsException;
 import pl.wturnieju.model.InvitationStatus;
+import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.User;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
@@ -73,19 +75,29 @@ public class TournamentParticipantService implements ITournamentParticipantServi
     }
 
     @Override
-    public void invite(String tournamentId, String participantId) {
-        tournamentService.findTournament(tournamentId).ifPresent(tournament -> {
-            if (getTournamentParticipant(tournament, participantId).isPresent()) {
-                throw new IllegalArgumentException(String.format("%s participant exists", participantId));
-            }
-            Participant tournamentParticipant = new Participant();
-            tournamentParticipant.setId(participantId);
-            tournamentParticipant.setName(userService.findUserById(participantId).map(User::getFullName).orElse(null));
-            tournamentParticipant.setParticipantStatus(ParticipantStatus.INVITED);
-            tournamentParticipant.setInvitationStatus(InvitationStatus.INVITED);
-            tournament.getParticipants().add(tournamentParticipant);
-            tournamentService.updateTournament(tournament);
-        });
+    public Participant invite(String tournamentId, String userId) {
+        var tournament = tournamentService.findTournament(tournamentId).orElse(null);
+
+        if (tournament == null) {
+            throw new IllegalArgumentException();
+        }
+
+        if (getTournamentParticipant(tournament, userId).isPresent()) {
+            throw new IllegalArgumentException(String.format("%s participant exists", userId));
+        }
+        Participant participant = new Participant();
+        participant.setId(new ObjectId().toString());
+        participant.setLeaderId(userId);
+        participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
+        participant.setParticipantStatus(ParticipantStatus.INVITED);
+        participant.setInvitationStatus(InvitationStatus.INVITED);
+        participant.setParticipantType(ParticipantType.SINGLE);
+        participant.setMembers(Collections.emptyList());
+        tournament.getParticipants().add(participant);
+
+        tournamentService.updateTournament(tournament);
+
+        return participant;
     }
 
     @Override
@@ -119,21 +131,25 @@ public class TournamentParticipantService implements ITournamentParticipantServi
     @Override
     public void requestParticipation(String tournamentId, String userId) {
         tournamentService.findTournament(tournamentId).ifPresent(tournament -> {
-            if (findParticipantByUserId(tournament, userId).isPresent()) {
+            if (findParticipantByLeaderId(tournament, userId).isPresent()) {
                 throw new ResourceExistsException("This user participate in tournament");
             }
             var participant = new Participant();
             participant.setInvitationStatus(InvitationStatus.PARTICIPATION_REQUEST);
             participant.setParticipantStatus(ParticipantStatus.INVITED);
-            participant.setId(userId);
+            participant.setParticipantType(ParticipantType.SINGLE);
+            participant.setMembers(Collections.emptyList());
+            participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
+            participant.setLeaderId(userId);
+            participant.setId(new ObjectId().toString());
             tournament.getParticipants().add(participant);
             tournamentService.updateTournament(tournament);
         });
     }
 
-    private Optional<Participant> findParticipantByUserId(Tournament tournament, String userId) {
+    private Optional<Participant> findParticipantByLeaderId(Tournament tournament, String leaderId) {
         return tournament.getParticipants().stream()
-                .filter(participant -> participant.getId().equals(userId))
+                .filter(participant -> participant.getLeaderId().equals(leaderId))
                 .findFirst();
     }
 
