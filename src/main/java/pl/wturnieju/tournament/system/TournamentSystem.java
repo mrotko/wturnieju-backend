@@ -10,6 +10,7 @@ import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.service.ISystemStateService;
+import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.ParticipantStatus;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.SystemState;
@@ -22,7 +23,8 @@ public abstract class TournamentSystem<T extends SystemState> {
 
     private final Tournament tournament;
 
-    public TournamentSystem(ISystemStateService<T> stateService, Tournament tournament) {
+    public TournamentSystem(ISystemStateService<T> stateService,
+            Tournament tournament) {
         this.stateService = stateService;
         this.tournament = tournament;
     }
@@ -54,9 +56,9 @@ public abstract class TournamentSystem<T extends SystemState> {
         var tableGenerator = TournamentTableGeneratorBuilder.builder()
                 .withGames(getSystemState().getEndedGames())
                 .withParticipants(getTournament().getParticipants())
-                .withPointsForWin(1.)
-                .withPointsForDraw(0.5)
-                .withPointsForLose(0.)
+                .withPointsForWin(getPoints(GameResultType.WIN))
+                .withPointsForDraw(getPoints(GameResultType.DRAW))
+                .withPointsForLose(getPoints(GameResultType.LOSE))
                 .withRowComparator(((o1, o2) -> ComparisonChain.start()
                         .compare(o2.getPoints(), o1.getPoints())
                         .compare(o2.getSmallPoints(), o2.getSmallPoints())
@@ -64,6 +66,10 @@ public abstract class TournamentSystem<T extends SystemState> {
                 .build();
 
         return tableGenerator.generateTable();
+    }
+
+    private Double getPoints(GameResultType gameResultType) {
+        return tournament.getScoring().getOrDefault(gameResultType, 0.);
     }
 
     public GameFixture startGame(StartGameUpdateEvent startGameUpdateEvent) {

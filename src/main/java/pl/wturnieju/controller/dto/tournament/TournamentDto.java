@@ -2,6 +2,7 @@ package pl.wturnieju.controller.dto.tournament;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import pl.wturnieju.model.AccessOption;
@@ -10,6 +11,7 @@ import pl.wturnieju.model.IProfile;
 import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.TournamentStatus;
 
 @Data
@@ -50,4 +52,6 @@ public class TournamentDto {
     private Integer plannedRounds;
 
     private String invitationToken;
+
+    private Map<GameResultType, Double> scoring;
 }

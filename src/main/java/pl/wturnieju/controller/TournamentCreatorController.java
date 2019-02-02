@@ -2,6 +2,7 @@ package pl.wturnieju.controller;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.controller.dto.config.TournamentConfigDto;
+import pl.wturnieju.config.tournament.creator.TournamentCreatorConfiguration;
+import pl.wturnieju.config.tournament.scoring.ScoringConfiguration;
 import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateDto;
 import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateMapperStrategy;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationData;
@@ -37,6 +39,10 @@ public class TournamentCreatorController {
 
     private final TournamentTemplateMapperStrategy templateMapperStrategy;
 
+    private final ScoringConfiguration scoringConfiguration;
+
+    private final TournamentCreatorConfiguration tournamentCreatorConfiguration;
+
     @PostMapping(value = "/create")
     public Map<String, String> createTournament(@RequestBody TournamentTemplateDto dto) {
         var tournament = templateMapperStrategy.mapToTournament(dto);
@@ -57,7 +63,13 @@ public class TournamentCreatorController {
     }
 
     @GetMapping("/config")
-    public TournamentConfigDto getTournamentConfig() {
-        return new TournamentConfigDto();
+    public Map<String, Object> getTournamentConfig() {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put("creator", tournamentCreatorConfiguration.getTournamentCreatorConfigurationData());
+        config.put("scoring", scoringConfiguration.getCompetitions());
+
+        return config;
+
     }
 }

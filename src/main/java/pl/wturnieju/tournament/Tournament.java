@@ -1,7 +1,9 @@
 package pl.wturnieju.tournament;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -53,4 +55,6 @@ public abstract class Tournament extends Persistent {
     protected int currentRound;
 
     protected Requirements requirements;
+
+    protected Map<GameResultType, Double> scoring = new HashMap<>();
 }

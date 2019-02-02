@@ -1,0 +1,75 @@
+[
+  {
+    "competitionType": "COMPETITION_TYPE.CHESS",
+    "tournamentSystems": [
+      {
+        "tournamentSystemType": "TOURNAMENT_SYSTEM_TYPE.SWISS",
+        "gameResults": [
+          {
+            "gameResultType": "GAME_RESULT_TYPE.WIN",
+            "points": 1
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.DRAW",
+            "points": 0.5
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.LOSE",
+            "points": 0
+          }
+        ]
+      },
+      {
+        "tournamentSystemType": "TOURNAMENT_SYSTEM_TYPE.LEAGUE",
+        "gameResults": [
+          {
+            "gameResultType": "GAME_RESULT_TYPE.WIN",
+            "points": 1
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.DRAW",
+            "points": 0.5
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.LOSE",
+            "points": 0
+          }
+        ]
+      },
+      {
+        "tournamentSystemType": "TOURNAMENT_SYSTEM_TYPE.GROUP",
+        "gameResults": [
+          {
+            "gameResultType": "GAME_RESULT_TYPE.WIN",
+            "points": 1
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.DRAW",
+            "points": 0.5
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.LOSE",
+            "points": 0
+          }
+        ]
+      },
+      {
+        "tournamentSystemType": "TOURNAMENT_SYSTEM_TYPE.ROUND_ROBIN",
+        "gameResults": [
+          {
+            "gameResultType": "GAME_RESULT_TYPE.WIN",
+            "points": 1
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.DRAW",
+            "points": 0.5
+          },
+          {
+            "gameResultType": "GAME_RESULT_TYPE.LOSE",
+            "points": 0
+          }
+        ]
+      }
+    ]
+  }
+]

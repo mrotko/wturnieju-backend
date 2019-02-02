@@ -6,8 +6,7 @@ import pl.wturnieju.tournament.system.state.CustomSystemState;
 
 public class CustomTournamentSystem extends TournamentSystem<CustomSystemState> {
 
-    public CustomTournamentSystem(ISystemStateService<CustomSystemState> stateService,
-            Tournament tournament) {
+    public CustomTournamentSystem(ISystemStateService<CustomSystemState> stateService, Tournament tournament) {
         super(stateService, tournament);
     }
 

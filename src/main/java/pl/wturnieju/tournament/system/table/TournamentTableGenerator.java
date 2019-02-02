@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Setter;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.Participant;
 
 public class TournamentTableGenerator {

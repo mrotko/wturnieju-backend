@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.Participant;
 
 public class TournamentTableGeneratorBuilder {
