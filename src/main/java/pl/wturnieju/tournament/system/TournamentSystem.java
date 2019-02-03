@@ -76,10 +76,12 @@ public abstract class TournamentSystem<T extends SystemState> {
 
     public GameFixture startGame(StartGameUpdateEvent startGameUpdateEvent) {
         var state = getSystemState();
+
         var factory = new GameEditorFactory(getTournament().getCompetitionType());
         var editor = factory.createGameEditor(getGameById(state, startGameUpdateEvent.getGameId()));
         var game = editor.startGame(startGameUpdateEvent);
         stateService.updateSystemState(state);
+
         return game;
     }
 
@@ -91,6 +93,7 @@ public abstract class TournamentSystem<T extends SystemState> {
 
     public GameFixture finishGame(FinishGameUpdateEvent finishGameUpdateEvent) {
         var state = getSystemState();
+
         var factory = new GameEditorFactory(getTournament().getCompetitionType());
         var editor = factory.createGameEditor(getGameById(state, finishGameUpdateEvent.getGameId()));
         var game = editor.finishGame(finishGameUpdateEvent);

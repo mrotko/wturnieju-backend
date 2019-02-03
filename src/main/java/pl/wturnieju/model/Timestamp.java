@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 
 @Data
-public class Timestamp {
+public class Timestamp implements Comparable<Timestamp> {
 
     private final LocalDateTime value;
 
@@ -48,5 +48,10 @@ public class Timestamp {
     @JsonValue
     public String toString() {
         return value.toInstant(ZoneOffset.UTC).toString();
+    }
+
+    @Override
+    public int compareTo(@NonNull Timestamp o) {
+        return value.compareTo(o.value);
     }
 }

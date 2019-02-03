@@ -1,5 +1,9 @@
 package pl.wturnieju.gamefixture;
 
+import java.util.Optional;
+
+import org.springframework.data.annotation.Transient;
+
 import lombok.Data;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.Participant;
@@ -36,4 +40,16 @@ public class GameFixture {
     private Boolean live;
 
     private Integer stage;
+
+    private String previousGameFixtureId;
+
+    @Transient
+    public String getHomeParticipantId() {
+        return Optional.ofNullable(homeParticipant).map(Participant::getId).orElse(null);
+    }
+
+    @Transient
+    public String getAwayParticipantId() {
+        return Optional.ofNullable(awayParticipant).map(Participant::getId).orElse(null);
+    }
 }

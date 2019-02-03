@@ -10,11 +10,7 @@ public interface IScheduleEditor<T extends GameFixture> {
 
     List<T> updateGames(List<T> gameFixtures);
 
-    T addGame(T gameFixture);
-
     List<T> addGames(List<T> gameFixtures);
-
-    String deleteGame(String gameId);
 
     List<String> deleteGames(List<String> gamesIds);
 

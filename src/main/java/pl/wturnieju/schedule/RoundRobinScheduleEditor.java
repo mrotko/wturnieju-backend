@@ -1,58 +1,34 @@
 package pl.wturnieju.schedule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import pl.wturnieju.gamefixture.RoundRobinGameFixture;
-import pl.wturnieju.tournament.system.RoundRobinTournamentSystem;
+import pl.wturnieju.gamefixture.RoundRobinGameFixtureFactory;
+import pl.wturnieju.tournament.system.TournamentSystem;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-@RequiredArgsConstructor
 public class RoundRobinScheduleEditor extends ScheduleEditor<RoundRobinGameFixture> {
 
-    private final RoundRobinTournamentSystem tournamentSystem;
-
-    @Override
-    public RoundRobinGameFixture updateGame(RoundRobinGameFixture gameFixture) {
-        return null;
+    public RoundRobinScheduleEditor(TournamentSystem<SystemState<RoundRobinGameFixture>> tournamentSystem) {
+        super(tournamentSystem, new RoundRobinGameFixtureFactory());
     }
 
     @Override
-    public List<RoundRobinGameFixture> updateGames(List<RoundRobinGameFixture> gameFixtures) {
-        return null;
+    protected List<ImmutablePair<String, String>> getExcludedPairs() {
+        List<ImmutablePair<String, String>> excludedPairs = new ArrayList<>();
+
+        excludedPairs.addAll(getParticipantsPlayedEachOtherPairs());
+        excludedPairs.addAll(getParticipantsWithByAsNullOpponent());
+
+        return excludedPairs;
     }
 
     @Override
-    public RoundRobinGameFixture addGame(RoundRobinGameFixture gameFixture) {
-        return null;
-    }
-
-    @Override
-    public List<RoundRobinGameFixture> addGames(List<RoundRobinGameFixture> gameFixtures) {
-        return null;
-    }
-
-    @Override
-    public String deleteGame(String gameId) {
-        return null;
-    }
-
-    @Override
-    public List<String> deleteGames(List<String> gamesIds) {
-        return null;
-    }
-
-    @Override
-    public List<RoundRobinGameFixture> generateGames() {
-        return null;
-    }
-
-    @Override
-    public List<RoundRobinGameFixture> getGeneratedGames(List<String> gamesIds) {
-        return null;
-    }
-
-    @Override
-    public List<String> deleteGeneratedGames(List<String> gamesIds) {
-        return null;
+    protected BiFunction<String, String, Double> getWeightCalculationMethod() {
+        return (a, b) -> 0.;
     }
 }

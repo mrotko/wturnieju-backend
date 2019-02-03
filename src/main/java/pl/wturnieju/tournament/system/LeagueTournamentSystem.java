@@ -1,5 +1,7 @@
 package pl.wturnieju.tournament.system;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.LeagueSystemState;
@@ -26,6 +28,15 @@ public class LeagueTournamentSystem extends TournamentSystem<LeagueSystemState> 
 
     @Override
     public void startNextTournamentStage() {
+        var state = getSystemState();
 
+        state.getParticipantsPlayedEachOther().clear();
+        state.getGeneratedGameFixtures().clear();
+        state.getParticipantsWithBye().clear();
+
+        state.getGameFixtures().forEach(game -> state.getPairsAfterFirstRound().add(
+                ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId())));
+
+        getStateService().updateSystemState(state);
     }
 }

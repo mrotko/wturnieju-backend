@@ -1,6 +1,8 @@
 package pl.wturnieju.utils;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 import pl.wturnieju.exception.DateFormatException;
 import pl.wturnieju.model.Timestamp;
@@ -22,5 +24,11 @@ public class DateUtils {
                 .withHour(23)
                 .withMinute(59)
                 .withSecond(59));
+    }
+
+    public static Timestamp getLatest(Timestamp... timestamps) {
+        return Stream.of(timestamps)
+                .max(Comparator.naturalOrder())
+                .orElse(null);
     }
 }

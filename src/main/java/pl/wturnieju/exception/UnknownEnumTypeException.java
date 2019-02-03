@@ -6,6 +6,6 @@ public class UnknownEnumTypeException extends RuntimeException {
     }
 
     public UnknownEnumTypeException(Enum type) {
-        super(type == null ? "null: " : type.name());
+        super("Unknown enum type: " + (type == null ? "null" : type.name()));
     }
 }
