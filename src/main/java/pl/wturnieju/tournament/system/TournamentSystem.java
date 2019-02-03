@@ -51,6 +51,8 @@ public abstract class TournamentSystem<T extends SystemState> {
 
     public abstract void finishTournament();
 
+    public abstract void startNextTournamentStage();
+
     @SuppressWarnings("unchecked")
     public TournamentTable buildTournamentTable() {
         var tableGenerator = TournamentTableGeneratorBuilder.builder()

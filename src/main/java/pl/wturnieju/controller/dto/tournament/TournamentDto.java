@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
@@ -54,4 +55,10 @@ public class TournamentDto {
     private String invitationToken;
 
     private Map<GameResultType, Double> scoring;
+
+    private Integer currentRound;
+
+    private Integer currentStage;
+
+    private List<TableColumnType> tableColumns;
 }

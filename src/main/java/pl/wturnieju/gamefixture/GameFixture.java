@@ -34,4 +34,6 @@ public class GameFixture {
     private Boolean bye;
 
     private Boolean live;
+
+    private Integer stage;
 }

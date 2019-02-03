@@ -17,6 +17,11 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
     }
 
     @Override
+    public void startNextTournamentStage() {
+
+    }
+
+    @Override
     protected void createSystemState() {
         var state = new SwissSystemState();
 

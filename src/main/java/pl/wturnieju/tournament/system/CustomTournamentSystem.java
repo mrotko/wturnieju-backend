@@ -23,4 +23,9 @@ public class CustomTournamentSystem extends TournamentSystem<CustomSystemState> 
     public void finishTournament() {
 
     }
+
+    @Override
+    public void startNextTournamentStage() {
+
+    }
 }

@@ -25,6 +25,7 @@ public class SwissGameFixtureFactory implements GameFixtureFactory<SwissGameFixt
         game.setGameStatus(GameStatus.BEFORE_START);
         game.setWinner(0);
         game.setRound(null);
+        game.setStage(null);
 
         return game;
     }

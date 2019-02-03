@@ -1,7 +1,6 @@
 package pl.wturnieju.tournament;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
+import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.IProfile;
@@ -54,7 +54,11 @@ public abstract class Tournament extends Persistent {
 
     protected int currentRound;
 
+    protected int currentStage;
+
     protected Requirements requirements;
 
-    protected Map<GameResultType, Double> scoring = new HashMap<>();
+    protected Map<GameResultType, Double> scoring;
+
+    protected List<TableColumnType> tableColumns = new ArrayList<>();
 }

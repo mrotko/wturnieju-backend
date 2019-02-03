@@ -7,6 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.ParticipantType;
@@ -24,4 +25,7 @@ public class TournamentCreatorConfigurationData {
 
     private Map<CompetitionType, List<ParticipantType>> participantTypes = new EnumMap<>(
             CompetitionType.class);
+
+    private Map<TournamentSystemType, List<TableColumnType>> columnTypes = new EnumMap<>(
+            TournamentSystemType.class);
 }

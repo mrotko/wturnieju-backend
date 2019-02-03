@@ -10,4 +10,6 @@ public class LeagueSystemStateService extends SystemStateService<LeagueSystemSta
     public LeagueSystemStateService(SystemStateRepository<LeagueSystemState> repository) {
         super(repository);
     }
+
+
 }

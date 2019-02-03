@@ -175,6 +175,9 @@ public class SwissScheduleEditor extends ScheduleEditor<SwissGameFixture> {
         int currentRound = tournamentSystem.getTournament().getCurrentRound() + 1;
         games.forEach(game -> game.setRound(currentRound));
 
+        int currentStage = tournamentSystem.getTournament().getCurrentStage();
+        games.forEach(game -> game.setStage(currentStage));
+
         return games;
     }
 

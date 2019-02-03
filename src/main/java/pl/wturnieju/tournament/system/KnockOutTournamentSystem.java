@@ -23,4 +23,9 @@ public class KnockOutTournamentSystem extends TournamentSystem<KnockOutSystemSta
     public void finishTournament() {
 
     }
+
+    @Override
+    public void startNextTournamentStage() {
+
+    }
 }

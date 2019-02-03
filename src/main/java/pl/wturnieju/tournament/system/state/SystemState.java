@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.annotation.Transient;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public abstract class SystemState<T extends GameFixture> extends Persistent {
 
     private List<T> generatedGameFixtures = new ArrayList<>();
 
+    @Transient
     public List<T> getEndedGames() {
         return gameFixtures.stream()
                 .filter(game -> game.getGameStatus() == GameStatus.ENDED)

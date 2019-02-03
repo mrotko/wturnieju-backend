@@ -23,4 +23,9 @@ public class RoundRobinTournamentSystem extends TournamentSystem<RoundRobinSyste
     public void finishTournament() {
         // TODO(mr): 31.01.2019 impl
     }
+
+    @Override
+    public void startNextTournamentStage() {
+
+    }
 }

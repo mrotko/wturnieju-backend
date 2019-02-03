@@ -23,4 +23,9 @@ public class LeagueTournamentSystem extends TournamentSystem<LeagueSystemState> 
     public void finishTournament() {
 
     }
+
+    @Override
+    public void startNextTournamentStage() {
+
+    }
 }

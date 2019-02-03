@@ -2,7 +2,7 @@ package pl.wturnieju.controller.dto.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum ColumnType {
+public enum TableColumnType {
 
     @JsonProperty("COLUMN_TYPE.LP")
     LP,

@@ -40,4 +40,6 @@ public class GameFixtureDto {
     private CompetitionType competitionType;
 
     private String tournamentId;
+
+    private Integer stage;
 }

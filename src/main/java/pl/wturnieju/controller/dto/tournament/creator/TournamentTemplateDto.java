@@ -1,16 +1,21 @@
 package pl.wturnieju.controller.dto.tournament.creator;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import lombok.Data;
+import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.tournament.GameResultType;
 
 
 @Data
@@ -46,4 +51,8 @@ public class TournamentTemplateDto {
     private TournamentSystemType systemType;
 
     private ParticipantType participantType;
+
+    private List<TableColumnType> tableColumns;
+
+    private Map<GameResultType, Double> scoring;
 }

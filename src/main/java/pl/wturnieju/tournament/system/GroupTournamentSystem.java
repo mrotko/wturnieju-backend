@@ -23,4 +23,9 @@ public class GroupTournamentSystem extends TournamentSystem<GroupSystemState> {
     public void finishTournament() {
 
     }
+
+    @Override
+    public void startNextTournamentStage() {
+
+    }
 }
