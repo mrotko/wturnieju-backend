@@ -105,6 +105,7 @@ public class TournamentTableGenerator {
 
     private void addToRowLose(TournamentTableRow row) {
         var manager = new TournamentTableRowManager(row);
+        manager.addPoints(getPoints(GameResultType.LOSE));
         manager.increaseLoses();
         manager.increaseTotalGames();
     }

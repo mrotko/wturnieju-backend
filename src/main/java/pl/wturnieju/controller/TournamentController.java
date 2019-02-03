@@ -158,6 +158,10 @@ public class TournamentController {
                 .map(ScheduleElementDto::getGameId)
                 .collect(Collectors.toList());
 
+        if (gamesIds.isEmpty()) {
+            return scheduleDTO;
+        }
+
         var cachedGames = scheduleService.getGeneratedSchedule(tournamentId, gamesIds);
         var elements = scheduleDTO.getElements();
         elements.forEach(element -> cachedGames.stream().filter(g -> g.getId().equals(element.getGameId())).findFirst()
