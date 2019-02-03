@@ -7,23 +7,23 @@ import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.system.state.SystemState;
 
 @RequiredArgsConstructor
-public abstract class SystemStateService<T extends SystemState> implements ISystemStateService<T> {
+public class SystemStateService implements ISystemStateService {
 
-    private final SystemStateRepository<T> repository;
+    private final SystemStateRepository repository;
 
     @Override
-    public void insertSystemState(T state) {
+    public void insertSystemState(SystemState state) {
         state.setLastUpdate(Timestamp.now());
         repository.insert(state);
     }
 
     @Override
-    public T getSystemStateByTournamentId(String tournamentId) {
+    public SystemState getSystemStateByTournamentId(String tournamentId) {
         return repository.getByTournamentId(tournamentId);
     }
 
     @Override
-    public T updateSystemState(T state) {
+    public SystemState updateSystemState(SystemState state) {
         return repository.save(state);
     }
 }

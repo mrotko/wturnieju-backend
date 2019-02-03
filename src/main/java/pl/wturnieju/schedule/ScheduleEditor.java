@@ -17,13 +17,12 @@ import pl.wturnieju.graph.Vertex;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.system.TournamentSystem;
-import pl.wturnieju.tournament.system.state.SystemState;
 import pl.wturnieju.utils.DateUtils;
 
 @RequiredArgsConstructor
 public abstract class ScheduleEditor implements IScheduleEditor {
 
-    protected final TournamentSystem<SystemState> tournamentSystem;
+    protected final TournamentSystem tournamentSystem;
 
     protected final GameFixtureFactory gameFixtureFactory;
 

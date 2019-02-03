@@ -36,7 +36,7 @@ public class TournamentScheduleService implements ITournamentScheduleService {
 
     @Override
     public List<GameFixture> getGameFixtures(String tournamentId) {
-        var state = (SystemState) createTournamentSystem(tournamentId).getSystemState();
+        var state = createTournamentSystem(tournamentId).getSystemState();
         return Optional.ofNullable(state).map(SystemState::getGameFixtures).orElse(Collections.emptyList());
     }
 

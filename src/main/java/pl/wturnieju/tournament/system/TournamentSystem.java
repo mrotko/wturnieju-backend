@@ -17,13 +17,13 @@ import pl.wturnieju.tournament.system.state.SystemState;
 import pl.wturnieju.tournament.system.table.TournamentTable;
 import pl.wturnieju.tournament.system.table.TournamentTableGeneratorBuilder;
 
-public abstract class TournamentSystem<T extends SystemState> {
+public abstract class TournamentSystem {
 
-    protected final ISystemStateService<T> stateService;
+    protected final ISystemStateService stateService;
 
     private final Tournament tournament;
 
-    public TournamentSystem(ISystemStateService<T> stateService,
+    public TournamentSystem(ISystemStateService stateService,
             Tournament tournament) {
         this.stateService = stateService;
         this.tournament = tournament;
@@ -53,7 +53,6 @@ public abstract class TournamentSystem<T extends SystemState> {
 
     public abstract void startNextTournamentStage();
 
-    @SuppressWarnings("unchecked")
     public TournamentTable buildTournamentTable() {
         var tableGenerator = TournamentTableGeneratorBuilder.builder()
                 .withGames(getSystemState().getEndedGames())
@@ -103,7 +102,7 @@ public abstract class TournamentSystem<T extends SystemState> {
     }
 
 
-    public ISystemStateService<T> getStateService() {
+    public ISystemStateService getStateService() {
         return stateService;
     }
 
@@ -111,7 +110,7 @@ public abstract class TournamentSystem<T extends SystemState> {
         return tournament;
     }
 
-    public T getSystemState() {
+    public SystemState getSystemState() {
         return stateService.getSystemStateByTournamentId(tournament.getId());
     }
 }

@@ -20,7 +20,7 @@ public class TournamentPresentationService implements ITournamentPresentationSer
     @Override
     public TournamentTable getTournamentTable(String tournamentId) {
         var tournament = tournamentService.getTournament(tournamentId);
-        var system = (TournamentSystem<?>) TournamentSystemFactory.create(context, tournament);
+        var system = (TournamentSystem) TournamentSystemFactory.create(context, tournament);
         return system.buildTournamentTable();
     }
 }

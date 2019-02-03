@@ -2,11 +2,11 @@ package pl.wturnieju.service;
 
 import pl.wturnieju.tournament.system.state.SystemState;
 
-public interface ISystemStateService<T extends SystemState> {
+public interface ISystemStateService {
 
-    void insertSystemState(T state);
+    void insertSystemState(SystemState state);
 
-    T getSystemStateByTournamentId(String tournamentId);
+    SystemState getSystemStateByTournamentId(String tournamentId);
 
-    T updateSystemState(T state);
+    SystemState updateSystemState(SystemState state);
 }

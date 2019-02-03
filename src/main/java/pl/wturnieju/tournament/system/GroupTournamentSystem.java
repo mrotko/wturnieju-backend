@@ -2,17 +2,17 @@ package pl.wturnieju.tournament.system;
 
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.GroupSystemState;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-public class GroupTournamentSystem extends TournamentSystem<GroupSystemState> {
-    public GroupTournamentSystem(ISystemStateService<GroupSystemState> stateService,
+public class GroupTournamentSystem extends TournamentSystem {
+    public GroupTournamentSystem(ISystemStateService stateService,
             Tournament tournament) {
         super(stateService, tournament);
     }
 
     @Override
     protected void createSystemState() {
-        var state = new GroupSystemState();
+        var state = new SystemState();
 
         initCommonSystemStateFields(state);
 

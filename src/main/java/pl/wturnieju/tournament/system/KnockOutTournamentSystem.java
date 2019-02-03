@@ -2,17 +2,17 @@ package pl.wturnieju.tournament.system;
 
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.KnockOutSystemState;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-public class KnockOutTournamentSystem extends TournamentSystem<KnockOutSystemState> {
-    public KnockOutTournamentSystem(ISystemStateService<KnockOutSystemState> stateService,
+public class KnockOutTournamentSystem extends TournamentSystem {
+    public KnockOutTournamentSystem(ISystemStateService stateService,
             Tournament tournament) {
         super(stateService, tournament);
     }
 
     @Override
     protected void createSystemState() {
-        var state = new KnockOutSystemState();
+        var state = new SystemState();
 
         initCommonSystemStateFields(state);
 

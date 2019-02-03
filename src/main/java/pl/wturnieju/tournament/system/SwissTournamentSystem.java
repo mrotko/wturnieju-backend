@@ -1,12 +1,12 @@
 package pl.wturnieju.tournament.system;
 
-import pl.wturnieju.service.impl.SwissSystemStateService;
+import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.SwissSystemState;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
+public class SwissTournamentSystem extends TournamentSystem {
 
-    public SwissTournamentSystem(SwissSystemStateService stateService, Tournament tournament) {
+    public SwissTournamentSystem(ISystemStateService stateService, Tournament tournament) {
         super(stateService, tournament);
     }
 
@@ -23,7 +23,7 @@ public class SwissTournamentSystem extends TournamentSystem<SwissSystemState> {
 
     @Override
     protected void createSystemState() {
-        var state = new SwissSystemState();
+        var state = new SystemState();
 
         initCommonSystemStateFields(state);
 

@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import pl.wturnieju.tournament.system.state.SystemState;
 
-public interface SystemStateRepository<T extends SystemState> extends MongoRepository<T, String> {
+public interface SystemStateRepository extends MongoRepository<SystemState, String> {
 
-    T getByTournamentId(String tournamentId);
+    SystemState getByTournamentId(String tournamentId);
 }

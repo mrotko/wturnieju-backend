@@ -8,10 +8,9 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.tournament.system.TournamentSystem;
-import pl.wturnieju.tournament.system.state.SystemState;
 
 public class GroupScheduleEditor extends ScheduleEditor {
-    public GroupScheduleEditor(TournamentSystem<SystemState> tournamentSystem) {
+    public GroupScheduleEditor(TournamentSystem tournamentSystem) {
         super(tournamentSystem, new GameFixtureFactory());
     }
 

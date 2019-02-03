@@ -2,17 +2,17 @@ package pl.wturnieju.tournament.system;
 
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.RoundRobinSystemState;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-public class RoundRobinTournamentSystem extends TournamentSystem<RoundRobinSystemState> {
-    public RoundRobinTournamentSystem(ISystemStateService<RoundRobinSystemState> stateService,
+public class RoundRobinTournamentSystem extends TournamentSystem {
+    public RoundRobinTournamentSystem(ISystemStateService stateService,
             Tournament tournament) {
         super(stateService, tournament);
     }
 
     @Override
     protected void createSystemState() {
-        var state = new RoundRobinSystemState();
+        var state = new SystemState();
 
         initCommonSystemStateFields(state);
 

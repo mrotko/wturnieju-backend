@@ -20,7 +20,7 @@ import pl.wturnieju.model.Timestamp;
 @RequiredArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class SystemState extends Persistent {
+public class SystemState extends Persistent {
 
     private Timestamp lastUpdate;
 
@@ -29,6 +29,10 @@ public abstract class SystemState extends Persistent {
     private String tournamentId;
 
     private Map<String, List<String>> participantsPlayedEachOther = new HashMap<>();
+
+    private List<Group> knockoutGroups = new ArrayList<>();
+
+    private List<Group> groups = new ArrayList<>();
 
     private List<GameFixture> gameFixtures = new ArrayList<>();
 

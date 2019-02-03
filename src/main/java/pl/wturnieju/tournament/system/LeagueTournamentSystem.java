@@ -1,20 +1,18 @@
 package pl.wturnieju.tournament.system;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import pl.wturnieju.service.ISystemStateService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.LeagueSystemState;
+import pl.wturnieju.tournament.system.state.SystemState;
 
-public class LeagueTournamentSystem extends TournamentSystem<LeagueSystemState> {
-    public LeagueTournamentSystem(ISystemStateService<LeagueSystemState> stateService,
+public class LeagueTournamentSystem extends TournamentSystem {
+    public LeagueTournamentSystem(ISystemStateService stateService,
             Tournament tournament) {
         super(stateService, tournament);
     }
 
     @Override
     protected void createSystemState() {
-        var state = new LeagueSystemState();
+        var state = new SystemState();
 
         initCommonSystemStateFields(state);
 
@@ -34,8 +32,8 @@ public class LeagueTournamentSystem extends TournamentSystem<LeagueSystemState> 
         state.getGeneratedGameFixtures().clear();
         state.getParticipantsWithBye().clear();
 
-        state.getGameFixtures().forEach(game -> state.getPairsAfterFirstRound().add(
-                ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId())));
+        //        state.getGameFixtures().forEach(game -> state.getPairsAfterFirstRound().add(
+        //                ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId())));
 
         getStateService().updateSystemState(state);
     }

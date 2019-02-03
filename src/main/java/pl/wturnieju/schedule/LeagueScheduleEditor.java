@@ -8,11 +8,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.tournament.system.TournamentSystem;
-import pl.wturnieju.tournament.system.state.SystemState;
 
 public class LeagueScheduleEditor extends ScheduleEditor {
 
-    public LeagueScheduleEditor(TournamentSystem<SystemState> tournamentSystem) {
+    public LeagueScheduleEditor(TournamentSystem tournamentSystem) {
         super(tournamentSystem, new GameFixtureFactory());
     }
 
