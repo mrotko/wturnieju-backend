@@ -24,7 +24,7 @@ public class TournamentTemplateMapperStrategy {
         case CHESS:
             return chessTournamentTemplateMapper.mapToChessTournament((ChessTournamentTemplateDto) dto);
         case FOOTBALL:
-            return customTournamentTemplateMapper.mapToCustomTournament((CustomTournamentTemplateDto) dto);
+            return footballTournamentTemplateMapper.mapToFootballTournament((FootballTournamentTemplateDto) dto);
         case TENNIS:
             return tennisTournamentTemplateMapper.mapToTennisTournament((TennisTournamentTemplateDto) dto);
         case CUSTOM:

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.exception.ResourceExistsException;
 import pl.wturnieju.model.InvitationStatus;
-import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.User;
 import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
@@ -91,7 +90,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
         participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
         participant.setParticipantStatus(ParticipantStatus.INVITED);
         participant.setInvitationStatus(InvitationStatus.INVITED);
-        participant.setParticipantType(ParticipantType.SINGLE);
+        participant.setParticipantType(tournament.getParticipantType());
         participant.setMembers(Collections.emptyList());
         tournament.getParticipants().add(participant);
 
@@ -137,7 +136,7 @@ public class TournamentParticipantService implements ITournamentParticipantServi
             var participant = new Participant();
             participant.setInvitationStatus(InvitationStatus.PARTICIPATION_REQUEST);
             participant.setParticipantStatus(ParticipantStatus.INVITED);
-            participant.setParticipantType(ParticipantType.SINGLE);
+            participant.setParticipantType(tournament.getParticipantType());
             participant.setMembers(Collections.emptyList());
             participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
             participant.setLeaderId(userId);
