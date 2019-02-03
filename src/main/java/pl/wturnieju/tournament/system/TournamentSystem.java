@@ -40,7 +40,7 @@ public abstract class TournamentSystem<T extends SystemState> {
         createSystemState();
     }
 
-    protected void initCommonSystemStateFields(SystemState<? extends GameFixture> state) {
+    protected void initCommonSystemStateFields(SystemState state) {
         state.setTournamentId(getTournament().getId());
         state.setParticipantsWithBye(Collections.emptyList());
         state.setGameFixtures(Collections.emptyList());
@@ -85,7 +85,7 @@ public abstract class TournamentSystem<T extends SystemState> {
         return game;
     }
 
-    protected GameFixture getGameById(SystemState<?> state, String gameId) {
+    protected GameFixture getGameById(SystemState state, String gameId) {
         return state.getGameFixtures().stream()
                 .filter(game -> game.getId().equals(gameId))
                 .findFirst().orElse(null);

@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.config.tournament.creator.TournamentCreatorConfiguration;
 import pl.wturnieju.config.tournament.scoring.ScoringConfiguration;
 import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateDto;
-import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateMapperStrategy;
+import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateMapper;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationData;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
 import pl.wturnieju.service.ITournamentCreatorService;
@@ -37,15 +37,15 @@ public class TournamentCreatorController {
 
     private final ITournamentService tournamentService;
 
-    private final TournamentTemplateMapperStrategy templateMapperStrategy;
-
     private final ScoringConfiguration scoringConfiguration;
 
     private final TournamentCreatorConfiguration tournamentCreatorConfiguration;
 
+    private final TournamentTemplateMapper tournamentTemplateMapper;
+
     @PostMapping(value = "/create")
     public Map<String, String> createTournament(@RequestBody TournamentTemplateDto dto) {
-        var tournament = templateMapperStrategy.mapToTournament(dto);
+        var tournament = tournamentTemplateMapper.mapToTournament(dto);
         tournamentCreatorService.create(tournament);
         if (Optional.ofNullable(dto.getInvitationLink()).orElse(false)) {
             createInvitationToken(tournament);

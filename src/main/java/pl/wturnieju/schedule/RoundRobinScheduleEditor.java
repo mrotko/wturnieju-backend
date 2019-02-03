@@ -6,15 +6,14 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import pl.wturnieju.gamefixture.RoundRobinGameFixture;
-import pl.wturnieju.gamefixture.RoundRobinGameFixtureFactory;
+import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.state.SystemState;
 
-public class RoundRobinScheduleEditor extends ScheduleEditor<RoundRobinGameFixture> {
+public class RoundRobinScheduleEditor extends ScheduleEditor {
 
-    public RoundRobinScheduleEditor(TournamentSystem<SystemState<RoundRobinGameFixture>> tournamentSystem) {
-        super(tournamentSystem, new RoundRobinGameFixtureFactory());
+    public RoundRobinScheduleEditor(TournamentSystem<SystemState> tournamentSystem) {
+        super(tournamentSystem, new GameFixtureFactory());
     }
 
     @Override

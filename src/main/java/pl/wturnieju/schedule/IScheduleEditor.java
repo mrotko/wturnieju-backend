@@ -4,19 +4,19 @@ import java.util.List;
 
 import pl.wturnieju.gamefixture.GameFixture;
 
-public interface IScheduleEditor<T extends GameFixture> {
+public interface IScheduleEditor {
 
-    T updateGame(T gameFixture);
+    GameFixture updateGame(GameFixture gameFixture);
 
-    List<T> updateGames(List<T> gameFixtures);
+    List<GameFixture> updateGames(List<GameFixture> gameFixtures);
 
-    List<T> addGames(List<T> gameFixtures);
+    List<GameFixture> addGames(List<GameFixture> gameFixtures);
 
     List<String> deleteGames(List<String> gamesIds);
 
-    List<T> generateGames();
+    List<GameFixture> generateGames();
 
-    List<T> getGeneratedGames(List<String> gamesIds);
+    List<GameFixture> getGeneratedGames(List<String> gamesIds);
 
     List<String> deleteGeneratedGames(List<String> gamesIds);
 }

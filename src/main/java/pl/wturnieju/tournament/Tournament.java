@@ -21,7 +21,7 @@ import pl.wturnieju.model.TournamentSystemType;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public abstract class Tournament extends Persistent {
+public class Tournament extends Persistent {
 
     protected String name;
 

@@ -21,14 +21,14 @@ import pl.wturnieju.tournament.system.state.SystemState;
 import pl.wturnieju.utils.DateUtils;
 
 @RequiredArgsConstructor
-public abstract class ScheduleEditor<T extends GameFixture> implements IScheduleEditor<T> {
+public abstract class ScheduleEditor implements IScheduleEditor {
 
-    protected final TournamentSystem<SystemState<T>> tournamentSystem;
+    protected final TournamentSystem<SystemState> tournamentSystem;
 
-    protected final GameFixtureFactory<T> gameFixtureFactory;
+    protected final GameFixtureFactory gameFixtureFactory;
 
     @Override
-    public T updateGame(T gameFixture) {
+    public GameFixture updateGame(GameFixture gameFixture) {
         var state = tournamentSystem.getSystemState();
 
         state.getGameFixtures().removeIf(game -> game.getId().equals(gameFixture.getId()));
@@ -39,7 +39,7 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
     }
 
     @Override
-    public List<T> updateGames(List<T> gameFixtures) {
+    public List<GameFixture> updateGames(List<GameFixture> gameFixtures) {
         var state = tournamentSystem.getSystemState();
         var idsToRemove = gameFixtures.stream()
                 .map(GameFixture::getId)
@@ -53,7 +53,7 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
     }
 
     @Override
-    public List<T> addGames(List<T> gameFixtures) {
+    public List<GameFixture> addGames(List<GameFixture> gameFixtures) {
         var state = tournamentSystem.getSystemState();
 
         gameFixtures.forEach(game -> {
@@ -100,7 +100,7 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
     }
 
     @Override
-    public List<T> generateGames() {
+    public List<GameFixture> generateGames() {
         var state = tournamentSystem.getSystemState();
         var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
         var participantsIds = getParticipantsIdsForGamesGeneration();
@@ -115,7 +115,7 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
                 .map(Vertex::getValue)
                 .collect(Collectors.toList());
 
-        List<T> games = new ArrayList<>();
+        List<GameFixture> games = new ArrayList<>();
         if (shortestPath.isEmpty()) {
             var edges = graph.getEdges();
             if (!edges.isEmpty() && (edges.size() == participantsIds.size() / 2)) {
@@ -141,8 +141,8 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
                 .collect(Collectors.toList());
     }
 
-    private List<T> createGameFixtures(List<String> shortestPath) {
-        var games = new ArrayList<T>();
+    private List<GameFixture> createGameFixtures(List<String> shortestPath) {
+        var games = new ArrayList<GameFixture>();
         for (int i = 0; i < shortestPath.size(); i += 2) {
             var homeId = shortestPath.get(i);
             var awayId = shortestPath.get(i + 1);
@@ -190,7 +190,7 @@ public abstract class ScheduleEditor<T extends GameFixture> implements ISchedule
     }
 
     @Override
-    public List<T> getGeneratedGames(List<String> gamesIds) {
+    public List<GameFixture> getGeneratedGames(List<String> gamesIds) {
         return tournamentSystem.getSystemState().getGeneratedGameFixtures().stream()
                 .filter(g -> gamesIds.contains(g.getId()))
                 .collect(Collectors.toList());

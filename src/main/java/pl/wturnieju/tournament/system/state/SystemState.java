@@ -20,7 +20,7 @@ import pl.wturnieju.model.Timestamp;
 @RequiredArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class SystemState<T extends GameFixture> extends Persistent {
+public abstract class SystemState extends Persistent {
 
     private Timestamp lastUpdate;
 
@@ -30,12 +30,12 @@ public abstract class SystemState<T extends GameFixture> extends Persistent {
 
     private Map<String, List<String>> participantsPlayedEachOther = new HashMap<>();
 
-    private List<T> gameFixtures = new ArrayList<>();
+    private List<GameFixture> gameFixtures = new ArrayList<>();
 
-    private List<T> generatedGameFixtures = new ArrayList<>();
+    private List<GameFixture> generatedGameFixtures = new ArrayList<>();
 
     @Transient
-    public List<T> getEndedGames() {
+    public List<GameFixture> getEndedGames() {
         return gameFixtures.stream()
                 .filter(game -> game.getGameStatus() == GameStatus.ENDED)
                 .collect(Collectors.toList());

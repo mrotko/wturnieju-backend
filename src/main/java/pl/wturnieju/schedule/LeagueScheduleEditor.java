@@ -6,15 +6,14 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import pl.wturnieju.gamefixture.LeagueGameFixture;
-import pl.wturnieju.gamefixture.LeagueGameFixtureFactory;
+import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.tournament.system.TournamentSystem;
 import pl.wturnieju.tournament.system.state.SystemState;
 
-public class LeagueScheduleEditor extends ScheduleEditor<LeagueGameFixture> {
+public class LeagueScheduleEditor extends ScheduleEditor {
 
-    public LeagueScheduleEditor(TournamentSystem<SystemState<LeagueGameFixture>> tournamentSystem) {
-        super(tournamentSystem, new LeagueGameFixtureFactory());
+    public LeagueScheduleEditor(TournamentSystem<SystemState> tournamentSystem) {
+        super(tournamentSystem, new GameFixtureFactory());
     }
 
     @Override

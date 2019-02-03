@@ -21,9 +21,7 @@ import pl.wturnieju.config.MongoConfig;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.controller.dto.tournament.creator.TournamentTemplateDto;
 import pl.wturnieju.generator.CurrentUserGenerator;
-import pl.wturnieju.generator.TournamentCreatorDtoGenerator;
 import pl.wturnieju.model.CompetitionType;
-import pl.wturnieju.model.TournamentFactory;
 import pl.wturnieju.model.User;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
@@ -63,8 +61,8 @@ public class TournamentCreatorServiceTest {
 
         Mockito.when(currentUser.getCurrentUser()).thenReturn(savedUser);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, currentUser);
-        competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS,
-                TournamentCreatorDtoGenerator.generateChessTournaments().get(0));
+        //        competitionTypeToTournamentDtoMap.put(CompetitionType.CHESS,
+        //                TournamentCreatorDtoGenerator.generateChessTournaments().get(0));
     }
 
     private void insertUser() {
@@ -99,7 +97,6 @@ public class TournamentCreatorServiceTest {
     public void genericMappingTest() {
         Map<String, String> createdTournamentIdToClassNameMap = new HashMap<>();
         competitionTypeToTournamentDtoMap.values().forEach(dto -> {
-            var className = TournamentFactory.getTournament(dto.getCompetitionType()).getClass().getName();
             //            var tournament = tournamentCreatorService.create(dto);
             //            createdTournamentIdToClassNameMap.put(tournament.getId(), className);
         });

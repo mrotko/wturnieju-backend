@@ -34,10 +34,9 @@ public class TournamentScheduleService implements ITournamentScheduleService {
         return editor.generateGames();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<GameFixture> getGameFixtures(String tournamentId) {
-        var state = (SystemState<GameFixture>) createTournamentSystem(tournamentId).getSystemState();
+        var state = (SystemState) createTournamentSystem(tournamentId).getSystemState();
         return Optional.ofNullable(state).map(SystemState::getGameFixtures).orElse(Collections.emptyList());
     }
 
@@ -82,11 +81,10 @@ public class TournamentScheduleService implements ITournamentScheduleService {
                 .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
-    private IScheduleEditor<GameFixture> createScheduleEditor(String tournamentId) {
+    private IScheduleEditor createScheduleEditor(String tournamentId) {
         var system = createTournamentSystem(tournamentId);
         var scheduleEditor = ScheduleEditorFactory.create(system);
-        return (IScheduleEditor<GameFixture>) scheduleEditor;
+        return scheduleEditor;
     }
 
     private TournamentSystem createTournamentSystem(String tournamentId) {

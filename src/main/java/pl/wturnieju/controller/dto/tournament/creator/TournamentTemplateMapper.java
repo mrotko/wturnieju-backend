@@ -1,12 +1,12 @@
 package pl.wturnieju.controller.dto.tournament.creator;
 
-import org.mapstruct.MapperConfig;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import pl.wturnieju.tournament.Tournament;
 
-@MapperConfig(componentModel = "spring")
-public interface TournamentTemplateMapperConfig {
+@Mapper(componentModel = "spring")
+public interface TournamentTemplateMapper {
 
 
     @Mapping(target = "status", constant = "BEFORE_START")

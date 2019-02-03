@@ -6,14 +6,11 @@ import org.bson.types.ObjectId;
 
 import pl.wturnieju.tournament.Participant;
 
-public abstract class GameFixtureFactory<T extends GameFixture> {
+public class GameFixtureFactory {
 
-    abstract public T createGameFixture(Participant participant, Participant opponent);
+    public GameFixture createGameFixture(Participant participant, Participant opponent) {
+        var game = new GameFixture();
 
-    protected void initGameFixture(
-            GameFixture game,
-            Participant participant,
-            Participant opponent) {
         game.setId(new ObjectId().toString());
         game.setBye(isBye(participant, opponent));
         game.setStartDate(null);
@@ -28,6 +25,8 @@ public abstract class GameFixtureFactory<T extends GameFixture> {
         game.setWinner(0);
         game.setRound(null);
         game.setStage(null);
+
+        return game;
     }
 
     private boolean isBye(Participant participant, Participant opponent) {
