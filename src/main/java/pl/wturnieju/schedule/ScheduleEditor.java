@@ -113,7 +113,6 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     protected List<ImmutablePair<String, String>> getCompetitors(Group group) {
         return gameFixtureService.getAllByGroupId(group.getId()).stream()
-                .filter(GameFixture::getBye)
                 .map(game -> ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId()))
                 .collect(Collectors.toList());
     }
