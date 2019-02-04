@@ -34,15 +34,13 @@ public class GameEditorController {
     public GameFixtureDto startGame(@RequestBody StartGameEventDto dto) {
         var update = startGameEventDtoMapper.mapStartGameEventDtoToStartGameUpdateEvent(dto);
         var game = gameEditorService.startGame(update);
-        var tournament = tournamentService.getTournament(dto.getTournamentId());
-        return gameFixtureDtoMapper.gameFixtureToGameFixtureDto(game, tournament);
+        return gameFixtureDtoMapper.gameFixtureToGameFixtureDto(game);
     }
 
     @PatchMapping("finish-game")
     public GameFixtureDto finishGame(@RequestBody FinishGameEventDto dto) {
         var update = finishGameEventDtoMapper.finishGameEventDtoToFinishGameUpdateEvent(dto);
         var game = gameEditorService.finishGame(update);
-        var tournament = tournamentService.getTournament(dto.getTournamentId());
-        return gameFixtureDtoMapper.gameFixtureToGameFixtureDto(game, tournament);
+        return gameFixtureDtoMapper.gameFixtureToGameFixtureDto(game);
     }
 }

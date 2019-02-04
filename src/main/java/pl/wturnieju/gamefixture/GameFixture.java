@@ -4,8 +4,11 @@ import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import pl.wturnieju.model.AccessOption;
+import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.LegType;
@@ -14,7 +17,14 @@ import pl.wturnieju.tournament.StageType;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class GameFixture extends Persistent {
+
+    private String groupId;
+
+    private String tournamentId;
+
+    private String previousGameFixtureId;
 
     private Timestamp startDate;
 
@@ -46,11 +56,9 @@ public class GameFixture extends Persistent {
 
     private StageType stageType;
 
-    private String tournamentId;
+    private AccessOption accessOption;
 
-    private String groupId;
-
-    private String previousGameFixtureId;
+    private CompetitionType competitionType;
 
     @Transient
     public String getHomeParticipantId() {

@@ -1,17 +1,27 @@
 package pl.wturnieju.controller.dto.tournament;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.Participant;
 
 @Mapper(componentModel = "spring")
-public interface ParticipantDtoMapper {
+public abstract class ParticipantDtoMapper {
 
-    @Mapping(source = "participant.id", target = "id")
-    @Mapping(source = "participant.participantStatus", target = "participantStatus")
-    @Mapping(source = "participant.invitationStatus", target = "invitationStatus")
-    @Mapping(source = "participant.participantType", target = "participantType")
-    @Mapping(source = "participant.name", target = "name")
-    ParticipantDto participantToParticipantDto(Participant participant);
+    @Autowired
+    protected IParticipantService participantService;
+
+    @Mapping(source = "memberIds", target = "members")
+    public abstract ParticipantDto participantToParticipantDto(Participant participant);
+
+    public ParticipantDto participantIdToParticipantDto(String participantId) {
+        var participant = participantService.getById(participantId);
+        return participantToParticipantDto(participant);
+    }
+
+    public abstract List<ParticipantDto> participantIdsToParticipantDtos(List<String> participantIds);
 }

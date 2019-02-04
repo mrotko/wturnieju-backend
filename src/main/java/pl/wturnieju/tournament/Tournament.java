@@ -15,7 +15,6 @@ import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
-import pl.wturnieju.tournament.system.state.Group;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -36,7 +35,7 @@ public class Tournament extends Persistent {
 
     private String invitationToken;
 
-    private List<Participant> participants = new ArrayList<>();
+    private List<String> participantIds = new ArrayList<>();
 
     private IProfile owner;
 
@@ -64,5 +63,5 @@ public class Tournament extends Persistent {
 
     private List<TableColumnType> tableColumns = new ArrayList<>();
 
-    private List<Group> groups = new ArrayList<>();
+    private List<String> groupIds;
 }

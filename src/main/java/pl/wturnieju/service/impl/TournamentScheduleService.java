@@ -1,8 +1,6 @@
 package pl.wturnieju.service.impl;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
@@ -14,17 +12,18 @@ import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.schedule.IScheduleEditor;
 import pl.wturnieju.schedule.ScheduleEditorFactory;
+import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.ITournamentScheduleService;
 import pl.wturnieju.service.ITournamentService;
-import pl.wturnieju.tournament.system.TournamentSystem;
-import pl.wturnieju.tournament.system.TournamentSystemFactory;
-import pl.wturnieju.tournament.system.state.SystemState;
+import pl.wturnieju.tournament.Tournament;
 
 @RequiredArgsConstructor
 @Service
 public class TournamentScheduleService implements ITournamentScheduleService {
 
     private final ITournamentService tournamentService;
+
+    private final IGameFixtureService gameFixtureService;
 
     private final ApplicationContext context;
 
@@ -36,8 +35,7 @@ public class TournamentScheduleService implements ITournamentScheduleService {
 
     @Override
     public List<GameFixture> getAllGameFixtures(String tournamentId) {
-        var state = createTournamentSystem(tournamentId).getSystemState();
-        return Optional.ofNullable(state).map(SystemState::getAllGames).orElse(Collections.emptyList());
+        return gameFixtureService.getAllByTournamentId(tournamentId);
     }
 
     @Override
@@ -82,12 +80,10 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     }
 
     private IScheduleEditor createScheduleEditor(String tournamentId) {
-        var system = createTournamentSystem(tournamentId);
-        return ScheduleEditorFactory.create(system);
+        return ScheduleEditorFactory.create(context, getTournamentById(tournamentId));
     }
 
-    private TournamentSystem createTournamentSystem(String tournamentId) {
-        var tournament = tournamentService.getTournament(tournamentId);
-        return TournamentSystemFactory.create(context, tournament);
+    private Tournament getTournamentById(String tournamentId) {
+        return tournamentService.getById(tournamentId);
     }
 }

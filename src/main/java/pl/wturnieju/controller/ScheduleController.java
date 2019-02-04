@@ -1,18 +1,18 @@
 package pl.wturnieju.controller;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.controller.dto.tournament.schedule.ScheduleDto;
-import pl.wturnieju.service.ITournamentScheduleService;
+import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.utils.DateUtils;
 
 @RequestMapping("/schedule")
@@ -20,20 +20,20 @@ import pl.wturnieju.utils.DateUtils;
 @RequiredArgsConstructor
 public class ScheduleController {
 
-    private final ITournamentScheduleService scheduleService;
+    private final IGameFixtureService gameFixtureService;
 
     private final DtoMappers mappers;
 
-    @GetMapping(value = "/{tournamentsIds}", params = {"dateFrom", "dateTo"})
-    public List<ScheduleDto> getTournamentsSchedule(@PathVariable("tournamentsIds") List<String> tournamentsIds,
-            @RequestParam("dateFrom") String dateFromYYYYMMDD, @RequestParam("dateTo") String dateToYYYYMMDD) {
+    @GetMapping(value = "/public", params = {"dateFrom", "dateTo"})
+    public List<ScheduleDto> getPublicSchedule(@RequestParam("dateFrom") String dateFromYYYYMMDD,
+            @RequestParam("dateTo") String dateToYYYYMMDD) {
+        List<GameFixture> games = gameFixtureService.getAllPublicStartsBetweenDates(
+                DateUtils.parseYYYYMMDD(dateFromYYYYMMDD),
+                DateUtils.getDateWithLastSecOfDay(DateUtils.parseYYYYMMDD(dateToYYYYMMDD)));
+        Map<String, List<GameFixture>> gamesGroupedByTournament = games.stream()
+                .collect(Collectors.groupingBy(GameFixture::getTournamentId, Collectors.toList()));
 
-        var tournamentIdToGamesMapping = tournamentsIds.stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        id -> scheduleService.getGameFixturesBetweenDates(id,
-                                DateUtils.parseYYYYMMDD(dateFromYYYYMMDD),
-                                DateUtils.getDateWithLastSecOfDay(DateUtils.parseYYYYMMDD(dateToYYYYMMDD)))));
-        return tournamentIdToGamesMapping.entrySet().stream()
+        return gamesGroupedByTournament.entrySet().stream()
                 .map(entry -> mappers.createScheduleDto(entry.getKey(), null, entry.getValue()))
                 .collect(Collectors.toList());
     }

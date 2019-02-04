@@ -15,6 +15,8 @@ public class Participant implements IProfile {
 
     private String name;
 
+    private String tournamentId;
+
     private String shortName;
 
     private ParticipantStatus participantStatus;
@@ -27,5 +29,5 @@ public class Participant implements IProfile {
 
     private String leaderId;
 
-    private List<Participant> members = new ArrayList<>();
+    private List<String> memberIds = new ArrayList<>();
 }

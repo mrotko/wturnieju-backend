@@ -33,7 +33,7 @@ public class GameEditorService implements IGameEditorService {
     }
 
     private TournamentSystem createTournamentSystem(String tournamentId) {
-        var tournament = tournamentService.getTournament(tournamentId);
+        var tournament = tournamentService.getById(tournamentId);
         return TournamentSystemFactory.create(context, tournament);
     }
 }

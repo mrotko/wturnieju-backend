@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.model.ParticipantType;
-import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.ParticipantStatus;
 
 @Getter
@@ -26,5 +25,5 @@ public class ParticipantDto {
 
     private String shortName;
 
-    private List<Participant> members = new ArrayList<>();
+    private List<ParticipantDto> members = new ArrayList<>();
 }

@@ -1,18 +1,22 @@
 package pl.wturnieju.tournament.system;
 
-import pl.wturnieju.service.ISystemStateService;
+import java.util.Collections;
+
+import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.service.IGroupService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.SystemState;
 
 public class SwissTournamentSystem extends TournamentSystem {
 
-    public SwissTournamentSystem(ISystemStateService stateService, Tournament tournament) {
-        super(stateService, tournament);
+    public SwissTournamentSystem(IGameFixtureService gameFixtureService,
+            IGroupService groupService,
+            IParticipantService participantsService, Tournament tournament) {
+        super(gameFixtureService, groupService, participantsService, tournament);
     }
 
     @Override
     public void finishTournament() {
-        // TODO(mr): 13.01.2019 impl
 
     }
 
@@ -22,11 +26,11 @@ public class SwissTournamentSystem extends TournamentSystem {
     }
 
     @Override
-    protected void createSystemState() {
-        var state = new SystemState();
-
-        initCommonSystemStateFields(state);
-
-        stateService.insertSystemState(state);
+    public void startTournament() {
+        prepareParticipantsBeforeStart();
+        var group = createLeagueGroup();
+        groupService.insert(group);
+        tournament.setGroupIds(Collections.singletonList(group.getId()));
     }
+
 }

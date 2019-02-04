@@ -1,7 +1,5 @@
 package pl.wturnieju.validator;
 
-import pl.wturnieju.tournament.Tournament;
-
 public class Validators {
 
     public static IValidator<String> getEmailValidator() {
@@ -12,7 +10,4 @@ public class Validators {
         return new PasswordValidator();
     }
 
-    public static IValidator<Tournament> getTournamentParticipantsValidator() {
-        return new TournamentParticipantsValidator();
-    }
 }

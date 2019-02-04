@@ -1,22 +1,17 @@
 package pl.wturnieju.tournament.system;
 
-import pl.wturnieju.service.ISystemStateService;
+import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.service.IGroupService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.SystemState;
 
 public class CustomTournamentSystem extends TournamentSystem {
 
-    public CustomTournamentSystem(ISystemStateService stateService, Tournament tournament) {
-        super(stateService, tournament);
-    }
 
-    @Override
-    protected void createSystemState() {
-        var state = new SystemState();
-
-        initCommonSystemStateFields(state);
-
-        stateService.insertSystemState(state);
+    public CustomTournamentSystem(IGameFixtureService gameFixtureService,
+            IGroupService groupService,
+            IParticipantService participantsService, Tournament tournament) {
+        super(gameFixtureService, groupService, participantsService, tournament);
     }
 
     @Override

@@ -6,6 +6,7 @@ public enum AccessOption {
 
     @JsonProperty("ACCESS_OPTION.PUBLIC")
     PUBLIC,
+
     @JsonProperty("ACCESS_OPTION.PRIVATE")
     PRIVATE
 }

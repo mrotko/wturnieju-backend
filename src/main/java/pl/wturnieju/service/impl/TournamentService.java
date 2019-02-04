@@ -9,15 +9,12 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pl.wturnieju.exception.ValidationException;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.service.ITournamentService;
-import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.TournamentStatus;
 import pl.wturnieju.tournament.system.TournamentSystemFactory;
-import pl.wturnieju.validator.Validators;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +27,7 @@ public class TournamentService implements ITournamentService {
     @Override
     public List<Tournament> getUserTournaments(String userId) {
         return tournamentRepository.findAll().stream()
-                .filter(t -> isUserInParticipants(t.getParticipants(), userId) || t.getOwner().getId().equals(userId))
+                .filter(t -> t.getParticipantIds().contains(userId) || t.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
     }
 
@@ -54,8 +51,14 @@ public class TournamentService implements ITournamentService {
     }
 
     @Override
-    public Tournament getTournament(String tournamentId) {
+    public Tournament getById(String tournamentId) {
         return tournamentRepository.getById(tournamentId);
+    }
+
+    @Override
+    public Tournament getByIdOrThrow(String tournamentId) {
+        return findTournament(tournamentId).orElseThrow(
+                () -> new ResourceNotFoundException("Not found tournament [" + tournamentId + "]"));
     }
 
     @Override
@@ -89,16 +92,8 @@ public class TournamentService implements ITournamentService {
         return tournament.getName();
     }
 
-    private boolean isUserInParticipants(List<Participant> participants, String userId) {
-        return participants.stream().anyMatch(p -> p.getId().equals(userId));
+    private void validateTournamentParticipants(Tournament tournament) {
+        //        return TODO fix
     }
 
-    private void validateTournamentParticipants(Tournament tournament) {
-        var validator = Validators.getTournamentParticipantsValidator();
-        try {
-            validator.validateAndThrowInvalid(tournament);
-        } catch (ValidationException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
 }

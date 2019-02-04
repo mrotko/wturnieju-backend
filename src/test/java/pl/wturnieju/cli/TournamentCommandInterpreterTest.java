@@ -27,12 +27,11 @@ import pl.wturnieju.inserter.UserInserter;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentCreatorService;
-import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.impl.TournamentCreatorService;
-import pl.wturnieju.service.impl.TournamentParticipantService;
 import pl.wturnieju.service.impl.TournamentService;
 import pl.wturnieju.service.impl.UserService;
 import pl.wturnieju.tournament.Tournament;
@@ -59,7 +58,7 @@ public class TournamentCommandInterpreterTest {
 
     private ITournamentCreatorService tournamentCreatorService;
 
-    private ITournamentParticipantService tournamentParticipantService;
+    private IParticipantService tournamentParticipantService;
 
     private List<String> userTournamentsIds;
 
@@ -76,7 +75,7 @@ public class TournamentCommandInterpreterTest {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
         tournamentService = new TournamentService(tournamentRepository, context);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, userService);
-        tournamentParticipantService = new TournamentParticipantService(tournamentService, userService);
+        //        tournamentParticipantService = new ParticipantService(tournamentService, userService);
     }
 
     private void setUpInserter() {
@@ -90,7 +89,7 @@ public class TournamentCommandInterpreterTest {
                 .map(Persistent::getId)
                 .collect(Collectors.toList());
 
-        //        userTournamentsIds.forEach(tournamentId -> tournamentParticipantService.invite(tournamentId, userService));
+        //        userTournamentsIds.forEach(tournamentId -> tournamentParticipantService.inviteUserId(tournamentId, userService));
     }
 
     @Test

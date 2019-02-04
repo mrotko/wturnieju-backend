@@ -98,6 +98,9 @@
     ],
     "TOURNAMENT_SYSTEM_TYPE.ROUND_ROBIN": [
       "STAGE_TYPE.LEAGUE"
+    ],
+    "TOURNAMENT_SYSTEM_TYPE.SWISS": [
+      "STAGE_TYPE.LEAGUE"
     ]
   }
 }

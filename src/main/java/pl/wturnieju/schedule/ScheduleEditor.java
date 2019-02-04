@@ -16,18 +16,29 @@ import pl.wturnieju.graph.CompleteGraph;
 import pl.wturnieju.graph.GraphFactory;
 import pl.wturnieju.graph.Vertex;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.service.IGeneratedGamesService;
+import pl.wturnieju.service.IGroupService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.Participant;
-import pl.wturnieju.tournament.system.TournamentSystem;
+import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.Group;
-import pl.wturnieju.tournament.system.state.SystemStateManager;
 import pl.wturnieju.utils.DateUtils;
 
 @RequiredArgsConstructor
 public abstract class ScheduleEditor implements IScheduleEditor {
 
-    protected final TournamentSystem tournamentSystem;
+    protected final IParticipantService participantService;
 
-    protected final GameFixtureFactory gameFixtureFactory;
+    protected final IGeneratedGamesService generatedGamesService;
+
+    protected final IGameFixtureService gameFixtureService;
+
+    protected final IGroupService groupService;
+
+    protected final Tournament tournament;
+
+    protected final GameFixtureFactory gameFixtureFactory = new GameFixtureFactory();
 
     @Override
     public GameFixture updateGame(GameFixture gameFixture) {
@@ -37,27 +48,13 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     @Override
     public List<GameFixture> updateGames(List<GameFixture> gameFixtures) {
-        var state = tournamentSystem.getSystemState();
-        var manager = new SystemStateManager(state);
-
-        gameFixtures.forEach(manager::updateGame);
-
-        tournamentSystem.getStateService().updateSystemState(state);
-
-        return gameFixtures;
+        return gameFixtureService.updateAll(gameFixtures);
     }
 
     @Override
     public List<GameFixture> addGames(List<GameFixture> gameFixtures) {
-        var state = tournamentSystem.getSystemState();
-        var manager = new SystemStateManager(state);
-
         updateGamesWithBye(gameFixtures);
-        manager.addGames(gameFixtures);
-
-        tournamentSystem.getStateService().updateSystemState(state);
-
-        return gameFixtures;
+        return gameFixtureService.saveAll(gameFixtures);
     }
 
     protected void updateGamesWithBye(List<GameFixture> gameFixtures) {
@@ -76,21 +73,13 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     @Override
     public List<String> deleteGames(List<String> gamesIds) {
-        var state = tournamentSystem.getSystemState();
-        var manager = new SystemStateManager(state);
-
-        manager.deleteGames(gamesIds);
-
-        tournamentSystem.getStateService().updateSystemState(state);
-
+        gameFixtureService.deleteAllByIds(gamesIds);
         return gamesIds;
     }
 
     @Override
     public List<GameFixture> generateGames(String groupId) {
-        var state = tournamentSystem.getSystemState();
-        var manager = new SystemStateManager(state);
-        var group = manager.getGroupById(groupId);
+        var group = groupService.getById(groupId);
         var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
         var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
@@ -113,25 +102,23 @@ public abstract class ScheduleEditor implements IScheduleEditor {
                     path.add(edge.getFirst().getValue());
                     path.add(edge.getSecond().getValue());
                 });
-                games.addAll(createGameFixtures(path));
+                games.addAll(createGameFixtures(path, group));
             }
         } else {
-            games.addAll(createGameFixtures(shortestPath));
+            games.addAll(createGameFixtures(shortestPath, group));
         }
 
-        state.getGeneratedGameFixtures().addAll(games);
-        tournamentSystem.getStateService().updateSystemState(state);
-        return games;
+        return generatedGamesService.insertAll(games);
     }
 
     protected List<ImmutablePair<String, String>> getCompetitors(Group group) {
-        return group.getAllGames().stream()
+        return gameFixtureService.getAllByGroupId(group.getId()).stream()
                 .filter(GameFixture::getBye)
                 .map(game -> ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId()))
                 .collect(Collectors.toList());
     }
 
-    private List<GameFixture> createGameFixtures(List<String> shortestPath) {
+    private List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
         var games = new ArrayList<GameFixture>();
         for (int i = 0; i < shortestPath.size(); i += 2) {
             var homeId = shortestPath.get(i);
@@ -141,22 +128,20 @@ public abstract class ScheduleEditor implements IScheduleEditor {
             var away = getParticipantById(awayId);
 
             if (home == null) {
-                games.add(gameFixtureFactory.createGameFixture(away, null));
+                games.add(gameFixtureFactory.createGameFixture(tournament, group, away, null));
             } else {
-                games.add(gameFixtureFactory.createGameFixture(home, away));
+                games.add(gameFixtureFactory.createGameFixture(tournament, group, home, away));
             }
         }
 
-        int currentRound = tournamentSystem.getTournament().getCurrentRound() + 1;
+        int currentRound = tournament.getCurrentRound() + 1;
         games.forEach(game -> game.setRound(currentRound));
 
         return games;
     }
 
     private List<String> getTournamentParticipantsIds(Group group) {
-        return group.getParticipants().stream()
-                .map(Participant::getId)
-                .collect(Collectors.toList());
+        return group.getParticipantIds();
     }
 
     private List<String> getParticipantsIdsForGamesGeneration(Group group) {
@@ -171,18 +156,12 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     @Override
     public List<GameFixture> getGeneratedGames(List<String> gamesIds) {
-        return tournamentSystem.getSystemState().getGeneratedGameFixtures().stream()
-                .filter(g -> gamesIds.contains(g.getId()))
-                .collect(Collectors.toList());
+        return generatedGamesService.getAllByIds(gamesIds);
     }
 
     @Override
     public List<String> deleteGeneratedGames(List<String> gamesIds) {
-        var state = tournamentSystem.getSystemState();
-
-        state.getGeneratedGameFixtures().removeIf(g -> gamesIds.contains(g.getId()));
-        tournamentSystem.getStateService().updateSystemState(state);
-
+        generatedGamesService.deleteAllByIds(gamesIds);
         return gamesIds;
     }
 
@@ -190,9 +169,7 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         if (participantId == null) {
             return null;
         }
-        return tournamentSystem.getTournament().getParticipants().stream()
-                .filter(p -> p.getId().equals(participantId))
-                .findFirst().orElse(null);
+        return participantService.getById(participantId);
     }
 
     protected abstract BiFunction<String, String, Double> getWeightCalculationMethod();

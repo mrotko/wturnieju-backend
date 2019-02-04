@@ -4,14 +4,23 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.gamefixture.GameStatus;
+import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.LegType;
+import pl.wturnieju.tournament.StageType;
 
 @Getter
 @Setter
 public class GameFixtureDto {
 
-    private String gameId;
+    private String id;
+
+    private String groupId;
+
+    private String tournamentId;
+
+    private String previousGameFixtureId;
 
     private Timestamp startDate;
 
@@ -37,9 +46,11 @@ public class GameFixtureDto {
 
     private Boolean live;
 
+    private LegType legType;
+
+    private StageType stageType;
+
+    private AccessOption accessOption;
+
     private CompetitionType competitionType;
-
-    private String tournamentId;
-
-    private Integer stage;
 }

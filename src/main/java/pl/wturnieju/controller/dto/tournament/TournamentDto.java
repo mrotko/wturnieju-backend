@@ -67,4 +67,6 @@ public class TournamentDto {
     private List<StageType> stageTypes;
 
     private List<TableColumnType> tableColumns;
+
+    private List<GroupDto> groups;
 }

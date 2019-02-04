@@ -2,13 +2,20 @@ package pl.wturnieju.schedule;
 
 import java.util.function.BiFunction;
 
-import pl.wturnieju.gamefixture.GameFixtureFactory;
-import pl.wturnieju.tournament.system.TournamentSystem;
+import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.service.IGeneratedGamesService;
+import pl.wturnieju.service.IGroupService;
+import pl.wturnieju.service.IParticipantService;
+import pl.wturnieju.tournament.Tournament;
 
 public class SwissScheduleEditor extends ScheduleEditor {
 
-    public SwissScheduleEditor(TournamentSystem tournamentSystem) {
-        super(tournamentSystem, new GameFixtureFactory());
+
+    public SwissScheduleEditor(IParticipantService participantService,
+            IGeneratedGamesService generatedGamesService,
+            IGameFixtureService gameFixtureService,
+            IGroupService groupService, Tournament tournament) {
+        super(participantService, generatedGamesService, gameFixtureService, groupService, tournament);
     }
 
     @Override

@@ -32,12 +32,11 @@ import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.search.ISearch;
 import pl.wturnieju.search.UserSimpleSearchService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentCreatorService;
-import pl.wturnieju.service.ITournamentParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.impl.TournamentCreatorService;
-import pl.wturnieju.service.impl.TournamentParticipantService;
 import pl.wturnieju.service.impl.TournamentService;
 import pl.wturnieju.service.impl.UserService;
 
@@ -63,7 +62,7 @@ public class UserCommandInterpreterTest {
 
     private ITournamentCreatorService tournamentCreatorService;
 
-    private ITournamentParticipantService tournamentParticipantService;
+    private IParticipantService tournamentParticipantService;
 
     private ISearch<String, User> userSearch;
 
@@ -87,7 +86,8 @@ public class UserCommandInterpreterTest {
                 .map(Persistent::getId)
                 .collect(Collectors.toList());
 
-        userTournamentsIds.forEach(tournamentId -> tournamentParticipantService.invite(tournamentId, testedUserId));
+        userTournamentsIds.forEach(
+                tournamentId -> tournamentParticipantService.inviteUserId(tournamentId, testedUserId));
     }
 
     private void setUpInserter() {
@@ -99,7 +99,7 @@ public class UserCommandInterpreterTest {
         userService = new UserService(new BCryptPasswordEncoder(), userRepository);
         tournamentService = new TournamentService(tournamentRepository, context);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, userService);
-        tournamentParticipantService = new TournamentParticipantService(tournamentService, userService);
+        //        tournamentParticipantService = new ParticipantService(tournamentService, userService);
     }
 
     @Test

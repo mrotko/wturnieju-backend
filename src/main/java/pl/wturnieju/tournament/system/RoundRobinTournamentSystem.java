@@ -1,31 +1,27 @@
 package pl.wturnieju.tournament.system;
 
-import pl.wturnieju.service.ISystemStateService;
+import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.service.IGroupService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.Tournament;
-import pl.wturnieju.tournament.system.state.SystemState;
 
 public class RoundRobinTournamentSystem extends TournamentSystem {
-    public RoundRobinTournamentSystem(ISystemStateService stateService,
-            Tournament tournament) {
-        super(stateService, tournament);
-    }
 
-    @Override
-    protected void createSystemState() {
-        var state = new SystemState();
 
-        initCommonSystemStateFields(state);
-
-        stateService.insertSystemState(state);
+    public RoundRobinTournamentSystem(IGameFixtureService gameFixtureService,
+            IGroupService groupService,
+            IParticipantService participantsService, Tournament tournament) {
+        super(gameFixtureService, groupService, participantsService, tournament);
     }
 
     @Override
     public void finishTournament() {
-        // TODO(mr): 31.01.2019 impl
+
     }
 
     @Override
     public void startNextTournamentStage() {
 
     }
+
 }

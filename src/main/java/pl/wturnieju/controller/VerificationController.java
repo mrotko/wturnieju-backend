@@ -16,7 +16,7 @@ import pl.wturnieju.model.verification.NewAccountVerificationToken;
 import pl.wturnieju.model.verification.ResetPasswordVerificationToken;
 import pl.wturnieju.model.verification.TournamentInviteVerificationToken;
 import pl.wturnieju.model.verification.TournamentParticipationRequestVerificationToken;
-import pl.wturnieju.service.ITournamentParticipantService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 
@@ -37,7 +37,7 @@ public class VerificationController {
 
     private final IUserService userService;
 
-    private final ITournamentParticipantService tournamentParticipantService;
+    private final IParticipantService tournamentParticipantService;
 
     @Qualifier("newAccountTokenVerificationService")
     private final IVerificationService<NewAccountVerificationToken> newAccountVerificationService;
@@ -93,11 +93,9 @@ public class VerificationController {
         }
 
         if (decision) {
-            tournamentParticipantService.acceptInvitation(verifiedToken.getTournamentId(),
-                    verifiedToken.getParticipantId());
+            tournamentParticipantService.acceptInvitation(verifiedToken.getParticipantId());
         } else {
-            tournamentParticipantService.rejectInvitation(verifiedToken.getTournamentId(),
-                    verifiedToken.getParticipantId());
+            tournamentParticipantService.rejectInvitation(verifiedToken.getParticipantId());
         }
         tournamentInviteVerificationService.deleteToken(token);
         return decision;

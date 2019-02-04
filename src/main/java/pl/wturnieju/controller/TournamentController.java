@@ -36,7 +36,7 @@ import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.verification.TournamentInviteVerificationData;
 import pl.wturnieju.model.verification.TournamentInviteVerificationToken;
-import pl.wturnieju.service.ITournamentParticipantService;
+import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentPresentationService;
 import pl.wturnieju.service.ITournamentScheduleService;
 import pl.wturnieju.service.ITournamentService;
@@ -52,7 +52,7 @@ public class TournamentController {
 
     private final ITournamentScheduleService scheduleService;
 
-    private final ITournamentParticipantService participantService;
+    private final IParticipantService participantService;
 
     private final ITournamentPresentationService tournamentPresentationService;
 
@@ -83,13 +83,13 @@ public class TournamentController {
         default:
             throw new IllegalArgumentException("Unknown property - " + dto.getStatus());
         }
-        var tournament = tournamentService.getTournament(tournamentId);
+        var tournament = tournamentService.getById(tournamentId);
         return mappers.createTournamentDto(tournament);
     }
 
     @GetMapping("/{tournamentId}")
     public TournamentDto getTournament(@PathVariable("tournamentId") String tournamentId) {
-        var tournament = tournamentService.getTournament(tournamentId);
+        var tournament = tournamentService.getById(tournamentId);
         if (tournament == null) {
             throw new ResourceNotFoundException();
         }
@@ -104,7 +104,7 @@ public class TournamentController {
 
     @GetMapping("/{tournamentId}/participants")
     public List<ParticipantDto> getTournamentParticipants(@PathVariable("tournamentId") String tournamentId) {
-        return participantService.getAll(tournamentId).stream()
+        return participantService.getAllByTournamentId(tournamentId).stream()
                 .map(mappers::createTournamentParticipantDto)
                 .collect(Collectors.toList());
     }
@@ -112,20 +112,20 @@ public class TournamentController {
     @PatchMapping("/{tournamentId}/participants")
     public void acceptParticipant(@PathVariable("tournamentId") String tournamentId,
             @RequestBody() String participantId) {
-        participantService.acceptInvitation(tournamentId, participantId);
+        participantService.acceptInvitation(participantId);
     }
 
     @DeleteMapping("/{tournamentId}/participants/{participantId}")
     public void deleteParticipant(@PathVariable("tournamentId") String tournamentId,
             @PathVariable("participantId") String participantId) {
-        participantService.deleteParticipant(tournamentId, participantId);
+        participantService.deleteParticipant(participantId);
     }
 
     @PostMapping("/{tournamentId}/participants")
     public List<String> inviteParticipants(@PathVariable("tournamentId") String tournamentId,
             @RequestBody List<String> userIds) {
         userIds.forEach(userId -> {
-            var participant = participantService.invite(tournamentId, userId);
+            var participant = participantService.inviteUserId(tournamentId, userId);
 
             var verificationData = new TournamentInviteVerificationData();
 
@@ -170,7 +170,7 @@ public class TournamentController {
 
         scheduleService.saveSchedule(tournamentId, cachedGames);
 
-        var tournament = tournamentService.getTournament(tournamentId);
+        var tournament = tournamentService.getById(tournamentId);
         tournament.setCurrentRound(scheduleDTO.getRound());
         tournamentService.updateTournament(tournament);
 
@@ -199,8 +199,7 @@ public class TournamentController {
     @GetMapping(path = "/{tournamentId}/game-fixtures")
     public List<GameFixtureDto> getGameFixtures(@PathVariable("tournamentId") String tournamentId) {
         var games = scheduleService.getAllGameFixtures(tournamentId);
-        var tournament = tournamentService.getTournament(tournamentId);
-        return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games, tournament);
+        return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games);
     }
 
     @GetMapping("/{tournamentId}/table")
