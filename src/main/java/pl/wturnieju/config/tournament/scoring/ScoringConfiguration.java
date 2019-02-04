@@ -28,7 +28,7 @@ public class ScoringConfiguration {
     @PostConstruct
     private void init() {
         try {
-            var file = ResourceUtils.getFile("classpath:config/scoring.json");
+            var file = ResourceUtils.getFile("classpath*:config/scoring.json");
             var objectMapper = new ObjectMapper();
             competitions = objectMapper.readValue(file, new TypeReference<List<Competition>>() {
             });

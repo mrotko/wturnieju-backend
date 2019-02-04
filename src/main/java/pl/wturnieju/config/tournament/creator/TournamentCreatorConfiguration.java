@@ -22,7 +22,7 @@ public class TournamentCreatorConfiguration {
     @PostConstruct
     private void init() {
         try {
-            var file = ResourceUtils.getFile("classpath:config/tournament-creator.json");
+            var file = ResourceUtils.getFile("classpath*:config/tournament-creator.json");
             var objectMapper = new ObjectMapper();
             tournamentCreatorConfigurationData = objectMapper.readValue(file,
                     new TypeReference<TournamentCreatorConfigurationData>() {
