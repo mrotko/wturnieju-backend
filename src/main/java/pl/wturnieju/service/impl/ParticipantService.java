@@ -3,6 +3,7 @@ package pl.wturnieju.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import pl.wturnieju.repository.ParticipantRepository;
 import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.tournament.Member;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.ParticipantStatus;
 
@@ -67,17 +69,29 @@ public class ParticipantService implements IParticipantService {
         if (getTournamentParticipantByUserId(tournamentId, userId) != null) {
             throw new IllegalArgumentException(String.format("%s participant exists", userId));
         }
-        Participant participant = new Participant();
-        participant.setId(new ObjectId().toString());
-        participant.setLeaderId(userId);
-        participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
-        participant.setParticipantStatus(ParticipantStatus.INVITED);
-        participant.setInvitationStatus(InvitationStatus.INVITED);
-        participant.setParticipantType(tournament.getParticipantType());
-        participant.setMemberIds(Collections.singletonList(userId));
-        participant.setTournamentId(tournamentId);
+        var user = userService.findUserById(userId).orElse(null);
 
+        Participant participant = new Participant();
+        if (user != null) {
+            participant.setId(new ObjectId().toString());
+            participant.setLeaderId(userId);
+            participant.setName(user.getFullName());
+            participant.setParticipantStatus(ParticipantStatus.INVITED);
+            participant.setInvitationStatus(InvitationStatus.INVITED);
+            participant.setParticipantType(tournament.getParticipantType());
+            participant.setMembers(Collections.singletonList(createMember(user)));
+            participant.setTournamentId(tournamentId);
+        }
         return repository.save(participant);
+    }
+
+    private Member createMember(User user) {
+        var member = new Member();
+
+        member.setName(user.getFullName());
+        member.setUserId(user.getId());
+
+        return member;
     }
 
     @Override
@@ -107,15 +121,19 @@ public class ParticipantService implements IParticipantService {
     public void requestParticipation(String tournamentId, String userId) {
         var tournament = tournamentService.getByIdOrThrow(tournamentId);
 
+        var user = userService.findUserById(userId).orElse(null);
+
         var participant = new Participant();
-        participant.setInvitationStatus(InvitationStatus.PARTICIPATION_REQUEST);
-        participant.setParticipantStatus(ParticipantStatus.INVITED);
-        participant.setParticipantType(tournament.getParticipantType());
-        participant.setName(userService.findUserById(userId).map(User::getFullName).orElse(null));
-        participant.setLeaderId(userId);
-        participant.setMemberIds(Collections.singletonList(userId));
-        participant.setId(new ObjectId().toString());
-        participant.setTournamentId(tournamentId);
+        if (user != null) {
+            participant.setInvitationStatus(InvitationStatus.PARTICIPATION_REQUEST);
+            participant.setParticipantStatus(ParticipantStatus.INVITED);
+            participant.setParticipantType(tournament.getParticipantType());
+            participant.setName(user.getFullName());
+            participant.setLeaderId(userId);
+            participant.setMembers(Collections.singletonList(createMember(user)));
+            participant.setId(new ObjectId().toString());
+            participant.setTournamentId(tournamentId);
+        }
 
         repository.save(participant);
     }
@@ -124,7 +142,8 @@ public class ParticipantService implements IParticipantService {
     public Participant getTournamentParticipantByUserId(String tournamentId, String userId) {
         return getAllByTournamentId(tournamentId).stream()
                 .filter(p -> p.getLeaderId().equals(userId))
-                .filter(p -> p.getMemberIds().contains(userId))
+                .filter(p -> p.getMembers().stream().map(Member::getUserId).collect(Collectors.toList())
+                        .contains(userId))
                 .findFirst().orElse(null);
     }
 

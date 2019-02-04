@@ -25,5 +25,5 @@ public class ParticipantDto {
 
     private String shortName;
 
-    private List<ParticipantDto> members = new ArrayList<>();
+    private List<MemberDto> members = new ArrayList<>();
 }

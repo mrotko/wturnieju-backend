@@ -2,6 +2,7 @@ package pl.wturnieju.gamefixture;
 
 import java.util.Collections;
 
+import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.Group;
@@ -17,8 +18,8 @@ public class GameFixtureFactory {
         game.setGroupId(group.getId());
         game.setTournamentId(tournament.getId());
         game.setPreviousGameFixtureId(null);
-        game.setStartDate(null);
-        game.setEndDate(null);
+        game.setStartDate(Timestamp.now());
+        game.setEndDate(Timestamp.now());
         game.setFinishedDate(null);
         game.setShortDate(true);
         game.setHomeParticipant(participant);
@@ -26,9 +27,9 @@ public class GameFixtureFactory {
         game.setAwayParticipant(opponent);
         game.setAwayScore(createScore());
         game.setGameStatus(GameStatus.BEFORE_START);
-        game.setWinner(0);
+        game.setWinner(initWinner(participant, opponent));
         game.setRound(null);
-        game.setBye(false);
+        game.setBye(isBye(participant, opponent));
         game.setLive(false);
         game.setLegType(tournament.getCurrentLegType());
         game.setStageType(group.getStageType());
@@ -36,6 +37,16 @@ public class GameFixtureFactory {
         game.setCompetitionType(tournament.getCompetitionType());
 
         return game;
+    }
+
+    private int initWinner(Participant participant, Participant opponent) {
+        if (participant != null && opponent != null) {
+            return 0;
+        }
+        if (participant == null) {
+            return 2;
+        }
+        return 1;
     }
 
     private boolean isBye(Participant participant, Participant opponent) {

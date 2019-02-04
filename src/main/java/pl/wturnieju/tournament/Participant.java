@@ -29,5 +29,5 @@ public class Participant implements IProfile {
 
     private String leaderId;
 
-    private List<String> memberIds = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 }
