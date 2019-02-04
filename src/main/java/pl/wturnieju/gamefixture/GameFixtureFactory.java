@@ -24,7 +24,7 @@ public class GameFixtureFactory {
         game.setGameStatus(GameStatus.BEFORE_START);
         game.setWinner(0);
         game.setRound(null);
-        game.setStage(null);
+        game.setStageType(null);
 
         return game;
     }

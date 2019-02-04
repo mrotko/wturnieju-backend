@@ -11,5 +11,7 @@ public class TournamentTableDto {
 
     private String tournamentId;
 
+    private String name;
+
     private List<TournamentTableRowDto> rows;
 }

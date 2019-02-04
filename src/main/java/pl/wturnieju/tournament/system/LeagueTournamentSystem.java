@@ -28,12 +28,7 @@ public class LeagueTournamentSystem extends TournamentSystem {
     public void startNextTournamentStage() {
         var state = getSystemState();
 
-        state.getParticipantsPlayedEachOther().clear();
         state.getGeneratedGameFixtures().clear();
-        state.getParticipantsWithBye().clear();
-
-        //        state.getGameFixtures().forEach(game -> state.getPairsAfterFirstRound().add(
-        //                ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId())));
 
         getStateService().updateSystemState(state);
     }

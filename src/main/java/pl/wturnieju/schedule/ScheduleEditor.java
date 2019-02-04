@@ -1,6 +1,7 @@
 package pl.wturnieju.schedule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -17,6 +18,8 @@ import pl.wturnieju.graph.Vertex;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.system.TournamentSystem;
+import pl.wturnieju.tournament.system.state.Group;
+import pl.wturnieju.tournament.system.state.SystemStateManager;
 import pl.wturnieju.utils.DateUtils;
 
 @RequiredArgsConstructor
@@ -28,24 +31,17 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     @Override
     public GameFixture updateGame(GameFixture gameFixture) {
-        var state = tournamentSystem.getSystemState();
-
-        state.getGameFixtures().removeIf(game -> game.getId().equals(gameFixture.getId()));
-        state.getGameFixtures().add(gameFixture);
-        tournamentSystem.getStateService().updateSystemState(state);
-
+        updateGames(Collections.singletonList(gameFixture));
         return gameFixture;
     }
 
     @Override
     public List<GameFixture> updateGames(List<GameFixture> gameFixtures) {
         var state = tournamentSystem.getSystemState();
-        var idsToRemove = gameFixtures.stream()
-                .map(GameFixture::getId)
-                .collect(Collectors.toList());
+        var manager = new SystemStateManager(state);
 
-        state.getGameFixtures().removeIf(game -> idsToRemove.contains(game.getId()));
-        state.getGameFixtures().addAll(gameFixtures);
+        gameFixtures.forEach(manager::updateGame);
+
         tournamentSystem.getStateService().updateSystemState(state);
 
         return gameFixtures;
@@ -54,58 +50,52 @@ public abstract class ScheduleEditor implements IScheduleEditor {
     @Override
     public List<GameFixture> addGames(List<GameFixture> gameFixtures) {
         var state = tournamentSystem.getSystemState();
+        var manager = new SystemStateManager(state);
 
-        gameFixtures.forEach(game -> {
-            if (game.getBye()) {
-                var participantId = game.getHomeParticipantId() != null
-                        ? game.getHomeParticipantId()
-                        : game.getAwayParticipantId();
+        updateGamesWithBye(gameFixtures);
+        manager.addGames(gameFixtures);
 
-                var winner = game.getHomeParticipantId() != null
-                        ? 1
-                        : 2;
-
-                state.getParticipantsWithBye().add(participantId);
-                game.setGameStatus(GameStatus.ENDED);
-                game.setWinner(winner);
-                game.setFinishedDate(DateUtils.getLatest(Timestamp.now(), game.getStartDate()));
-            } else {
-                state.getParticipantsPlayedEachOther().computeIfAbsent(
-                        game.getHomeParticipantId(),
-                        k -> new ArrayList<>()
-                ).add(game.getAwayParticipantId());
-
-                state.getParticipantsPlayedEachOther().computeIfAbsent(
-                        game.getAwayParticipantId(),
-                        k -> new ArrayList<>()
-                ).add(game.getHomeParticipantId());
-            }
-        });
-
-        state.getGameFixtures().addAll(gameFixtures);
         tournamentSystem.getStateService().updateSystemState(state);
 
         return gameFixtures;
     }
 
+    protected void updateGamesWithBye(List<GameFixture> gameFixtures) {
+        gameFixtures.stream()
+                .filter(GameFixture::getBye)
+                .forEach(game -> {
+                    var winner = game.getHomeParticipantId() != null
+                            ? 1
+                            : 2;
+
+                    game.setGameStatus(GameStatus.ENDED);
+                    game.setWinner(winner);
+                    game.setFinishedDate(DateUtils.getLatest(Timestamp.now(), game.getStartDate()));
+                });
+    }
+
     @Override
     public List<String> deleteGames(List<String> gamesIds) {
         var state = tournamentSystem.getSystemState();
+        var manager = new SystemStateManager(state);
 
-        state.getGameFixtures().removeIf(g -> gamesIds.contains(g.getId()));
+        manager.deleteGames(gamesIds);
+
         tournamentSystem.getStateService().updateSystemState(state);
 
         return gamesIds;
     }
 
     @Override
-    public List<GameFixture> generateGames() {
+    public List<GameFixture> generateGames(String groupId) {
         var state = tournamentSystem.getSystemState();
+        var manager = new SystemStateManager(state);
+        var group = manager.getGroupById(groupId);
         var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
-        var participantsIds = getParticipantsIdsForGamesGeneration();
+        var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
         graph.generateGraph(participantsIds);
-        graph.unlinkVertexesWithValues(getExcludedPairs());
+        graph.unlinkVertexesWithValues(getCompetitors(group));
 
         graph.makeFinalSetup();
         graph.findShortestPath();
@@ -129,14 +119,15 @@ public abstract class ScheduleEditor implements IScheduleEditor {
             games.addAll(createGameFixtures(shortestPath));
         }
 
-        state.setGeneratedGameFixtures(games);
+        state.getGeneratedGameFixtures().addAll(games);
         tournamentSystem.getStateService().updateSystemState(state);
         return games;
     }
 
-    protected List<ImmutablePair<String, String>> getParticipantsWithByAsNullOpponent() {
-        return tournamentSystem.getSystemState().getParticipantsWithBye().stream()
-                .map(id -> ImmutablePair.of(id, (String) null))
+    protected List<ImmutablePair<String, String>> getCompetitors(Group group) {
+        return group.getAllGames().stream()
+                .filter(GameFixture::getBye)
+                .map(game -> ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId()))
                 .collect(Collectors.toList());
     }
 
@@ -159,27 +150,17 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         int currentRound = tournamentSystem.getTournament().getCurrentRound() + 1;
         games.forEach(game -> game.setRound(currentRound));
 
-        int currentStage = tournamentSystem.getTournament().getCurrentStage();
-        games.forEach(game -> game.setStage(currentStage));
-
         return games;
     }
 
-    protected List<ImmutablePair<String, String>> getParticipantsPlayedEachOtherPairs() {
-        return tournamentSystem.getSystemState().getParticipantsPlayedEachOther().entrySet().stream()
-                .flatMap(participantIdToPlayedEntry -> participantIdToPlayedEntry.getValue().stream()
-                        .map(played -> ImmutablePair.of(participantIdToPlayedEntry.getKey(), played)))
-                .collect(Collectors.toList());
-    }
-
-    private List<String> getTournamentParticipantsIds() {
-        return tournamentSystem.getTournament().getParticipants().stream()
+    private List<String> getTournamentParticipantsIds(Group group) {
+        return group.getParticipants().stream()
                 .map(Participant::getId)
                 .collect(Collectors.toList());
     }
 
-    private List<String> getParticipantsIdsForGamesGeneration() {
-        List<String> ids = new ArrayList<>(getTournamentParticipantsIds());
+    private List<String> getParticipantsIdsForGamesGeneration(Group group) {
+        List<String> ids = new ArrayList<>(getTournamentParticipantsIds(group));
 
         if (ids.size() % 2 != 0) {
             ids.add(null);
@@ -213,8 +194,6 @@ public abstract class ScheduleEditor implements IScheduleEditor {
                 .filter(p -> p.getId().equals(participantId))
                 .findFirst().orElse(null);
     }
-
-    protected abstract List<ImmutablePair<String, String>> getExcludedPairs();
 
     protected abstract BiFunction<String, String, Double> getWeightCalculationMethod();
 }

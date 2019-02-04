@@ -29,27 +29,27 @@ public class TournamentScheduleService implements ITournamentScheduleService {
     private final ApplicationContext context;
 
     @Override
-    public List<GameFixture> generateSchedule(String tournamentId) {
+    public List<GameFixture> generateSchedule(String tournamentId, String groupId) {
         var editor = createScheduleEditor(tournamentId);
-        return editor.generateGames();
+        return editor.generateGames(groupId);
     }
 
     @Override
-    public List<GameFixture> getGameFixtures(String tournamentId) {
+    public List<GameFixture> getAllGameFixtures(String tournamentId) {
         var state = createTournamentSystem(tournamentId).getSystemState();
-        return Optional.ofNullable(state).map(SystemState::getGameFixtures).orElse(Collections.emptyList());
+        return Optional.ofNullable(state).map(SystemState::getAllGames).orElse(Collections.emptyList());
     }
 
     @Override
     public List<GameFixture> getGameFixturesBeforeStart(String tournamentId) {
-        return getGameFixtures(tournamentId).stream()
+        return getAllGameFixtures(tournamentId).stream()
                 .filter(gameFixture -> gameFixture.getGameStatus() == GameStatus.BEFORE_START)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<GameFixture> getEndedGameFixtures(String tournamentId) {
-        return getGameFixtures(tournamentId).stream()
+        return getAllGameFixtures(tournamentId).stream()
                 .filter(gameFixture -> gameFixture.getGameStatus() == GameStatus.ENDED)
                 .collect(Collectors.toList());
     }
@@ -75,7 +75,7 @@ public class TournamentScheduleService implements ITournamentScheduleService {
 
     @Override
     public List<GameFixture> getGameFixturesBetweenDates(String tournamentId, Timestamp dateFrom, Timestamp dateTo) {
-        return getGameFixtures(tournamentId).stream()
+        return getAllGameFixtures(tournamentId).stream()
                 .filter(gameFixture -> gameFixture.getStartDate() != null)
                 .filter(gameFixture -> gameFixture.getStartDate().isBetweenIncluded(dateFrom, dateTo))
                 .collect(Collectors.toList());
@@ -83,8 +83,7 @@ public class TournamentScheduleService implements ITournamentScheduleService {
 
     private IScheduleEditor createScheduleEditor(String tournamentId) {
         var system = createTournamentSystem(tournamentId);
-        var scheduleEditor = ScheduleEditorFactory.create(system);
-        return scheduleEditor;
+        return ScheduleEditorFactory.create(system);
     }
 
     private TournamentSystem createTournamentSystem(String tournamentId) {

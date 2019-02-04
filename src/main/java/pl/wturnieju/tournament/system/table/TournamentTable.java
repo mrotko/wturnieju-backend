@@ -10,5 +10,7 @@ import lombok.Setter;
 @Setter
 public class TournamentTable {
 
+    private String name;
+
     private List<TournamentTableRow> rows = new ArrayList<>();
 }

@@ -11,6 +11,7 @@ import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.tournament.GameResultType;
+import pl.wturnieju.tournament.StageType;
 
 
 @Data
@@ -43,4 +44,6 @@ public class TournamentTemplateDto {
     private List<TableColumnType> tableColumns;
 
     private Map<GameResultType, Double> scoring;
+
+    private List<StageType> stageTypes;
 }

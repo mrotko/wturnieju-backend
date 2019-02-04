@@ -14,7 +14,7 @@ public interface IScheduleEditor {
 
     List<String> deleteGames(List<String> gamesIds);
 
-    List<GameFixture> generateGames();
+    List<GameFixture> generateGames(String groupId);
 
     List<GameFixture> getGeneratedGames(List<String> gamesIds);
 

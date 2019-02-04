@@ -7,9 +7,9 @@ import pl.wturnieju.model.Timestamp;
 
 public interface ITournamentScheduleService {
 
-    List<GameFixture> generateSchedule(String tournamentId);
+    List<GameFixture> generateSchedule(String tournamentId, String groupId);
 
-    List<GameFixture> getGameFixtures(String tournamentId);
+    List<GameFixture> getAllGameFixtures(String tournamentId);
 
     List<GameFixture> getGameFixturesBeforeStart(String tournamentId);
 

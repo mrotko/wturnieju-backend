@@ -1,20 +1,21 @@
 package pl.wturnieju.tournament.system.state;
 
+import java.beans.Transient;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
-import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.StageType;
 
 
 @RequiredArgsConstructor
@@ -24,24 +25,33 @@ public class SystemState extends Persistent {
 
     private Timestamp lastUpdate;
 
-    private List<String> participantsWithBye = new ArrayList<>();
-
     private String tournamentId;
 
-    private Map<String, List<String>> participantsPlayedEachOther = new HashMap<>();
-
-    private List<Group> knockoutGroups = new ArrayList<>();
-
-    private List<Group> groups = new ArrayList<>();
-
-    private List<GameFixture> gameFixtures = new ArrayList<>();
+    private Map<StageType, List<Group>> stageToGroupsMapping = new EnumMap<>(StageType.class);
 
     private List<GameFixture> generatedGameFixtures = new ArrayList<>();
 
     @Transient
-    public List<GameFixture> getEndedGames() {
-        return gameFixtures.stream()
-                .filter(game -> game.getGameStatus() == GameStatus.ENDED)
+    public List<GameFixture> getAllGamesByStage(StageType stageType) {
+        return stageToGroupsMapping.getOrDefault(stageType, Collections.emptyList()).stream()
+                .map(Group::getAllGames)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Transient
+    public List<GameFixture> getAllGames() {
+        return stageToGroupsMapping.values().stream()
+                .flatMap(Collection::stream)
+                .map(Group::getAllGames)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Transient
+    public List<Group> getAllGroups() {
+        return stageToGroupsMapping.values().stream()
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 }

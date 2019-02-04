@@ -13,6 +13,8 @@ import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
 import pl.wturnieju.tournament.GameResultType;
+import pl.wturnieju.tournament.LegType;
+import pl.wturnieju.tournament.StageType;
 import pl.wturnieju.tournament.TournamentStatus;
 
 @Data
@@ -58,7 +60,11 @@ public class TournamentDto {
 
     private Integer currentRound;
 
-    private Integer currentStage;
+    private StageType currentStageType;
+
+    private LegType currentLegType;
+
+    private List<StageType> stageTypes;
 
     private List<TableColumnType> tableColumns;
 }

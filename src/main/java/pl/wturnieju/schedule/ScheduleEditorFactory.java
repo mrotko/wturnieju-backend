@@ -5,7 +5,6 @@ import pl.wturnieju.tournament.system.TournamentSystem;
 
 public class ScheduleEditorFactory {
 
-    @SuppressWarnings("unchecked")
     public static IScheduleEditor create(TournamentSystem tournamentSystem) {
         var systemType = tournamentSystem.getTournament().getSystemType();
 

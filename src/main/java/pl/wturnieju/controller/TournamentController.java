@@ -141,9 +141,10 @@ public class TournamentController {
         return userService.findUserById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    @GetMapping("/{tournamentId}/schedule/generate")
-    public ScheduleDto generateSchedule(@PathVariable("tournamentId") String tournamentId) {
-        var schedule = scheduleService.generateSchedule(tournamentId);
+    @GetMapping("/{tournamentId}/schedule/generate/{groupId}")
+    public ScheduleDto generateSchedule(@PathVariable("tournamentId") String tournamentId,
+            @PathVariable("groupId") String groupId) {
+        var schedule = scheduleService.generateSchedule(tournamentId, groupId);
         var round = schedule.stream()
                 .findFirst()
                 .map(GameFixture::getRound).orElse(null);
@@ -197,7 +198,7 @@ public class TournamentController {
 
     @GetMapping(path = "/{tournamentId}/game-fixtures")
     public List<GameFixtureDto> getGameFixtures(@PathVariable("tournamentId") String tournamentId) {
-        var games = scheduleService.getGameFixtures(tournamentId);
+        var games = scheduleService.getAllGameFixtures(tournamentId);
         var tournament = tournamentService.getTournament(tournamentId);
         return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games, tournament);
     }

@@ -1,6 +1,7 @@
 package pl.wturnieju.tournament.system;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.ComparisonChain;
 
@@ -14,6 +15,7 @@ import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.ParticipantStatus;
 import pl.wturnieju.tournament.Tournament;
 import pl.wturnieju.tournament.system.state.SystemState;
+import pl.wturnieju.tournament.system.state.SystemStateManager;
 import pl.wturnieju.tournament.system.table.TournamentTable;
 import pl.wturnieju.tournament.system.table.TournamentTableGeneratorBuilder;
 
@@ -42,9 +44,6 @@ public abstract class TournamentSystem {
 
     protected void initCommonSystemStateFields(SystemState state) {
         state.setTournamentId(getTournament().getId());
-        state.setParticipantsWithBye(Collections.emptyList());
-        state.setGameFixtures(Collections.emptyList());
-        state.setParticipantsPlayedEachOther(Collections.emptyMap());
     }
 
     protected abstract void createSystemState();
@@ -55,7 +54,7 @@ public abstract class TournamentSystem {
 
     public TournamentTable buildTournamentTable() {
         var tableGenerator = TournamentTableGeneratorBuilder.builder()
-                .withGames(getSystemState().getEndedGames())
+                .withGames(getStateManager().getLeagueStageEndedGames())
                 .withParticipants(getTournament().getParticipants())
                 .withPointsForWin(getPoints(GameResultType.WIN))
                 .withPointsForDraw(getPoints(GameResultType.DRAW))
@@ -69,38 +68,59 @@ public abstract class TournamentSystem {
         return tableGenerator.generateTable();
     }
 
+    public List<TournamentTable> buildGroupsTables() {
+        List<TournamentTable> groupTables = new ArrayList<>();
+
+        getStateManager().getGroupStageEndedGames().forEach((key, value) -> {
+            var tableGenerator = TournamentTableGeneratorBuilder.builder()
+                    .withGames(value)
+                    .withParticipants(key.getParticipants())
+                    .withPointsForWin(getPoints(GameResultType.WIN))
+                    .withPointsForDraw(getPoints(GameResultType.DRAW))
+                    .withPointsForLose(getPoints(GameResultType.LOSE))
+                    .withRowComparator(((o1, o2) -> ComparisonChain.start()
+                            .compare(o2.getPoints(), o1.getPoints())
+                            .compare(o2.getSmallPoints(), o2.getSmallPoints())
+                            .result()))
+                    .build();
+
+            groupTables.add(tableGenerator.generateTable());
+        });
+
+        return groupTables;
+    }
+
     private Double getPoints(GameResultType gameResultType) {
         return tournament.getScoring().getOrDefault(gameResultType, 0.);
     }
 
     public GameFixture startGame(StartGameUpdateEvent startGameUpdateEvent) {
         var state = getSystemState();
+        var manager = new SystemStateManager(state);
 
         var factory = new GameEditorFactory(getTournament().getCompetitionType());
-        var editor = factory.createGameEditor(getGameById(state, startGameUpdateEvent.getGameId()));
+        var editor = factory.createGameEditor(manager.getGameById(startGameUpdateEvent.getGameId()));
         var game = editor.startGame(startGameUpdateEvent);
         stateService.updateSystemState(state);
 
         return game;
     }
 
-    protected GameFixture getGameById(SystemState state, String gameId) {
-        return state.getGameFixtures().stream()
-                .filter(game -> game.getId().equals(gameId))
-                .findFirst().orElse(null);
+    protected SystemStateManager getStateManager() {
+        return new SystemStateManager(getSystemState());
     }
 
     public GameFixture finishGame(FinishGameUpdateEvent finishGameUpdateEvent) {
         var state = getSystemState();
+        var manager = new SystemStateManager(state);
 
         var factory = new GameEditorFactory(getTournament().getCompetitionType());
-        var editor = factory.createGameEditor(getGameById(state, finishGameUpdateEvent.getGameId()));
+        var editor = factory.createGameEditor(manager.getGameById(finishGameUpdateEvent.getGameId()));
         var game = editor.finishGame(finishGameUpdateEvent);
         stateService.updateSystemState(state);
 
         return game;
     }
-
 
     public ISystemStateService getStateService() {
         return stateService;

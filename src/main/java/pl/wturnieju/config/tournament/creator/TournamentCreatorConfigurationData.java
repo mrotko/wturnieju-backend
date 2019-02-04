@@ -12,6 +12,7 @@ import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.tournament.StageType;
 
 @Getter
 @Setter
@@ -27,5 +28,8 @@ public class TournamentCreatorConfigurationData {
             CompetitionType.class);
 
     private Map<TournamentSystemType, List<TableColumnType>> columnTypes = new EnumMap<>(
+            TournamentSystemType.class);
+
+    private Map<TournamentSystemType, List<StageType>> stageTypes = new EnumMap<>(
             TournamentSystemType.class);
 }

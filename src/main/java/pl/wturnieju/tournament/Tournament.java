@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 import lombok.ToString;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
@@ -17,48 +15,54 @@ import pl.wturnieju.model.ParticipantType;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.model.TournamentSystemType;
+import pl.wturnieju.tournament.system.state.Group;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Tournament extends Persistent {
 
-    protected String name;
+    private String name;
 
-    protected String description;
+    private String description;
 
-    protected String place;
+    private String place;
 
-    protected String img;
+    private String img;
 
-    protected TournamentStatus status;
+    private TournamentStatus status;
 
-    protected AccessOption accessOption;
+    private AccessOption accessOption;
 
-    protected String invitationToken;
+    private String invitationToken;
 
-    protected List<Participant> participants = new ArrayList<>();
+    private List<Participant> participants = new ArrayList<>();
 
-    protected IProfile owner;
+    private IProfile owner;
 
-    protected Timestamp startDate;
+    private Timestamp startDate;
 
-    protected Timestamp endDate;
+    private Timestamp endDate;
 
-    protected TournamentSystemType systemType;
+    private TournamentSystemType systemType;
 
-    @Setter(value = AccessLevel.PROTECTED)
-    protected CompetitionType competitionType;
+    private CompetitionType competitionType;
 
-    protected ParticipantType participantType;
+    private ParticipantType participantType;
 
-    protected int currentRound;
+    private int currentRound;
 
-    protected int currentStage;
+    private LegType currentLegType;
 
-    protected Requirements requirements;
+    private StageType currentStageType;
 
-    protected Map<GameResultType, Double> scoring;
+    private List<StageType> stageTypes;
 
-    protected List<TableColumnType> tableColumns = new ArrayList<>();
+    private Requirements requirements;
+
+    private Map<GameResultType, Double> scoring;
+
+    private List<TableColumnType> tableColumns = new ArrayList<>();
+
+    private List<Group> groups = new ArrayList<>();
 }

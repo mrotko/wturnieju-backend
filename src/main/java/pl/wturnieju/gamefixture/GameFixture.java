@@ -4,14 +4,17 @@ import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.LegType;
 import pl.wturnieju.tournament.Participant;
+import pl.wturnieju.tournament.StageType;
 
-@Data
-public class GameFixture {
-
-    private String id;
+@Getter
+@Setter
+public class GameFixture extends Persistent {
 
     private Timestamp startDate;
 
@@ -39,7 +42,13 @@ public class GameFixture {
 
     private Boolean live;
 
-    private Integer stage;
+    private LegType legType;
+
+    private StageType stageType;
+
+    private String tournamentId;
+
+    private String groupId;
 
     private String previousGameFixtureId;
 
