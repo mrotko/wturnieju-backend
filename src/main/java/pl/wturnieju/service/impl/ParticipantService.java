@@ -144,4 +144,9 @@ public class ParticipantService implements IParticipantService {
     public List<Participant> getAllByGroupId(String groupId) {
         return repository.getAllByGroupId(groupId);
     }
+
+    @Override
+    public List<Participant> updateAll(List<Participant> participants) {
+        return repository.saveAll(participants);
+    }
 }

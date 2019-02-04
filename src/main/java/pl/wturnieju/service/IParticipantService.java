@@ -29,4 +29,7 @@ public interface IParticipantService {
     List<Participant> getAllById(List<String> participantIds);
 
     List<Participant> getAllByGroupId(String groupId);
+
+    List<Participant> updateAll(List<Participant> participants);
+
 }

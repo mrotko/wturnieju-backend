@@ -51,8 +51,9 @@ public abstract class TournamentSystem {
 
         accepted.forEach(p -> p.setParticipantStatus(ParticipantStatus.ACTIVE));
 
-        participantsService.deleteAllById(toRemove);
         tournament.setParticipantIds(accepted.stream().map(Participant::getId).collect(Collectors.toList()));
+        participantsService.deleteAllById(toRemove);
+        participantsService.updateAll(accepted);
     }
 
     public void startTournament() {
