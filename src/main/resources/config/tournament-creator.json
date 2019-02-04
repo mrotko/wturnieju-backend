@@ -102,5 +102,19 @@
     "TOURNAMENT_SYSTEM_TYPE.SWISS": [
       "STAGE_TYPE.LEAGUE"
     ]
+  },
+  "requiredAllGamesEndedStageTypesMapping": {
+    "TOURNAMENT_SYSTEM_TYPE.LEAGUE": [
+    ],
+    "TOURNAMENT_SYSTEM_TYPE.KNOCKOUT": [
+      "STAGE_TYPE.KNOCKOUT"
+    ],
+    "TOURNAMENT_SYSTEM_TYPE.GROUP": [
+    ],
+    "TOURNAMENT_SYSTEM_TYPE.ROUND_ROBIN": [
+    ],
+    "TOURNAMENT_SYSTEM_TYPE.SWISS": [
+      "STAGE_TYPE.LEAGUE"
+    ]
   }
 }

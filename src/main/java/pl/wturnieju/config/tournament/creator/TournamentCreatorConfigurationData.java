@@ -32,4 +32,6 @@ public class TournamentCreatorConfigurationData {
 
     private Map<TournamentSystemType, List<StageType>> stageTypes = new EnumMap<>(
             TournamentSystemType.class);
+
+    private Map<TournamentSystemType, List<StageType>> requiredAllGamesEndedStageTypesMapping;
 }

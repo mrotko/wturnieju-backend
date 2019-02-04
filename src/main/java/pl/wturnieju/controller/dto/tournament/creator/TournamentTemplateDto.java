@@ -46,4 +46,6 @@ public class TournamentTemplateDto {
     private Map<GameResultType, Double> scoring;
 
     private List<StageType> stageTypes;
+
+    private List<StageType> requiredAllGamesEndedStageTypes;
 }

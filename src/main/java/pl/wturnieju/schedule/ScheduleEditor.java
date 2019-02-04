@@ -83,6 +83,12 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
         var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
+        if (group.isRequiredAllGamesEnded()) {
+            if (gameFixtureService.countPendingGamesByGroupId(groupId) > 0) {
+                return Collections.emptyList();
+            }
+        }
+
         graph.generateGraph(participantsIds);
         graph.unlinkVertexesWithValues(getCompetitors(group));
 

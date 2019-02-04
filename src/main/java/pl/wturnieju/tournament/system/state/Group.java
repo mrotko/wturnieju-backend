@@ -20,4 +20,6 @@ public class Group extends Persistent {
     private List<String> participantIds;
 
     private StageType stageType;
+
+    private boolean requiredAllGamesEnded;
 }

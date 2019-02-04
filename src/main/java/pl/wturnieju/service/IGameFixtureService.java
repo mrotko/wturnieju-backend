@@ -21,6 +21,12 @@ public interface IGameFixtureService {
 
     List<GameFixture> getAllByGroupId(String groupId);
 
+    List<GameFixture> getAllPendingGamesByGroupId(String groupId);
+
+    Integer countPendingGamesByGroupId(String groupId);
+
+    List<GameFixture> getAllEndedByGroupId(String groupId);
+
     GameFixture getById(String gameFixtureId);
 
     List<GameFixture> getAllByTournamentId(String tournamentId);

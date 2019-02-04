@@ -1,6 +1,5 @@
 package pl.wturnieju.repository;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,6 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.Timestamp;
 
@@ -19,8 +19,11 @@ public interface GameFixtureRepository extends MongoRepository<GameFixture, Stri
 
     List<GameFixture> getAllByGroupId(String groupId);
 
-    List<GameFixture> getAllByAccessOptionAndAndStartDateBetween(
-            AccessOption accessOption, Instant startDate, Instant endDate);
+    List<GameFixture> getAllByGroupIdAndGameStatus(String groupId, GameStatus gameStatus);
+
+    List<GameFixture> getAllByGroupIdAndGameStatusNotLike(String groupId, GameStatus gameStatus);
+
+    Integer countAllByGroupIdAndGameStatusIsNotLike(String groupId, GameStatus gameStatus);
 
     List<GameFixture> getAllByAccessOptionAndStartDateBetween(AccessOption accessOption, Timestamp from, Timestamp to);
 }

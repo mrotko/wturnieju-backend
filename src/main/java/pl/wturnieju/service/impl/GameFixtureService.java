@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.repository.GameFixtureRepository;
@@ -50,6 +51,21 @@ public class GameFixtureService implements IGameFixtureService {
     @Override
     public List<GameFixture> getAllByGroupId(String groupId) {
         return repository.getAllByGroupId(groupId);
+    }
+
+    @Override
+    public List<GameFixture> getAllPendingGamesByGroupId(String groupId) {
+        return repository.getAllByGroupIdAndGameStatusNotLike(groupId, GameStatus.ENDED);
+    }
+
+    @Override
+    public Integer countPendingGamesByGroupId(String groupId) {
+        return repository.countAllByGroupIdAndGameStatusIsNotLike(groupId, GameStatus.ENDED);
+    }
+
+    @Override
+    public List<GameFixture> getAllEndedByGroupId(String groupId) {
+        return repository.getAllByGroupIdAndGameStatus(groupId, GameStatus.ENDED);
     }
 
     @Override

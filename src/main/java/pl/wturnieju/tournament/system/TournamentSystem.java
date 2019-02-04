@@ -137,8 +137,13 @@ public abstract class TournamentSystem {
         group.setParticipantIds(getTournament().getParticipantIds());
         group.setStageType(StageType.LEAGUE);
         group.setTournamentId(getTournament().getId());
+        group.setRequiredAllGamesEnded(isRequiredAllGamesEnded(StageType.LEAGUE));
 
         return group;
+    }
+
+    private boolean isRequiredAllGamesEnded(StageType stageType) {
+        return getTournament().getRequirements().getRequiredAllGamesEndedStageTypes().contains(stageType);
     }
 
     public Tournament getTournament() {

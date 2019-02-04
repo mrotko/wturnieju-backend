@@ -19,4 +19,6 @@ public class GroupDto {
     private List<ParticipantDto> participants;
 
     private StageType stageType;
+
+    private Boolean requiredAllGamesEnded;
 }
