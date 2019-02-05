@@ -28,6 +28,7 @@ public class CliController {
 
     private final ITournamentService tournamentService;
 
+    @Qualifier("userSimpleSearchService")
     private final ISearch<String, User> userSearch;
 
     @Qualifier("emailChangeTokenVerificationService")
