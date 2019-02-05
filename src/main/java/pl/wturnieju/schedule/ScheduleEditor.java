@@ -95,6 +95,9 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         var group = groupService.getById(groupId);
         var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
+        if (tournament.getRequirements().getPlannedRounds() <= tournament.getCurrentRound()) {
+            return Collections.emptyList();
+        }
         if (group.isRequiredAllGamesEnded()) {
             if (gameFixtureService.countPendingGamesByGroupId(groupId) > 0) {
                 return Collections.emptyList();

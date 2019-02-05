@@ -56,7 +56,10 @@ public abstract class TournamentSystem {
 
     public void startTournament() {
         prepareParticipantsBeforeStart();
+        tournament.getRequirements().setPlannedRounds(calculatePlannedRounds());
     }
+
+    protected abstract int calculatePlannedRounds();
 
     public abstract void finishTournament();
 

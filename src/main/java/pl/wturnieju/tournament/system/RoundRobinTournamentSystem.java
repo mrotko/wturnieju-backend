@@ -21,6 +21,11 @@ public class RoundRobinTournamentSystem extends TournamentSystem {
     }
 
     @Override
+    protected int calculatePlannedRounds() {
+        return tournament.getParticipantIds().size() - 1;
+    }
+
+    @Override
     public void finishTournament() {
 
     }

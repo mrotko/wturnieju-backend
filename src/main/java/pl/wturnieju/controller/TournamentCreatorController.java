@@ -70,6 +70,5 @@ public class TournamentCreatorController {
         config.put("scoring", scoringConfiguration.getCompetitions());
 
         return config;
-
     }
 }

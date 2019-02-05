@@ -37,4 +37,9 @@ public class LeagueTournamentSystem extends TournamentSystem {
         groupService.insert(group);
         tournament.getGroupIds().add(group.getId());
     }
+
+    @Override
+    protected int calculatePlannedRounds() {
+        return 2 * (tournament.getParticipantIds().size() - 1);
+    }
 }

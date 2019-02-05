@@ -34,10 +34,15 @@ public class SwissTournamentSystem extends TournamentSystem {
 
     @Override
     public void startTournament() {
-        prepareParticipantsBeforeStart();
+        super.startTournament();
         var group = createLeagueGroup();
         groupService.insert(group);
         tournament.setGroupIds(Collections.singletonList(group.getId()));
+    }
+
+    @Override
+    protected int calculatePlannedRounds() {
+        return (int) Math.ceil(Math.log(tournament.getParticipantIds().size()) / Math.log(2));
     }
 
     @Override
