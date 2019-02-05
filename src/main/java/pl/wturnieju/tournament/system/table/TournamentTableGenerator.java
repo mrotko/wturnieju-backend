@@ -68,7 +68,10 @@ public class TournamentTableGenerator {
         var awayParticipantRow = idToRowMapping.get(game.getAwayParticipant().getId());
 
         addToRowDraw(homeParticipantRow);
+        addHomeParticipantsOpponentsSmallPoints(game, 0.5);
         addToRowDraw(awayParticipantRow);
+        addAwayParticipantOpponentsSmallPoints(game, 0.5);
+
     }
 
     private void addByeGame(GameFixture game) {
@@ -82,11 +85,25 @@ public class TournamentTableGenerator {
 
         if (game.getWinner() == 1) {
             addToRowWin(homeParticipantRow);
+            addHomeParticipantsOpponentsSmallPoints(game, 1);
             addToRowLose(awayParticipantRow);
         } else {
             addToRowWin(awayParticipantRow);
+            addAwayParticipantOpponentsSmallPoints(game, 1);
             addToRowLose(homeParticipantRow);
         }
+    }
+
+    private void addHomeParticipantsOpponentsSmallPoints(GameFixture game, double multiplier) {
+        var row = idToRowMapping.get(game.getHomeParticipantId());
+        var smallPointsToAdd = game.getAwaySmallPoints() * multiplier;
+        row.setSmallPoints(row.getSmallPoints() + smallPointsToAdd);
+    }
+
+    private void addAwayParticipantOpponentsSmallPoints(GameFixture game, double multiplier) {
+        var row = idToRowMapping.get(game.getAwayParticipantId());
+        var smallPointsToAdd = game.getAwaySmallPoints() * multiplier;
+        row.setSmallPoints(row.getSmallPoints() + smallPointsToAdd);
     }
 
     private void addToRowWin(TournamentTableRow row) {

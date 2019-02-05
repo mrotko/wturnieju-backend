@@ -53,4 +53,8 @@ public class GameFixtureDto {
     private AccessOption accessOption;
 
     private CompetitionType competitionType;
+
+    private Double homeSmallPoints;
+
+    private Double awaySmallPoints;
 }

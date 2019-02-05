@@ -112,6 +112,14 @@ public class SwissScheduleEditor extends ScheduleEditor {
     @Override
     protected List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
         var games = super.createGameFixtures(shortestPath, group);
+        
+        resolveSameSideStreakProblem(games);
+        addSmallPointsToGames(games);
+
+        return games;
+    }
+
+    private void resolveSameSideStreakProblem(List<GameFixture> games) {
         games.stream()
                 .filter(game -> !game.getBye())
                 .forEach(game -> {
@@ -129,7 +137,13 @@ public class SwissScheduleEditor extends ScheduleEditor {
                         game.setAwayParticipant(home);
                     }
                 });
-        return games;
+    }
+
+    private void addSmallPointsToGames(List<GameFixture> games) {
+        games.forEach(game -> {
+            game.setHomeSmallPoints(getPointsByParticipantId(game.getHomeParticipantId()));
+            game.setAwaySmallPoints(getPointsByParticipantId(game.getAwayParticipantId()));
+        });
     }
 
     private Integer getSideStreak(String participantId, Integer side) {
