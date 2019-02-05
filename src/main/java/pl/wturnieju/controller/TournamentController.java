@@ -40,6 +40,7 @@ import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentPresentationService;
 import pl.wturnieju.service.ITournamentScheduleService;
 import pl.wturnieju.service.ITournamentService;
+import pl.wturnieju.service.ITournamentTableService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 
@@ -55,6 +56,8 @@ public class TournamentController {
     private final IParticipantService participantService;
 
     private final ITournamentPresentationService tournamentPresentationService;
+
+    private final ITournamentTableService tournamentTableService;
 
     private final IUserService userService;
 
@@ -202,11 +205,14 @@ public class TournamentController {
         return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games);
     }
 
-    @GetMapping("/{tournamentId}/table")
+    @GetMapping("/{tournamentId}/table/{groupId}")
     @Transactional(readOnly = true)
-    public TournamentTableDto getTournamentTable(@PathVariable("tournamentId") String tournamentId) {
-        var table = tournamentPresentationService.getTournamentTable(tournamentId);
-        return mappers.createTournamentTableDto(tournamentId, table);
+    public TournamentTableDto getTournamentTable(
+            @PathVariable("tournamentId") String tournamentId,
+            @PathVariable("groupId") String groupId
+    ) {
+        var table = tournamentPresentationService.retrieveTournamentTable(tournamentId, groupId);
+        return mappers.createTournamentTableDto(table);
     }
 
     @GetMapping(value = "/", params = {"access"})

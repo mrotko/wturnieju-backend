@@ -4,6 +4,6 @@ import pl.wturnieju.tournament.system.table.TournamentTable;
 
 public interface ITournamentPresentationService {
 
-    TournamentTable getTournamentTable(String tournamentId);
+    TournamentTable retrieveTournamentTable(String tournamentId, String groupId);
 
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class TournamentTableDto {
 
-    private String tournamentId;
+    private String groupId;
 
     private String name;
 

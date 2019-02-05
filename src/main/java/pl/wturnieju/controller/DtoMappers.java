@@ -55,8 +55,8 @@ public class DtoMappers {
         return tournamentDtoMapper.tournamentToTournamentDto(tournament);
     }
 
-    public TournamentTableDto createTournamentTableDto(String tournamentId, TournamentTable table) {
-        return tournamentTableDtoMapper.tournamentTableToTournamentTableDto(tournamentId, table);
+    public TournamentTableDto createTournamentTableDto(TournamentTable table) {
+        return tournamentTableDtoMapper.tournamentTableToTournamentTableDto(table);
     }
 
     public ScheduleDto createScheduleDto(String tournamentId, Integer round, List<GameFixture> schedule) {

@@ -65,6 +65,7 @@ public abstract class Graph<T> {
     public void unlinkVertexesWithValues(List<ImmutablePair<T, T>> pairs) {
         pairs.stream()
                 .map(this::mapValuesPairToVerticesPair)
+                .filter(vPair -> vPair.getLeft() != null && vPair.getRight() != null)
                 .forEach(verticesPair -> removeEdgeWithVertices(verticesPair.getLeft(), verticesPair.getRight()));
     }
 
@@ -82,7 +83,7 @@ public abstract class Graph<T> {
                 .findFirst().orElse(null);
     }
 
-    public void findShortestPath() {
+    public void findPath() {
         shortestPath.clear();
         if (vertices.isEmpty()) {
             return;
@@ -107,7 +108,7 @@ public abstract class Graph<T> {
         }
     }
 
-    public Deque<Vertex<T>> getShortestPath() {
+    public Deque<Vertex<T>> getPath() {
         return shortestPath;
     }
 }

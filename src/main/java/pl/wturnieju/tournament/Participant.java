@@ -25,8 +25,6 @@ public class Participant implements IProfile {
 
     private ParticipantType participantType;
 
-    private String groupId;
-
     private String leaderId;
 
     private List<Member> members = new ArrayList<>();

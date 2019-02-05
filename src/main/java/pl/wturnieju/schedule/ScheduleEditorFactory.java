@@ -7,6 +7,7 @@ import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGeneratedGamesService;
 import pl.wturnieju.service.IGroupService;
 import pl.wturnieju.service.IParticipantService;
+import pl.wturnieju.service.ITournamentTableService;
 import pl.wturnieju.tournament.Tournament;
 
 public class ScheduleEditorFactory {
@@ -18,6 +19,7 @@ public class ScheduleEditorFactory {
         switch (systemType) {
         case SWISS:
             return new SwissScheduleEditor(
+                    getTournamentTableService(context),
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
@@ -77,5 +79,9 @@ public class ScheduleEditorFactory {
 
     private static IParticipantService getParticipantService(ApplicationContext context) {
         return context.getBean(IParticipantService.class);
+    }
+
+    private static ITournamentTableService getTournamentTableService(ApplicationContext context) {
+        return context.getBean(ITournamentTableService.class);
     }
 }

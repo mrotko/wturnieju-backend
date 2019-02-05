@@ -1,8 +1,6 @@
 package pl.wturnieju.tournament.system;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ComparisonChain;
@@ -12,7 +10,6 @@ import pl.wturnieju.gameeditor.GameEditorFactory;
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
 import pl.wturnieju.gameeditor.start.StartGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
-import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGroupService;
@@ -28,6 +25,7 @@ import pl.wturnieju.tournament.system.table.TournamentTableGeneratorBuilder;
 
 @RequiredArgsConstructor
 public abstract class TournamentSystem {
+
 
     protected final IGameFixtureService gameFixtureService;
 
@@ -64,10 +62,10 @@ public abstract class TournamentSystem {
 
     public abstract void startNextTournamentStage();
 
-    public TournamentTable buildTournamentTable() {
+    public TournamentTable buildTournamentTable(String groupId) {
         var tableGenerator = TournamentTableGeneratorBuilder.builder()
-                .withGames(getLeagueStageEndedGames())
-                .withParticipants(getParticipants(tournament.getParticipantIds()))
+                .withGames(getAllEndedGamesByGroupId(groupId))
+                .withParticipants(getAllParticipantsByGroupId(groupId))
                 .withPointsForWin(getPoints(GameResultType.WIN))
                 .withPointsForDraw(getPoints(GameResultType.DRAW))
                 .withPointsForLose(getPoints(GameResultType.LOSE))
@@ -76,34 +74,9 @@ public abstract class TournamentSystem {
                         .compare(o2.getSmallPoints(), o2.getSmallPoints())
                         .result()))
                 .build();
-
-        return tableGenerator.generateTable();
-    }
-
-    public List<TournamentTable> buildGroupsTables() {
-        List<TournamentTable> groupTables = new ArrayList<>();
-
-        getGroupStageEndedGames().forEach((key, value) -> {
-            var tableGenerator = TournamentTableGeneratorBuilder.builder()
-                    .withGames(value)
-                    .withParticipants(getParticipants(key))
-                    .withPointsForWin(getPoints(GameResultType.WIN))
-                    .withPointsForDraw(getPoints(GameResultType.DRAW))
-                    .withPointsForLose(getPoints(GameResultType.LOSE))
-                    .withRowComparator(((o1, o2) -> ComparisonChain.start()
-                            .compare(o2.getPoints(), o1.getPoints())
-                            .compare(o2.getSmallPoints(), o2.getSmallPoints())
-                            .result()))
-                    .build();
-
-            groupTables.add(tableGenerator.generateTable());
-        });
-
-        return groupTables;
-    }
-
-    private List<Participant> getParticipants(Group group) {
-        return participantsService.getAllByGroupId(group.getId());
+        var table = tableGenerator.generateTable();
+        table.setGroupId(groupId);
+        return table;
     }
 
     private Double getPoints(GameResultType gameResultType) {
@@ -150,25 +123,11 @@ public abstract class TournamentSystem {
         return tournament;
     }
 
-    private Group getGroupById(String groupId) {
-        return groupService.getById(groupId);
+    public List<GameFixture> getAllEndedGamesByGroupId(String groupId) {
+        return gameFixtureService.getAllEndedByGroupId(groupId);
     }
 
-    public Map<Group, List<GameFixture>> getGroupStageEndedGames() {
-        return gameFixtureService.getAllByTournamentId(tournament.getId()).stream()
-                .filter(game -> game.getStageType() == StageType.GROUP)
-                .filter(game -> game.getGameStatus() == GameStatus.ENDED)
-                .collect(Collectors.groupingBy(game -> getGroupById(game.getGroupId()), Collectors.toList()));
-    }
-
-    public List<GameFixture> getLeagueStageEndedGames() {
-        return gameFixtureService.getAllByTournamentId(tournament.getId()).stream()
-                .filter(game -> game.getStageType() == StageType.LEAGUE)
-                .filter(game -> game.getGameStatus() == GameStatus.ENDED)
-                .collect(Collectors.toList());
-    }
-
-    protected List<Participant> getParticipants(List<String> participantIds) {
-        return participantsService.getAllById(participantIds);
+    public List<Participant> getAllParticipantsByGroupId(String groupId) {
+        return participantsService.getAllByGroupId(groupId);
     }
 }

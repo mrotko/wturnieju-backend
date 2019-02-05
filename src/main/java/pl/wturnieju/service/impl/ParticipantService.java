@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.model.User;
+import pl.wturnieju.repository.GroupRepository;
 import pl.wturnieju.repository.ParticipantRepository;
 import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentService;
@@ -26,6 +27,8 @@ public class ParticipantService implements IParticipantService {
     private final ITournamentService tournamentService;
 
     private final ParticipantRepository repository;
+
+    private final GroupRepository groupRepository;
 
     private final IUserService userService;
 
@@ -161,7 +164,12 @@ public class ParticipantService implements IParticipantService {
 
     @Override
     public List<Participant> getAllByGroupId(String groupId) {
-        return repository.getAllByGroupId(groupId);
+        var group = groupRepository.findById(groupId);
+        if (group.isPresent()) {
+            var participantsIds = group.get().getParticipantIds();
+            return getAllById(participantsIds);
+        }
+        return Collections.emptyList();
     }
 
     @Override

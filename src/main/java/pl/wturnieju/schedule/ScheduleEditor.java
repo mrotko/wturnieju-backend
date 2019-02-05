@@ -28,6 +28,8 @@ import pl.wturnieju.utils.DateUtils;
 @RequiredArgsConstructor
 public abstract class ScheduleEditor implements IScheduleEditor {
 
+    protected int scheduleGenerationAttempts;
+
     protected final IParticipantService participantService;
 
     protected final IGeneratedGamesService generatedGamesService;
@@ -39,6 +41,8 @@ public abstract class ScheduleEditor implements IScheduleEditor {
     protected final Tournament tournament;
 
     protected final GameFixtureFactory gameFixtureFactory = new GameFixtureFactory();
+
+    protected List<ImmutablePair<String, String>> competitors = new ArrayList<>();
 
     @Override
     public GameFixture updateGame(GameFixture gameFixture) {
@@ -77,10 +81,18 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         return gamesIds;
     }
 
+    protected void prepareCompetitors(String groupId) {
+        competitors = getCompetitors(groupId);
+    }
+
     @Override
     public List<GameFixture> generateGames(String groupId) {
+        prepareCompetitors(groupId);
+        return generatedGamesService.insertAll(generateGamesWithoutSaving(groupId));
+    }
+
+    protected List<GameFixture> generateGamesWithoutSaving(String groupId) {
         var group = groupService.getById(groupId);
-        var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
         var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
         if (group.isRequiredAllGamesEnded()) {
@@ -89,41 +101,43 @@ public abstract class ScheduleEditor implements IScheduleEditor {
             }
         }
 
+        List<String> participantsPairsPath = createParticipantsPairsPath(participantsIds);
+        return createGameFixtures(participantsPairsPath, group);
+    }
+
+    protected List<String> createParticipantsPairsPath(List<String> participantsIds) {
+        var graph = new CompleteGraph<>(getWeightCalculationMethod(), new GraphFactory<>());
+
         graph.generateGraph(participantsIds);
-        graph.unlinkVertexesWithValues(getCompetitors(group));
+        graph.unlinkVertexesWithValues(competitors);
 
         graph.makeFinalSetup();
-        graph.findShortestPath();
+        graph.findPath();
 
-        List<String> shortestPath = graph.getShortestPath().stream()
+        List<String> path = graph.getPath().stream()
                 .map(Vertex::getValue)
                 .collect(Collectors.toList());
 
-        List<GameFixture> games = new ArrayList<>();
-        if (shortestPath.isEmpty()) {
+        if (path.isEmpty()) {
             var edges = graph.getEdges();
             if (!edges.isEmpty() && (edges.size() == participantsIds.size() / 2)) {
-                List<String> path = new ArrayList<>();
                 edges.forEach(edge -> {
                     path.add(edge.getFirst().getValue());
                     path.add(edge.getSecond().getValue());
                 });
-                games.addAll(createGameFixtures(path, group));
             }
-        } else {
-            games.addAll(createGameFixtures(shortestPath, group));
         }
 
-        return generatedGamesService.insertAll(games);
+        return path;
     }
 
-    protected List<ImmutablePair<String, String>> getCompetitors(Group group) {
-        return gameFixtureService.getAllByGroupId(group.getId()).stream()
+    protected List<ImmutablePair<String, String>> getCompetitors(String groupId) {
+        return gameFixtureService.getAllByGroupId(groupId).stream()
                 .map(game -> ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId()))
                 .collect(Collectors.toList());
     }
 
-    private List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
+    protected List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
         var games = new ArrayList<GameFixture>();
         for (int i = 0; i < shortestPath.size(); i += 2) {
             var homeId = shortestPath.get(i);
@@ -155,7 +169,7 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         if (ids.size() % 2 != 0) {
             ids.add(null);
         }
-
+        Collections.shuffle(ids);
         return ids;
     }
 

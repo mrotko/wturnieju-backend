@@ -22,9 +22,9 @@ class CompleteGraphTest {
     public void shouldReturnEmptyPathWhenNoData() {
         Graph<String> graph = new CompleteGraph<>(Mockito.mock(BiFunction.class), graphFactory);
         graph.generateGraph(Collections.emptyList());
-        graph.findShortestPath();
+        graph.findPath();
         graph.makeFinalSetup();
-        Assertions.assertEquals(0, graph.getShortestPath().size());
+        Assertions.assertEquals(0, graph.getPath().size());
     }
 
     @Test
