@@ -44,6 +44,11 @@ public class Timestamp implements Comparable<Timestamp> {
         return value.isAfter(lower.value) && value.isBefore(upper.value);
     }
 
+    @Transient
+    public Timestamp plusDays(long days) {
+        return new Timestamp(value.plusDays(days));
+    }
+
     @Override
     @JsonValue
     public String toString() {
