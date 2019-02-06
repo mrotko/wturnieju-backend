@@ -7,7 +7,7 @@ import pl.wturnieju.model.Timestamp;
 
 @Getter
 @Setter
-public abstract class StartGameUpdateEvent extends GameUpdateEvent {
+public class StartGameUpdateEvent extends GameUpdateEvent {
 
     private Timestamp startDate;
 }

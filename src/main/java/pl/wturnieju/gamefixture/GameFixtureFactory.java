@@ -35,6 +35,7 @@ public class GameFixtureFactory {
         game.setStageType(group.getStageType());
         game.setAccessOption(tournament.getAccessOption());
         game.setCompetitionType(tournament.getCompetitionType());
+        game.setPeriodsNumber(tournament.getGamePeriodsNumber());
 
         return game;
     }

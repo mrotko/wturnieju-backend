@@ -32,10 +32,8 @@ public class LeagueTournamentSystem extends TournamentSystem {
 
     @Override
     public void startTournament() {
-        prepareParticipantsBeforeStart();
-        var group = createLeagueGroup();
-        groupService.insert(group);
-        tournament.getGroupIds().add(group.getId());
+        super.startTournament();
+        prepareLeagueTournament();
     }
 
     @Override

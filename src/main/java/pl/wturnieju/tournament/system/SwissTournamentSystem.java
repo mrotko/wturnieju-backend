@@ -1,7 +1,5 @@
 package pl.wturnieju.tournament.system;
 
-import java.util.Collections;
-
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.service.IGameFixtureService;
@@ -35,9 +33,7 @@ public class SwissTournamentSystem extends TournamentSystem {
     @Override
     public void startTournament() {
         super.startTournament();
-        var group = createLeagueGroup();
-        groupService.insert(group);
-        tournament.setGroupIds(Collections.singletonList(group.getId()));
+        prepareLeagueTournament();
     }
 
     @Override

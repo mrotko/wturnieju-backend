@@ -64,4 +64,6 @@ public class Tournament extends Persistent {
     private List<TableColumnType> tableColumns = new ArrayList<>();
 
     private List<String> groupIds;
+
+    private Integer gamePeriodsNumber;
 }

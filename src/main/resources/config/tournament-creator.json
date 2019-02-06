@@ -116,5 +116,17 @@
     "TOURNAMENT_SYSTEM_TYPE.SWISS": [
       "STAGE_TYPE.LEAGUE"
     ]
+  },
+  "competitionTypeToGamePeriodsNumberMapping": {
+    "COMPETITION_TYPE.CHESS": [
+      0
+    ],
+    "COMPETITION_TYPE.FOOTBALL": [
+      2
+    ],
+    "COMPETITION_TYPE.TENNIS": [
+      2,
+      3
+    ]
   }
 }

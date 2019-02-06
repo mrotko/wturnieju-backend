@@ -34,4 +34,6 @@ public class TournamentCreatorConfigurationData {
             TournamentSystemType.class);
 
     private Map<TournamentSystemType, List<StageType>> requiredAllGamesEndedStageTypesMapping;
+
+    private Map<CompetitionType, List<Integer>> competitionTypeToGamePeriodsNumberMapping;
 }

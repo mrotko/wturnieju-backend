@@ -1,5 +1,6 @@
 package pl.wturnieju.tournament.system;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,12 @@ public abstract class TournamentSystem {
     public void startTournament() {
         prepareParticipantsBeforeStart();
         tournament.getRequirements().setPlannedRounds(calculatePlannedRounds());
+    }
+
+    protected void prepareLeagueTournament() {
+        var group = createLeagueGroup();
+        groupService.insert(group);
+        tournament.setGroupIds(Collections.singletonList(group.getId()));
     }
 
     protected abstract int calculatePlannedRounds();

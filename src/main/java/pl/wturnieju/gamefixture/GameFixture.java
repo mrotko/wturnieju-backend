@@ -64,6 +64,8 @@ public class GameFixture extends Persistent {
 
     private double awaySmallPoints;
 
+    private double periodsNumber;
+
     @Transient
     public String getHomeParticipantId() {
         return Optional.ofNullable(homeParticipant).map(Participant::getId).orElse(null);

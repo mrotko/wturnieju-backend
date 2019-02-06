@@ -57,4 +57,6 @@ public class GameFixtureDto {
     private Double homeSmallPoints;
 
     private Double awaySmallPoints;
+
+    private Double periodsNumber;
 }
