@@ -48,4 +48,6 @@ public class TournamentTemplateDto {
     private List<StageType> stageTypes;
 
     private List<StageType> requiredAllGamesEndedStageTypes;
+
+    private Integer gamePeriodsNumber;
 }
