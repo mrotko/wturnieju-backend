@@ -69,5 +69,5 @@ public class TournamentDto {
 
     private List<StageType> requiredAllGamesEndedStageTypes;
 
-    private Integer gamePeriodsNumber;
+    private PeriodsConfigDto periodsConfig;
 }
