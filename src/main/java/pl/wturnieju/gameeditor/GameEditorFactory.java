@@ -17,6 +17,7 @@ public class GameEditorFactory {
         case FOOTBALL:
             return new FootballGameEditor(gameFixture);
         case TENNIS:
+            return new TennisGameEditor(gameFixture);
         case CUSTOM:
         default:
             throw new UnknownEnumTypeException(competitionType);
