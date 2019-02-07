@@ -3,6 +3,8 @@ package pl.wturnieju.tournament.system;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
+import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGroupService;
 import pl.wturnieju.service.IParticipantService;
@@ -32,6 +34,13 @@ public class LeagueTournamentSystem extends TournamentSystem {
     @Override
     public void startNextTournamentStage() {
 
+    }
+
+    @Override
+    public GameFixture finishGame(FinishGameUpdateEvent finishGameUpdateEvent) {
+        var game = super.finishGame(finishGameUpdateEvent);
+        tournamentTableService.update(buildTournamentTable(game.getGroupId()));
+        return game;
     }
 
     @Override
