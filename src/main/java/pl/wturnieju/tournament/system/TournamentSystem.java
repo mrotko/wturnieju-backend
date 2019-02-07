@@ -72,6 +72,13 @@ public abstract class TournamentSystem {
         tournament.setGroupIds(Collections.singletonList(group.getId()));
     }
 
+    protected int makeParticipantsNumberEven(int participantsNumber) {
+        if (participantsNumber % 2 == 1) {
+            return participantsNumber + 1;
+        }
+        return participantsNumber;
+    }
+
     protected abstract int calculatePlannedRounds();
 
     public abstract void finishTournament();

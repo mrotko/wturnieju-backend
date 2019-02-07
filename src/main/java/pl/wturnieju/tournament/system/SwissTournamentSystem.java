@@ -47,7 +47,8 @@ public class SwissTournamentSystem extends TournamentSystem {
 
     @Override
     protected int calculatePlannedRounds() {
-        return (int) Math.ceil(Math.log(tournament.getParticipantIds().size()) / Math.log(2));
+        var participantsNumber = makeParticipantsNumberEven(tournament.getParticipantIds().size());
+        return (int) Math.ceil(Math.log(participantsNumber) / Math.log(2));
     }
 
     @Override

@@ -56,6 +56,6 @@ public class LeagueTournamentSystem extends TournamentSystem {
 
     @Override
     protected int calculatePlannedRounds() {
-        return 2 * (tournament.getParticipantIds().size() - 1);
+        return 2 * (makeParticipantsNumberEven(tournament.getParticipantIds().size()) - 1);
     }
 }
