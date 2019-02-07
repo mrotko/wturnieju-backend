@@ -1,9 +1,11 @@
 package pl.wturnieju.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.model.Timestamp;
+import pl.wturnieju.tournament.LegType;
 
 public interface IGameFixtureService {
 
@@ -21,6 +23,8 @@ public interface IGameFixtureService {
 
     List<GameFixture> getAllByGroupId(String groupId);
 
+    List<GameFixture> getAllByGroupIdAndLegType(String groupId, LegType legType);
+
     List<GameFixture> getAllPendingGamesByGroupId(String groupId);
 
     Integer countPendingGamesByGroupId(String groupId);
@@ -32,4 +36,7 @@ public interface IGameFixtureService {
     List<GameFixture> getAllByTournamentId(String tournamentId);
 
     List<GameFixture> getAllPublicStartsBetweenDates(Timestamp dateFrom, Timestamp dateTo);
+
+    Optional<GameFixture> findLastParticipantsGame(String firstParticipantId, String secondParticipantId);
+
 }

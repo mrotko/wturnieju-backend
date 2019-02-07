@@ -11,5 +11,4 @@ import pl.wturnieju.tournament.system.state.Group;
 public interface GroupRepository extends MongoRepository<Group, String> {
 
     List<Group> getAllByTournamentId(String tournamentId);
-
 }

@@ -1,8 +1,13 @@
 package pl.wturnieju.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gamefixture.GameFixture;
@@ -11,6 +16,7 @@ import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.Timestamp;
 import pl.wturnieju.repository.GameFixtureRepository;
 import pl.wturnieju.service.IGameFixtureService;
+import pl.wturnieju.tournament.LegType;
 
 @RequiredArgsConstructor
 @Service
@@ -54,6 +60,11 @@ public class GameFixtureService implements IGameFixtureService {
     }
 
     @Override
+    public List<GameFixture> getAllByGroupIdAndLegType(String groupId, LegType legType) {
+        return repository.getAllByGroupIdAndLegType(groupId, legType);
+    }
+
+    @Override
     public List<GameFixture> getAllPendingGamesByGroupId(String groupId) {
         return repository.getAllByGroupIdAndGameStatusNotLike(groupId, GameStatus.ENDED);
     }
@@ -81,5 +92,19 @@ public class GameFixtureService implements IGameFixtureService {
     @Override
     public List<GameFixture> getAllPublicStartsBetweenDates(Timestamp dateFrom, Timestamp dateTo) {
         return repository.getAllByAccessOptionAndStartDateBetween(AccessOption.PUBLIC, dateFrom, dateTo);
+    }
+
+    @Override
+    public Optional<GameFixture> findLastParticipantsGame(String firstParticipantId, String secondParticipantId) {
+        DBObject query = QueryBuilder.start().or(
+                QueryBuilder.start().and(
+                        QueryBuilder.start().put("homeParticipant.id").is(firstParticipantId).get(),
+                        QueryBuilder.start().put("awayParticipant.id").is(secondParticipantId).get()).get(),
+                QueryBuilder.start().and(
+                        QueryBuilder.start().put("homeParticipant.id").is(secondParticipantId).get(),
+                        QueryBuilder.start().put("awayParticipant.id").is(firstParticipantId).get()).get()).get();
+
+        return repository.findAllByQuery(query).stream()
+                .min(Comparator.comparing(GameFixture::getStartDate));
     }
 }

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import pl.wturnieju.repository.TournamentRepository;
 import pl.wturnieju.service.ICurrentUserProvider;
 import pl.wturnieju.service.ITournamentCreatorService;
-import pl.wturnieju.tournament.LegType;
 import pl.wturnieju.tournament.Tournament;
 
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ public class TournamentCreatorService implements ITournamentCreatorService {
     public Tournament create(Tournament tournament) {
         tournament.setOwner(currentUser.getCurrentUser());
         tournament.setCurrentRound(0);
-        tournament.setCurrentLegType(LegType.FIRST);
         tournament.setCurrentStageType(tournament.getStageTypes().get(0));
         return tournamentRepository.save(tournament);
     }

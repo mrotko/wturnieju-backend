@@ -1,9 +1,13 @@
 package pl.wturnieju.tournament.system;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGroupService;
 import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentTableService;
+import pl.wturnieju.tournament.LegType;
 import pl.wturnieju.tournament.Tournament;
 
 public class LeagueTournamentSystem extends TournamentSystem {
@@ -34,6 +38,20 @@ public class LeagueTournamentSystem extends TournamentSystem {
     public void startTournament() {
         super.startTournament();
         prepareLeagueTournament();
+    }
+
+    @Override
+    protected Map<Integer, LegType> createRoundToLegMapping() {
+        Map<Integer, LegType> roundToLegMapping = new HashMap<>();
+        var plannedRounds = tournament.getRequirements().getPlannedRounds();
+
+        var legMask = plannedRounds / 2;
+
+        for (int i = 0; i < plannedRounds; i++) {
+            roundToLegMapping.put(i, LegType.values()[i / legMask]);
+        }
+
+        return roundToLegMapping;
     }
 
     @Override

@@ -112,7 +112,7 @@ public class SwissScheduleEditor extends ScheduleEditor {
     @Override
     protected List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
         var games = super.createGameFixtures(shortestPath, group);
-        
+
         resolveSameSideStreakProblem(games);
         addSmallPointsToGames(games);
 
@@ -130,11 +130,9 @@ public class SwissScheduleEditor extends ScheduleEditor {
                     var awayStreakAway = getSideStreak(away.getId(), AWAY_SIDE);
 
                     if (awayStreakAway > 0 && homeStreakHome > 0) {
-                        game.setHomeParticipant(away);
-                        game.setAwayParticipant(home);
+                        swapHomeAwayParticipants(game);
                     } else if (Math.abs(homeStreakHome - awayStreakAway) > 1) {
-                        game.setHomeParticipant(away);
-                        game.setAwayParticipant(home);
+                        swapHomeAwayParticipants(game);
                     }
                 });
     }

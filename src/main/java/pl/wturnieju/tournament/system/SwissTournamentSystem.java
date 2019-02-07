@@ -1,11 +1,15 @@
 package pl.wturnieju.tournament.system;
 
+import java.util.Collections;
+import java.util.Map;
+
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGroupService;
 import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentTableService;
+import pl.wturnieju.tournament.LegType;
 import pl.wturnieju.tournament.Tournament;
 
 public class SwissTournamentSystem extends TournamentSystem {
@@ -34,6 +38,11 @@ public class SwissTournamentSystem extends TournamentSystem {
     public void startTournament() {
         super.startTournament();
         prepareLeagueTournament();
+    }
+
+    @Override
+    protected Map<Integer, LegType> createRoundToLegMapping() {
+        return Collections.emptyMap();
     }
 
     @Override

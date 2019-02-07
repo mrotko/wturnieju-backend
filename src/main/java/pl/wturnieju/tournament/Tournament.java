@@ -1,6 +1,8 @@
 package pl.wturnieju.tournament;
 
+import java.beans.Transient;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +53,6 @@ public class Tournament extends Persistent {
 
     private int currentRound;
 
-    private LegType currentLegType;
-
     private StageType currentStageType;
 
     private List<StageType> stageTypes;
@@ -66,4 +66,11 @@ public class Tournament extends Persistent {
     private List<String> groupIds;
 
     private Integer gamePeriodsNumber;
+
+    private Map<Integer, LegType> roundToLegMapping = new HashMap<>();
+
+    @Transient
+    public LegType getCurrentLegType() {
+        return roundToLegMapping.getOrDefault(currentRound, LegType.FIRST);
+    }
 }

@@ -2,6 +2,7 @@ package pl.wturnieju.tournament.system;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ComparisonChain;
@@ -16,6 +17,7 @@ import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGroupService;
 import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.tournament.GameResultType;
+import pl.wturnieju.tournament.LegType;
 import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.ParticipantStatus;
 import pl.wturnieju.tournament.StageType;
@@ -58,7 +60,11 @@ public abstract class TournamentSystem {
     public void startTournament() {
         prepareParticipantsBeforeStart();
         tournament.getRequirements().setPlannedRounds(calculatePlannedRounds());
+        tournament.setRoundToLegMapping(createRoundToLegMapping());
     }
+
+    protected abstract Map<Integer, LegType> createRoundToLegMapping();
+
 
     protected void prepareLeagueTournament() {
         var group = createLeagueGroup();

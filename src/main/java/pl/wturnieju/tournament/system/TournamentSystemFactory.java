@@ -27,22 +27,7 @@ public class TournamentSystemFactory {
                     getGroupService(context),
                     getParticipantService(context),
                     tournament);
-        case KNOCKOUT:
-            //            return new KnockOutTournamentSystem(
-            //                    getTournamentTableService(context),
-            //                    getGameFixtureService(context),
-            //                    getGroupService(context),
-            //                    getParticipantService(context),
-            //                    tournament);
-            return null;
-        case GROUP:
-            //            return new GroupTournamentSystem(
-            //                    getTournamentTableService(context),
-            //                    getGameFixtureService(context),
-            //                    getGroupService(context),
-            //                    getParticipantService(context),
-            //                    tournament);
-            return null;
+
         case LEAGUE:
             return new LeagueTournamentSystem(
                     getTournamentTableService(context),
@@ -50,14 +35,6 @@ public class TournamentSystemFactory {
                     getGroupService(context),
                     getParticipantService(context),
                     tournament);
-        case CUSTOM:
-            //            return new CustomTournamentSystem(
-            //                    getTournamentTableService(context),
-            //                    getGameFixtureService(context),
-            //                    getGroupService(context),
-            //                    getParticipantService(context),
-            //                    tournament);
-            return null;
         default:
             throw new IllegalArgumentException("unknown tournament system type: " + tournament.getSystemType());
         }

@@ -44,6 +44,20 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     protected List<ImmutablePair<String, String>> competitors = new ArrayList<>();
 
+    protected void swapHomeAwayParticipants(GameFixture gameFixture) {
+        var participantTemp = gameFixture.getHomeParticipant();
+        var smallPointsTemp = gameFixture.getHomeSmallPoints();
+        var scoreTemp = gameFixture.getHomeScore();
+
+        gameFixture.setHomeScore(gameFixture.getAwayScore());
+        gameFixture.setHomeParticipant(gameFixture.getAwayParticipant());
+        gameFixture.setHomeSmallPoints(gameFixture.getAwaySmallPoints());
+
+        gameFixture.setAwayScore(scoreTemp);
+        gameFixture.setAwayParticipant(participantTemp);
+        gameFixture.setAwaySmallPoints(smallPointsTemp);
+    }
+
     @Override
     public GameFixture updateGame(GameFixture gameFixture) {
         updateGames(Collections.singletonList(gameFixture));
@@ -135,7 +149,7 @@ public abstract class ScheduleEditor implements IScheduleEditor {
     }
 
     protected List<ImmutablePair<String, String>> getCompetitors(String groupId) {
-        return gameFixtureService.getAllByGroupId(groupId).stream()
+        return gameFixtureService.getAllByGroupIdAndLegType(groupId, tournament.getCurrentLegType()).stream()
                 .map(game -> ImmutablePair.of(game.getHomeParticipantId(), game.getAwayParticipantId()))
                 .collect(Collectors.toList());
     }
