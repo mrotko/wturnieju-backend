@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import pl.wturnieju.PeriodsConfig;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.Persistent;
@@ -64,7 +65,7 @@ public class GameFixture extends Persistent {
 
     private double awaySmallPoints;
 
-    private double periodsNumber;
+    private PeriodsConfig periodsConfig;
 
     @Transient
     public String getHomeParticipantId() {

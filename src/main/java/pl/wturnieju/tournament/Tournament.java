@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import pl.wturnieju.PeriodsConfig;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
@@ -65,7 +66,7 @@ public class Tournament extends Persistent {
 
     private List<String> groupIds;
 
-    private Integer gamePeriodsNumber;
+    private PeriodsConfig periodsConfig;
 
     private Map<Integer, LegType> roundToLegMapping = new HashMap<>();
 

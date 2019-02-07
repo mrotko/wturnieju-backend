@@ -112,16 +112,36 @@
       "STAGE_TYPE.LEAGUE"
     ]
   },
-  "competitionTypeToGamePeriodsNumberMapping": {
+  "competitionTypeToGamePeriodsConfigMapping": {
     "COMPETITION_TYPE.CHESS": [
-      0
+      {
+        "periodsNumber": 0,
+        "requiredPeriodsNumber": 0
+      }
     ],
     "COMPETITION_TYPE.FOOTBALL": [
-      2
+      {
+        "periodsNumber": 2,
+        "requiredPeriodsNumber": 2
+      },
+      {
+        "periodsNumber": 3,
+        "requiredPeriodsNumber": 2
+      },
+      {
+        "periodsNumber": 5,
+        "requiredPeriodsNumber": 2
+      }
     ],
     "COMPETITION_TYPE.TENNIS": [
-      3,
-      5
+      {
+        "periodsNumber": 3,
+        "requiredPeriodsNumber": 2
+      },
+      {
+        "periodsNumber": 5,
+        "requiredPeriodsNumber": 3
+      }
     ]
   }
 }

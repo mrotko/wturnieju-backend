@@ -2,6 +2,7 @@ package pl.wturnieju.controller.dto.tournament.gamefixture;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.wturnieju.PeriodsConfig;
 import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.model.AccessOption;
@@ -58,5 +59,5 @@ public class GameFixtureDto {
 
     private Double awaySmallPoints;
 
-    private Double periodsNumber;
+    private PeriodsConfig periodsConfig;
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import lombok.Data;
 import pl.wturnieju.controller.dto.config.TableColumnType;
+import pl.wturnieju.controller.dto.tournament.PeriodsConfigDto;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
 import pl.wturnieju.model.ParticipantType;
@@ -49,5 +50,5 @@ public class TournamentTemplateDto {
 
     private List<StageType> requiredAllGamesEndedStageTypes;
 
-    private Integer gamePeriodsNumber;
+    private PeriodsConfigDto periodsConfig;
 }
