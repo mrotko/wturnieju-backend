@@ -75,8 +75,13 @@ public class TournamentTableGenerator {
     }
 
     private void addByeGame(GameFixture game) {
-        var row = idToRowMapping.get(game.getHomeParticipant().getId());
-        addToRowWin(row);
+        if (game.getHomeParticipantId() != null) {
+            var row = idToRowMapping.get(game.getHomeParticipantId());
+            addToRowWin(row);
+        } else {
+            var row = idToRowMapping.get(game.getAwayParticipantId());
+            addToRowWin(row);
+        }
     }
 
     private void addWinGame(GameFixture game) {
