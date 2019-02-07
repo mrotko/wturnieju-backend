@@ -38,6 +38,12 @@ public abstract class TournamentSystem {
 
     protected final Tournament tournament;
 
+    public void startTournament() {
+        prepareParticipantsBeforeStart();
+        tournament.getRequirements().setPlannedRounds(calculatePlannedRounds());
+        tournament.setRoundToLegMapping(createRoundToLegMapping());
+    }
+
     protected void prepareParticipantsBeforeStart() {
         var participants = participantsService.getAllByTournamentId(tournament.getId());
 
@@ -57,17 +63,11 @@ public abstract class TournamentSystem {
         participantsService.updateAll(accepted);
     }
 
-    public void startTournament() {
-        prepareParticipantsBeforeStart();
-        tournament.getRequirements().setPlannedRounds(calculatePlannedRounds());
-        tournament.setRoundToLegMapping(createRoundToLegMapping());
-    }
-
     protected abstract Map<Integer, LegType> createRoundToLegMapping();
 
 
-    protected void prepareLeagueTournament() {
-        var group = createLeagueGroup();
+    protected void prepareSingleGroupTournament() {
+        var group = createLeagueStageGroup();
         groupService.insert(group);
         tournament.setGroupIds(Collections.singletonList(group.getId()));
     }
@@ -119,7 +119,7 @@ public abstract class TournamentSystem {
         return gameFixtureService.getById(gameId);
     }
 
-    protected Group createLeagueGroup() {
+    protected Group createLeagueStageGroup() {
         var group = new Group();
 
         group.setName(getTournament().getName());

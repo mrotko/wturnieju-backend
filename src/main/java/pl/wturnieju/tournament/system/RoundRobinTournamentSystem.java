@@ -25,6 +25,12 @@ public class RoundRobinTournamentSystem extends TournamentSystem {
     }
 
     @Override
+    public void startTournament() {
+        super.startTournament();
+        prepareSingleGroupTournament();
+    }
+
+    @Override
     protected Map<Integer, LegType> createRoundToLegMapping() {
         return Collections.emptyMap();
     }

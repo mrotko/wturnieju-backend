@@ -37,7 +37,7 @@ public class LeagueTournamentSystem extends TournamentSystem {
     @Override
     public void startTournament() {
         super.startTournament();
-        prepareLeagueTournament();
+        prepareSingleGroupTournament();
     }
 
     @Override
