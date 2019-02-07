@@ -6,7 +6,7 @@ public enum InvitationStatus {
     @JsonProperty("INVITATION_STATUS.ACCEPTED")
     ACCEPTED,
 
-    @JsonProperty("INVITATION_STATUS.DISQUALIFIED")
+    @JsonProperty("INVITATION_STATUS.INVITED")
     INVITED,
 
     @JsonProperty("INVITATION_STATUS.PARTICIPATION_REQUEST")
