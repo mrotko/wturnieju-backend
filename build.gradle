@@ -52,6 +52,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-mail'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.1.2.RELEASE'
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     runtime 'org.springframework.boot:spring-boot-devtools'
     testCompile('org.springframework.boot:spring-boot-starter-test') {

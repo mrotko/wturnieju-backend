@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
             UserNotFoundException.class,
             IncorrectPasswordException.class,
             InvalidFormatException.class,
+            TournamentAccessDeniedException.class,
             ResourceExpiredException.class
     })
     public final ResponseEntity<ExceptionErrorDTO> handleException(Exception e, WebRequest request) {
@@ -29,6 +30,8 @@ public class GlobalExceptionHandler {
             return new ResponseEntity<>(createDto(e), HttpStatus.UNPROCESSABLE_ENTITY);
         } else if (e instanceof ResourceExpiredException) {
             return new ResponseEntity<>(createDto(e), HttpStatus.GONE);
+        } else if (e instanceof TournamentAccessDeniedException) {
+            return new ResponseEntity<>(createDto(e), HttpStatus.FORBIDDEN);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

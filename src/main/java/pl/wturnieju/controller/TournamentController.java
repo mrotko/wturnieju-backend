@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.annotation.CheckTournamentAccess;
+import pl.wturnieju.annotation.TournamentAccessLevel;
+import pl.wturnieju.annotation.TournamentId;
 import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.controller.dto.tournament.TournamentDto;
 import pl.wturnieju.controller.dto.tournament.UpdateTournamentStatusDTO;
@@ -40,7 +43,6 @@ import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentPresentationService;
 import pl.wturnieju.service.ITournamentScheduleService;
 import pl.wturnieju.service.ITournamentService;
-import pl.wturnieju.service.ITournamentTableService;
 import pl.wturnieju.service.IUserService;
 import pl.wturnieju.service.IVerificationService;
 
@@ -57,8 +59,6 @@ public class TournamentController {
 
     private final ITournamentPresentationService tournamentPresentationService;
 
-    private final ITournamentTableService tournamentTableService;
-
     private final IUserService userService;
 
     private final DtoMappers mappers;
@@ -73,8 +73,9 @@ public class TournamentController {
     }
 
     @PutMapping("/{tournamentId}")
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
     public TournamentDto updateTournamentStatus(
-            @PathVariable("tournamentId") String tournamentId,
+            @TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestBody UpdateTournamentStatusDTO dto) {
         switch (dto.getStatus()) {
         case "START":
@@ -91,7 +92,8 @@ public class TournamentController {
     }
 
     @GetMapping("/{tournamentId}")
-    public TournamentDto getTournament(@PathVariable("tournamentId") String tournamentId) {
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
+    public TournamentDto getTournament(@TournamentId @PathVariable("tournamentId") String tournamentId) {
         var tournament = tournamentService.getById(tournamentId);
         if (tournament == null) {
             throw new ResourceNotFoundException();
@@ -100,32 +102,37 @@ public class TournamentController {
     }
 
     @DeleteMapping("/{tournamentId}")
-    public String deleteTournament(@PathVariable("tournamentId") String tournamentId) {
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public String deleteTournament(@TournamentId @PathVariable("tournamentId") String tournamentId) {
         tournamentService.deleteTournament(tournamentId);
         return tournamentId;
     }
 
     @GetMapping("/{tournamentId}/participants")
-    public List<ParticipantDto> getTournamentParticipants(@PathVariable("tournamentId") String tournamentId) {
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
+    public List<ParticipantDto> getTournamentParticipants(@TournamentId @PathVariable("tournamentId") String tournamentId) {
         return participantService.getAllByTournamentId(tournamentId).stream()
                 .map(mappers::createTournamentParticipantDto)
                 .collect(Collectors.toList());
     }
 
     @PatchMapping("/{tournamentId}/participants")
-    public void acceptParticipant(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public void acceptParticipant(@TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestBody() String participantId) {
         participantService.acceptInvitation(participantId);
     }
 
     @DeleteMapping("/{tournamentId}/participants/{participantId}")
-    public void deleteParticipant(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public void deleteParticipant(@TournamentId @PathVariable("tournamentId") String tournamentId,
             @PathVariable("participantId") String participantId) {
         participantService.deleteParticipant(participantId);
     }
 
     @PostMapping("/{tournamentId}/participants")
-    public List<String> inviteParticipants(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public List<String> inviteParticipants(@TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestBody List<String> userIds) {
         userIds.forEach(userId -> {
             var participant = participantService.inviteUserId(tournamentId, userId);
@@ -145,7 +152,8 @@ public class TournamentController {
     }
 
     @GetMapping("/{tournamentId}/schedule/generate/{groupId}")
-    public ScheduleDto generateSchedule(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public ScheduleDto generateSchedule(@TournamentId @PathVariable("tournamentId") String tournamentId,
             @PathVariable("groupId") String groupId) {
         var schedule = scheduleService.generateSchedule(tournamentId, groupId);
         var round = schedule.stream()
@@ -155,7 +163,8 @@ public class TournamentController {
     }
 
     @PutMapping("/{tournamentId}/schedule")
-    public ScheduleDto saveSchedule(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.OWNER)
+    public ScheduleDto saveSchedule(@TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestBody ScheduleDto scheduleDTO) {
 
         var gamesIds = scheduleDTO.getElements().stream()
@@ -181,7 +190,9 @@ public class TournamentController {
     }
 
     @GetMapping(path = "/{tournamentId}/schedule", params = {"game_status"})
-    public List<ScheduleDto> getSchedule(@PathVariable("tournamentId") String tournamentId,
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
+    public List<ScheduleDto> getSchedule(
+            @TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestParam("game_status") String gameStatus) {
 
         List<GameFixture> games = new ArrayList<>();
@@ -200,15 +211,17 @@ public class TournamentController {
     }
 
     @GetMapping(path = "/{tournamentId}/game-fixtures")
-    public List<GameFixtureDto> getGameFixtures(@PathVariable("tournamentId") String tournamentId) {
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
+    public List<GameFixtureDto> getGameFixtures(@TournamentId @PathVariable("tournamentId") String tournamentId) {
         var games = scheduleService.getAllGameFixtures(tournamentId);
         return mappers.getGameFixtureDtoMapper().gameFixtureToGameFixtureDtos(games);
     }
 
     @GetMapping("/{tournamentId}/table/{groupId}")
     @Transactional(readOnly = true)
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
     public TournamentTableDto getTournamentTable(
-            @PathVariable("tournamentId") String tournamentId,
+            @TournamentId @PathVariable("tournamentId") String tournamentId,
             @PathVariable("groupId") String groupId
     ) {
         var table = tournamentPresentationService.retrieveTournamentTable(tournamentId, groupId);
@@ -216,7 +229,6 @@ public class TournamentController {
     }
 
     @GetMapping(value = "/", params = {"access"})
-    @Transactional(readOnly = true)
     public List<String> getTournamentsIdsByAccess(@RequestParam("access") String access) {
         if (access.equals("PUBLIC")) {
             return tournamentService.getTournamentsByAccess(AccessOption.PUBLIC).stream()
