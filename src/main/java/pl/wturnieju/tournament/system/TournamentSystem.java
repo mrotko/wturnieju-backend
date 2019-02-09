@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ComparisonChain;
-
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.gameeditor.GameEditorFactory;
 import pl.wturnieju.gameeditor.finish.FinishGameUpdateEvent;
@@ -89,20 +87,22 @@ public abstract class TournamentSystem {
     public abstract void startNextTournamentStage();
 
     public TournamentTable buildTournamentTable(String groupId) {
+        var group = getGroupById(groupId);
         var tableGenerator = TournamentTableGeneratorBuilder.builder()
                 .withGames(getAllEndedGamesByGroupId(groupId))
                 .withParticipants(getAllParticipantsByGroupId(groupId))
                 .withPointsForWin(getPoints(GameResultType.WIN))
                 .withPointsForDraw(getPoints(GameResultType.DRAW))
                 .withPointsForLose(getPoints(GameResultType.LOSE))
-                .withRowComparator(((o1, o2) -> ComparisonChain.start()
-                        .compare(o2.getPoints(), o1.getPoints())
-                        .compare(o2.getSmallPoints(), o2.getSmallPoints())
-                        .result()))
+                .withPositionOrder(group.getPositionOrder())
                 .build();
         var table = tableGenerator.generateTable();
         table.setGroupId(groupId);
         return table;
+    }
+
+    protected Group getGroupById(String groupId) {
+        return groupService.getById(groupId);
     }
 
     private Double getPoints(GameResultType gameResultType) {
@@ -137,6 +137,7 @@ public abstract class TournamentSystem {
         group.setStageType(StageType.LEAGUE);
         group.setTournamentId(getTournament().getId());
         group.setRequiredAllGamesEnded(isRequiredAllGamesEnded(StageType.LEAGUE));
+        group.setPositionOrder(tournament.getPositionOrder());
 
         return group;
     }

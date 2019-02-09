@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import pl.wturnieju.PositionOrderElementType;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
@@ -70,4 +71,7 @@ public class TournamentDto {
     private List<StageType> requiredAllGamesEndedStageTypes;
 
     private PeriodsConfigDto periodsConfig;
+
+    private List<PositionOrderElementType> positionOrder = new ArrayList<>();
+
 }

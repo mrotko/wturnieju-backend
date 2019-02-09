@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import pl.wturnieju.PeriodsConfig;
+import pl.wturnieju.PositionOrderElementType;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
@@ -37,4 +38,6 @@ public class TournamentCreatorConfigurationData {
     private Map<TournamentSystemType, List<StageType>> requiredAllGamesEndedStageTypesMapping;
 
     private Map<CompetitionType, List<PeriodsConfig>> competitionTypeToGamePeriodsConfigMapping;
+
+    private Map<TournamentSystemType, List<PositionOrderElementType>> systemTypeToPositionOrderMapping;
 }

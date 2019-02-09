@@ -1,12 +1,13 @@
 package pl.wturnieju.tournament.system.table;
 
-import static java.util.Comparator.comparing;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ComparisonChain;
+
+import pl.wturnieju.PositionOrderElementType;
 import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.tournament.GameResultType;
 import pl.wturnieju.tournament.Participant;
@@ -21,9 +22,9 @@ public class TournamentTableGeneratorBuilder {
 
     private List<Participant> participants = new ArrayList<>();
 
-    private List<? extends GameFixture> games = new ArrayList<>();
+    private List<PositionOrderElementType> positionOrder = new ArrayList<>();
 
-    private Comparator<TournamentTableRow> rowComparator = comparing(TournamentTableRow::getPoints).reversed();
+    private List<? extends GameFixture> games = new ArrayList<>();
 
     public static TournamentTableGeneratorBuilder builder() {
         return new TournamentTableGeneratorBuilder();
@@ -54,8 +55,8 @@ public class TournamentTableGeneratorBuilder {
         return this;
     }
 
-    public TournamentTableGeneratorBuilder withRowComparator(Comparator<TournamentTableRow> rowComparator) {
-        this.rowComparator = rowComparator;
+    public TournamentTableGeneratorBuilder withPositionOrder(List<PositionOrderElementType> positionOrder) {
+        this.positionOrder = positionOrder;
         return this;
     }
 
@@ -64,7 +65,7 @@ public class TournamentTableGeneratorBuilder {
 
         tableGenerator.setGames(games);
         tableGenerator.setParticipants(participants);
-        tableGenerator.setRowComparator(rowComparator);
+        tableGenerator.setRowComparator(createRowComparator());
         tableGenerator.setResultToPointsMapping(Map.of(
                 GameResultType.WIN, pointsForWin,
                 GameResultType.DRAW, pointsForDraw,
@@ -72,5 +73,34 @@ public class TournamentTableGeneratorBuilder {
         ));
 
         return tableGenerator;
+    }
+
+    private Comparator<TournamentTableRow> createRowComparator() {
+        return (o1, o2) -> buildComparisonChain(o1, o2).result();
+    }
+
+    private ComparisonChain buildComparisonChain(
+            TournamentTableRow o1,
+            TournamentTableRow o2) {
+        var comparisonChain = ComparisonChain.start();
+        for (PositionOrderElementType positionOrderElementType : positionOrder) {
+            switch (positionOrderElementType) {
+            case POINTS:
+                comparisonChain = comparisonChain.compare(o2.getPoints(), o1.getPoints());
+                break;
+            case SMALL_POINTS:
+                comparisonChain = comparisonChain.compare(o2.getSmallPoints(), o1.getSmallPoints());
+                break;
+            case WINS:
+                comparisonChain = comparisonChain.compare(o2.getWins(), o1.getWins());
+                break;
+            case DRAWS:
+                comparisonChain = comparisonChain.compare(o2.getDraws(), o1.getDraws());
+                break;
+            default:
+                comparisonChain = comparisonChain.compare(o1.getName(), o2.getName());
+            }
+        }
+        return comparisonChain;
     }
 }

@@ -1,9 +1,11 @@
 package pl.wturnieju.controller.dto.tournament.creator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import pl.wturnieju.PositionOrderElementType;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.controller.dto.tournament.PeriodsConfigDto;
 import pl.wturnieju.model.AccessOption;
@@ -51,4 +53,6 @@ public class TournamentTemplateDto {
     private List<StageType> requiredAllGamesEndedStageTypes;
 
     private PeriodsConfigDto periodsConfig;
+
+    private List<PositionOrderElementType> positionOrder = new ArrayList<>();
 }

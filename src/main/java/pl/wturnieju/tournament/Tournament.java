@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pl.wturnieju.PeriodsConfig;
+import pl.wturnieju.PositionOrderElementType;
 import pl.wturnieju.controller.dto.config.TableColumnType;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.CompetitionType;
@@ -69,6 +70,10 @@ public class Tournament extends Persistent {
     private PeriodsConfig periodsConfig;
 
     private Map<Integer, LegType> roundToLegMapping = new HashMap<>();
+
+    private List<TableColumnType> columnOrder = new ArrayList<>();
+
+    private List<PositionOrderElementType> positionOrder = new ArrayList<>();
 
     @Transient
     public LegType getCurrentLegType() {
