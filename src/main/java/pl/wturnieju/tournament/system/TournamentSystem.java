@@ -22,6 +22,7 @@ import pl.wturnieju.tournament.Participant;
 import pl.wturnieju.tournament.ParticipantStatus;
 import pl.wturnieju.tournament.StageType;
 import pl.wturnieju.tournament.Tournament;
+import pl.wturnieju.tournament.TournamentStatus;
 import pl.wturnieju.tournament.system.state.Group;
 import pl.wturnieju.tournament.system.table.TournamentTable;
 import pl.wturnieju.tournament.system.table.TournamentTableGeneratorBuilder;
@@ -81,7 +82,9 @@ public abstract class TournamentSystem {
 
     protected abstract int calculatePlannedRounds();
 
-    public abstract void finishTournament();
+    public void finishTournament() {
+        tournament.setStatus(TournamentStatus.ENDED);
+    }
 
     public abstract void startNextTournamentStage();
 

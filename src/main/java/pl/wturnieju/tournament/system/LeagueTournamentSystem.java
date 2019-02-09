@@ -27,11 +27,6 @@ public class LeagueTournamentSystem extends TournamentSystem {
     }
 
     @Override
-    public void finishTournament() {
-
-    }
-
-    @Override
     public void startNextTournamentStage() {
 
     }

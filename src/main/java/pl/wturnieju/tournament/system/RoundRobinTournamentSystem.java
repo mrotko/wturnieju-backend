@@ -43,11 +43,6 @@ public class RoundRobinTournamentSystem extends TournamentSystem {
     }
 
     @Override
-    public void finishTournament() {
-
-    }
-
-    @Override
     public void startNextTournamentStage() {
 
     }
