@@ -24,7 +24,7 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.IUserService;
-import pl.wturnieju.validator.Validators;
+import pl.wturnieju.service.IValidatorService;
 
 @Service
 @Log4j2
@@ -34,6 +34,8 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+
+    private final IValidatorService validatorService;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -54,7 +56,7 @@ public class UserService implements IUserService {
 
     private void validatePasswordFormat(String password) {
         try {
-            Validators.getPasswordValidator().validateAndThrowInvalid(password);
+            validatorService.getPasswordValidator().validateAndThrowInvalid(password);
         } catch (ValidationException e) {
             throw new InvalidFormatException(e.getMessage());
         }
@@ -120,7 +122,7 @@ public class UserService implements IUserService {
 
     private void validateEmailFormat(String email) {
         try {
-            Validators.getEmailValidator().validateAndThrowInvalid(email);
+            validatorService.getEmailValidator().validateAndThrowInvalid(email);
         } catch (ValidationException e) {
             throw new InvalidFormatException(e.getMessage());
         }

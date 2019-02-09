@@ -22,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.AuthorityType;
 import pl.wturnieju.config.MongoConfig;
+import pl.wturnieju.config.user.AuthConfiguration;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.exception.IncorrectPasswordException;
 import pl.wturnieju.exception.InvalidFormatException;
@@ -32,10 +33,11 @@ import pl.wturnieju.model.User;
 import pl.wturnieju.model.UserGrantedAuthority;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.service.impl.ValidatorService;
 
 
 @ExtendWith(SpringExtension.class)
-@Import(value = MongoConfig.class)
+@Import(value = {MongoConfig.class, AuthConfiguration.class, ValidatorService.class})
 @DataMongoTest
 @EnableAutoConfiguration
 @WithMockCustomUser(username = "email@email.com")
@@ -64,9 +66,12 @@ public class UserServiceTest {
 
     private User savedInactiveUser;
 
+    @Autowired
+    private IValidatorService validatorService;
+
     @BeforeEach
     public void setUp() {
-        userService = new UserService(encoder, userRepository);
+        userService = new UserService(encoder, userRepository, validatorService);
         createSavedUser();
         insertUser();
     }

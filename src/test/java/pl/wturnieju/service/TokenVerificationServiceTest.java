@@ -14,13 +14,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.config.MongoConfig;
+import pl.wturnieju.config.user.AuthConfiguration;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.service.impl.ValidatorService;
 
 @ExtendWith(SpringExtension.class)
-@Import(value = MongoConfig.class)
+@Import(value = {MongoConfig.class, AuthConfiguration.class, ValidatorService.class})
 @DataMongoTest
 @EnableAutoConfiguration
 @WithMockCustomUser(username = "email@email.com")
@@ -40,13 +42,17 @@ public class TokenVerificationServiceTest {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Autowired
+    private ValidatorService validatorService;
+
+
     //    private IVerificationService verificationService;
 
     private IUserService userService;
 
     @BeforeEach
     public void setUp() throws Exception {
-        userService = new UserService(passwordEncoder, userRepository);
+        userService = new UserService(passwordEncoder, userRepository, validatorService);
         //        verificationService = new TokenVerificationService(verificationRepository, emailService);
     }
 

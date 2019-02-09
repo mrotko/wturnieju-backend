@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.cli.dto.SettingsInfoResponse;
 import pl.wturnieju.config.MongoConfig;
+import pl.wturnieju.config.user.AuthConfiguration;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.inserter.UserInserter;
 import pl.wturnieju.model.User;
@@ -32,11 +33,13 @@ import pl.wturnieju.repository.TokenVerificationRepository;
 import pl.wturnieju.repository.UserRepository;
 import pl.wturnieju.service.IEmailService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IValidatorService;
 import pl.wturnieju.service.IVerificationService;
 import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.service.impl.ValidatorService;
 import pl.wturnieju.service.impl.verification.EmailChangeTokenVerificationService;
 
-@Import(value = MongoConfig.class)
+@Import(value = {MongoConfig.class, AuthConfiguration.class, ValidatorService.class})
 @ExtendWith(SpringExtension.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -60,9 +63,12 @@ public class SettingsCommandInterpreterTest {
     @Autowired
     private TokenVerificationRepository verificationRepository;
 
+    @Autowired
+    private IValidatorService validatorService;
+
     @BeforeEach
     public void setUp() {
-        userService = new UserService(new BCryptPasswordEncoder(), userRepository);
+        userService = new UserService(new BCryptPasswordEncoder(), userRepository, validatorService);
         verificationService = new EmailChangeTokenVerificationService(verificationRepository, emailService);
         new UserInserter(userService, userRepository).insertUsersToDatabase();
         currentUser = userService.getCurrentUser();

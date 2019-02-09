@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pl.wturnieju.cli.dto.TournamentInfoResponse;
 import pl.wturnieju.config.MongoConfig;
+import pl.wturnieju.config.user.AuthConfiguration;
 import pl.wturnieju.configuration.WithMockCustomUser;
 import pl.wturnieju.inserter.TournamentInserter;
 import pl.wturnieju.inserter.UserInserter;
@@ -31,12 +32,14 @@ import pl.wturnieju.service.IParticipantService;
 import pl.wturnieju.service.ITournamentCreatorService;
 import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
+import pl.wturnieju.service.IValidatorService;
 import pl.wturnieju.service.impl.TournamentCreatorService;
 import pl.wturnieju.service.impl.TournamentService;
 import pl.wturnieju.service.impl.UserService;
+import pl.wturnieju.service.impl.ValidatorService;
 import pl.wturnieju.tournament.Tournament;
 
-@Import(value = MongoConfig.class)
+@Import(value = {MongoConfig.class, AuthConfiguration.class, ValidatorService.class})
 @ExtendWith(SpringExtension.class)
 @DataMongoTest
 @EnableAutoConfiguration
@@ -62,6 +65,9 @@ public class TournamentCommandInterpreterTest {
 
     private List<String> userTournamentsIds;
 
+    @Autowired
+    private IValidatorService validatorService;
+
     private Tournament testedTournament;
 
     @BeforeEach
@@ -72,7 +78,7 @@ public class TournamentCommandInterpreterTest {
     }
 
     private void setUpService() {
-        userService = new UserService(new BCryptPasswordEncoder(), userRepository);
+        userService = new UserService(new BCryptPasswordEncoder(), userRepository, validatorService);
         tournamentService = new TournamentService(tournamentRepository, context);
         tournamentCreatorService = new TournamentCreatorService(tournamentRepository, userService);
         //        tournamentParticipantService = new ParticipantService(tournamentService, userService);
