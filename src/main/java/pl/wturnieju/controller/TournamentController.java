@@ -241,4 +241,12 @@ public class TournamentController {
 
         return Collections.emptyList();
     }
+
+    @PostMapping(value = "/{tournamentId}/users/{userId}/join")
+    @CheckTournamentAccess(accessLevel = TournamentAccessLevel.USER)
+    public void userWantJoinToTournament(
+            @TournamentId @PathVariable("tournamentId") String tournamentId,
+            @PathVariable("userId") String userId) {
+        participantService.requestParticipation(tournamentId, userId);
+    }
 }
