@@ -34,6 +34,7 @@ import pl.wturnieju.controller.dto.tournament.schedule.ScheduleElementDto;
 import pl.wturnieju.controller.dto.tournament.table.TournamentTableDto;
 import pl.wturnieju.exception.UserNotFoundException;
 import pl.wturnieju.gamefixture.GameFixture;
+import pl.wturnieju.helper.ITournamentHelper;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.User;
@@ -59,6 +60,8 @@ public class TournamentController {
 
     private final ITournamentPresentationService tournamentPresentationService;
 
+    private final ITournamentHelper tournamentHelper;
+
     private final IUserService userService;
 
     private final DtoMappers mappers;
@@ -68,7 +71,7 @@ public class TournamentController {
 
     @GetMapping
     public UserTournamentsDto getUserTournaments(@RequestParam("userId") String userId) {
-        var userTournaments = tournamentService.getUserTournaments(userId);
+        var userTournaments = tournamentHelper.getUserTournaments(userId);
         return mappers.createUserTournamentDto(userId, userTournaments);
     }
 

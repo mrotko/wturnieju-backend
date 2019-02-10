@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import pl.wturnieju.cli.dto.UserInfoResponse;
 import pl.wturnieju.cli.dto.UserInfoResponseItem;
+import pl.wturnieju.helper.ITournamentHelper;
 import pl.wturnieju.model.Persistent;
 import pl.wturnieju.model.User;
 import pl.wturnieju.search.ISearch;
-import pl.wturnieju.service.ITournamentService;
 import pl.wturnieju.service.IUserService;
 
 public class UserCommandInterpreter extends CommandInterpreter<UserInfoResponse> {
@@ -18,16 +18,16 @@ public class UserCommandInterpreter extends CommandInterpreter<UserInfoResponse>
 
     private final ISearch<String, User> userSearch;
 
-    private final ITournamentService tournamentService;
+    private final ITournamentHelper tournamentHelper;
 
     public UserCommandInterpreter(IUserService userService,
             ISearch<String, User> userSearch,
-            ITournamentService tournamentService,
+            ITournamentHelper tournamentHelper,
             ICommandParsedDataProvider parsedDataProvider) {
         super(parsedDataProvider);
         this.userService = userService;
         this.userSearch = userSearch;
-        this.tournamentService = tournamentService;
+        this.tournamentHelper = tournamentHelper;
     }
 
     @Override
@@ -61,7 +61,8 @@ public class UserCommandInterpreter extends CommandInterpreter<UserInfoResponse>
                     }
 
                     if (isFlagExists("tournament", "t")) {
-                        item.setTournaments(tournamentService.getUserTournaments(user.getId()).stream().map(Persistent::getId)
+                        item.setTournaments(tournamentHelper.getUserTournaments(user.getId()).stream()
+                                .map(Persistent::getId)
                                 .collect(Collectors.toList()));
                     }
                     return item;

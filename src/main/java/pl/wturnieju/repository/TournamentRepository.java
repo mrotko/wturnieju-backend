@@ -18,6 +18,8 @@ public interface TournamentRepository extends MongoRepository<Tournament, String
 
     List<Tournament> getAllByStatus(TournamentStatus status);
 
+    List<Tournament> getAllByOwner_Id(String userId);
+
     @Query("{accessOption: 'PUBLIC', name: {$regex: ?0, $options: 'i'}}")
     List<Tournament> findAllPublicByNameWithRegex(String regex, Pageable pageable);
 

@@ -32,4 +32,5 @@ public interface IParticipantService {
 
     List<Participant> updateAll(List<Participant> participants);
 
+    List<Participant> getAllByUserId(String userId);
 }

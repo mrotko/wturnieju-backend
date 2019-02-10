@@ -2,7 +2,6 @@ package pl.wturnieju.service.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -25,10 +24,8 @@ public class TournamentService implements ITournamentService {
     private final ApplicationContext context;
 
     @Override
-    public List<Tournament> getUserTournaments(String userId) {
-        return tournamentRepository.findAll().stream()
-                .filter(t -> t.getParticipantIds().contains(userId) || t.getOwner().getId().equals(userId))
-                .collect(Collectors.toList());
+    public List<Tournament> getTournamentsOwnedByUserId(String userId) {
+        return tournamentRepository.getAllByOwner_Id(userId);
     }
 
     @Override

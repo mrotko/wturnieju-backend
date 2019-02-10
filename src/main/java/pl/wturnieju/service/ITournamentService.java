@@ -20,7 +20,7 @@ public interface ITournamentService {
 
     void deleteTournament(String tournamentId);
 
-    List<Tournament> getUserTournaments(String userId);
+    List<Tournament> getTournamentsOwnedByUserId(String userId);
 
     void updateTournament(Tournament tournament);
 

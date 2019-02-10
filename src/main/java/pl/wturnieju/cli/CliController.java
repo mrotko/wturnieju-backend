@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.cli.dto.CliResponse;
 import pl.wturnieju.cli.dto.CommandDTO;
+import pl.wturnieju.helper.ITournamentHelper;
 import pl.wturnieju.model.User;
 import pl.wturnieju.model.verification.ChangeEmailVerificationToken;
 import pl.wturnieju.search.ISearch;
@@ -34,13 +35,15 @@ public class CliController {
     @Qualifier("emailChangeTokenVerificationService")
     private final IVerificationService<ChangeEmailVerificationToken> verificationService;
 
+    private final ITournamentHelper tournamentHelper;
+
     @PostMapping
     public CliResponse performCliCommand(@RequestBody @NonNull CommandDTO dto) {
         var parser = new CliCommandParser(dto.getCommand());
         try {
             parser.parse();
             var commandInterpreter = CommandInterpreterFactory.createInterpreter(
-                    userService, tournamentService, userSearch, verificationService, parser);
+                    userService, tournamentService, tournamentHelper, userSearch, verificationService, parser);
             return commandInterpreter.getResponse();
         } catch (Exception e) {
             var response = new CliResponse();

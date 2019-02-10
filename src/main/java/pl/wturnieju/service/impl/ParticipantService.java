@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
+
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.InvitationStatus;
 import pl.wturnieju.model.User;
@@ -175,5 +178,13 @@ public class ParticipantService implements IParticipantService {
     @Override
     public List<Participant> updateAll(List<Participant> participants) {
         return repository.saveAll(participants);
+    }
+
+    @Override
+    public List<Participant> getAllByUserId(String userId) {
+        DBObject query = QueryBuilder.start()
+                .put("members.userId").is(userId)
+                .get();
+        return repository.getAllByQuery(query);
     }
 }
