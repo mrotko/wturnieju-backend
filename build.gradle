@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'io.franzbecker.gradle-lombok' version '2.0'
     id 'java'
     id 'eclipse-wtp'
     id 'idea'
@@ -64,15 +64,14 @@ dependencies {
 
     compile 'com.google.guava:guava:27.0.1-jre'
     compile 'javax.xml.bind:jaxb-api:2.3.1'
-    compile 'com.auth0:java-jwt:3.4.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.2.5'
+    compile 'com.auth0:java-jwt:3.7.0'
+    compile 'io.reactivex.rxjava2:rxjava:2.2.6'
     compile 'org.apache.commons:commons-lang3:3.8.1'
     compileOnly 'org.projectlombok:lombok:1.18.4'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-    testCompile('org.junit.jupiter:junit-jupiter-api:5.3.2')
-    testCompile('org.junit.jupiter:junit-jupiter-params:5.3.2')
-    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.3.2')
-
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.4.0')
+    testCompile('org.junit.jupiter:junit-jupiter-params:5.4.0')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.0')
 
     compile 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
     annotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
