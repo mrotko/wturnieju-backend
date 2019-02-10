@@ -40,13 +40,14 @@ public class UserService implements IUserService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         log.info("Loading user: {}", username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException(username));
     }
 
     @Override
     public void changePassword(String username, String newPassword, String oldPassword) {
         validatePasswordFormat(newPassword);
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        var user = findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 
         validateCredentials(user, oldPassword);
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -82,7 +83,7 @@ public class UserService implements IUserService {
     public boolean checkCredentials(String email, String rawPassword) {
         log.info("Checking user: {}", email);
 
-        return userRepository.findByUsername(email)
+        return findByUsername(email)
                 .map(User::getPassword)
                 .map(encodedPass -> passwordEncoder.matches(rawPassword, encodedPass))
                 .orElse(false);
@@ -100,7 +101,7 @@ public class UserService implements IUserService {
 
     @Override
     public boolean isAccountActive(String email) {
-        return userRepository.findByUsername(email)
+        return findByUsername(email)
                 .map(User::isEnabled)
                 .orElseThrow(() -> new ResourceNotFoundException("Username not found"));
     }
@@ -108,7 +109,7 @@ public class UserService implements IUserService {
     @Override
     public void resetPassword(String email, String password) {
         validatePasswordFormat(password);
-        userRepository.findByUsername(email).ifPresent(user -> {
+        findByUsername(email).ifPresent(user -> {
             user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
         });
@@ -155,7 +156,7 @@ public class UserService implements IUserService {
         validateThatUserNotExists(username);
 
         userRepository.save(User.builder()
-                .username(username)
+                .username(username.toLowerCase())
                 .password(passwordEncoder.encode(password))
                 .build());
         log.info("New user has been creates {}", username);
@@ -193,7 +194,7 @@ public class UserService implements IUserService {
 
     @Override
     public void confirmNewAccount(String email) {
-        userRepository.findByUsername(email).ifPresent(user -> {
+        findByUsername(email).ifPresent(user -> {
             user.setEnabled(true);
             userRepository.save(user);
         });
@@ -201,20 +202,27 @@ public class UserService implements IUserService {
 
     @Override
     public void confirmChangedEmail(String email, String newEmail) {
-        userRepository.findByUsername(email).ifPresent(user -> {
-            user.setUsername(newEmail);
+        findByUsername(email).ifPresent(user -> {
+            user.setUsername(newEmail.toLowerCase());
             userRepository.save(user);
         });
     }
 
     private boolean checkIfUserExists(@NonNull String username) {
-        return userRepository.findByUsername(username).isPresent();
+        return findByUsername(username).isPresent();
     }
 
 
     @Override
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByUsername((String) authentication.getPrincipal()).orElse(null);
+        return findByUsername((String) authentication.getPrincipal()).orElse(null);
+    }
+
+    private Optional<User> findByUsername(String username) {
+        if (username == null) {
+            return Optional.empty();
+        }
+        return userRepository.findByUsername(username.toLowerCase());
     }
 }
