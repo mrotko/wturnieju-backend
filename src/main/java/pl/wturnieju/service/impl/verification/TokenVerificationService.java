@@ -1,7 +1,7 @@
 package pl.wturnieju.service.impl.verification;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.DigestUtils;
 
 import lombok.RequiredArgsConstructor;
 import pl.wturnieju.model.Timestamp;
@@ -49,7 +49,7 @@ public abstract class TokenVerificationService<T extends VerificationToken> impl
 
     protected void setExpiryDateAndGenerateToken(VerificationToken token) {
         token.setExpiryDate(getDefaultTokenExpiryDate());
-        token.setToken(DigestUtils.sha512Hex(token.toString()));
+        token.setToken(DigestUtils.md5DigestAsHex(token.toString().getBytes()));
     }
 
     protected Timestamp getDefaultTokenExpiryDate() {
