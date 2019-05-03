@@ -149,7 +149,7 @@ public class TournamentCommandInterpreterTest {
 
     private TournamentCommandInterpreter createInitializedTournamentCommandInterpreter(ICommandParsedDataProvider parsedDataProvider) {
         return (TournamentCommandInterpreter) CommandInterpreterFactory.createInterpreter(null, tournamentService, null,
-                null, parsedDataProvider);
+                null, null, parsedDataProvider);
     }
 
 }

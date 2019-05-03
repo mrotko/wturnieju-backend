@@ -255,8 +255,8 @@ public class SettingsCommandInterpreterTest {
     }
 
     private SettingsCommandInterpreter createInitializedSettingsCommandInterpreter(ICommandParsedDataProvider parsedDataProvider) {
-        return (SettingsCommandInterpreter) CommandInterpreterFactory.createInterpreter(userService, null,
-                null, verificationService, parsedDataProvider);
+        return (SettingsCommandInterpreter) CommandInterpreterFactory.createInterpreter(userService, null, null, null,
+                verificationService, parsedDataProvider);
     }
 
     private SettingsCommandInterpreter createCommandInterpreterForCommand(String command) {
