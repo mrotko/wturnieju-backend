@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         } else if (e instanceof ResourceExpiredException) {
             return new ResponseEntity<>(createDto(e), HttpStatus.GONE);
         } else if (e instanceof TournamentAccessDeniedException) {
-            return new ResponseEntity<>(createDto(e), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(createDto(e), HttpStatus.NOT_ACCEPTABLE);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
