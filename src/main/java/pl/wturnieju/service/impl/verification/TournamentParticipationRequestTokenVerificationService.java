@@ -10,7 +10,7 @@ import pl.wturnieju.repository.TokenVerificationRepository;
 @Service
 public class TournamentParticipationRequestTokenVerificationService extends TokenVerificationService<TournamentParticipationRequestVerificationToken> {
 
-    public TournamentParticipationRequestTokenVerificationService(TokenVerificationRepository tokenVerificationRepository) {
+    public TournamentParticipationRequestTokenVerificationService(TokenVerificationRepository<TournamentParticipationRequestVerificationToken> tokenVerificationRepository) {
         super(tokenVerificationRepository, null);
     }
 

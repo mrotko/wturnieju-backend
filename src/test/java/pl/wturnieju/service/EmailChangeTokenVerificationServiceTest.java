@@ -27,7 +27,7 @@ import pl.wturnieju.service.impl.verification.EmailChangeTokenVerificationServic
 public class EmailChangeTokenVerificationServiceTest {
 
     @Autowired
-    private TokenVerificationRepository verificationRepository;
+    private TokenVerificationRepository<ChangeEmailVerificationToken> verificationRepository;
 
     @Mock
     private IEmailService emailService;

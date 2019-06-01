@@ -10,7 +10,7 @@ import pl.wturnieju.service.IEmailService;
 
 @Service
 public class TournamentInviteTokenVerificationService extends TokenVerificationService<TournamentInviteVerificationToken> {
-    public TournamentInviteTokenVerificationService(TokenVerificationRepository tokenVerificationRepository,
+    public TournamentInviteTokenVerificationService(TokenVerificationRepository<TournamentInviteVerificationToken> tokenVerificationRepository,
             IEmailService emailService) {
         super(tokenVerificationRepository, emailService);
     }

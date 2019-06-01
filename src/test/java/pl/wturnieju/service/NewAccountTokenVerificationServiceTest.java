@@ -27,7 +27,7 @@ import pl.wturnieju.service.impl.verification.NewAccountTokenVerificationService
 public class NewAccountTokenVerificationServiceTest {
 
     @Autowired
-    private TokenVerificationRepository verificationRepository;
+    private TokenVerificationRepository<NewAccountVerificationToken> verificationRepository;
 
     @Mock
     private IEmailService emailService;

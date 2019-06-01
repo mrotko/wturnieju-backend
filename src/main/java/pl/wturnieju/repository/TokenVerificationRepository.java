@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import pl.wturnieju.model.verification.VerificationToken;
 
 @Repository
-public interface TokenVerificationRepository extends MongoRepository<VerificationToken, String> {
+public interface TokenVerificationRepository<T extends VerificationToken> extends MongoRepository<T, String> {
 
-    Optional<VerificationToken> findByToken(String token);
+    Optional<T> findByToken(String token);
 
     void deleteByToken(String token);
 }

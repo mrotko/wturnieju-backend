@@ -13,7 +13,7 @@ import pl.wturnieju.service.IVerificationService;
 @RequiredArgsConstructor
 public abstract class TokenVerificationService<T extends VerificationToken> implements IVerificationService<T> {
 
-    protected final TokenVerificationRepository tokenVerificationRepository;
+    protected final TokenVerificationRepository<T> tokenVerificationRepository;
 
     protected final IEmailService emailService;
 
@@ -29,7 +29,8 @@ public abstract class TokenVerificationService<T extends VerificationToken> impl
         if (!validateExpiryDate(verificationToken)) {
             return null;
         }
-        return (T) verificationToken;
+
+        return verificationToken;
     }
 
     @Override

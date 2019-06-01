@@ -11,7 +11,7 @@ import pl.wturnieju.service.IEmailService;
 @Service
 public class NewAccountTokenVerificationService extends TokenVerificationService<NewAccountVerificationToken> {
 
-    public NewAccountTokenVerificationService(TokenVerificationRepository tokenVerificationRepository,
+    public NewAccountTokenVerificationService(TokenVerificationRepository<NewAccountVerificationToken> tokenVerificationRepository,
             IEmailService emailService) {
         super(tokenVerificationRepository, emailService);
     }

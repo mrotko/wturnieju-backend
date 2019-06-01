@@ -61,7 +61,7 @@ public class SettingsCommandInterpreterTest {
     private UserRepository userRepository;
 
     @Autowired
-    private TokenVerificationRepository verificationRepository;
+    private TokenVerificationRepository<ChangeEmailVerificationToken> verificationRepository;
 
     @Autowired
     private IValidatorService validatorService;

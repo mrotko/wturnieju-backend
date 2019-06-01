@@ -8,9 +8,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import pl.wturnieju.exception.TournamentAccessDeniedException;
 import pl.wturnieju.model.AccessOption;
 import pl.wturnieju.model.User;
@@ -23,20 +23,17 @@ import pl.wturnieju.tournament.Tournament;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class CheckTournamentAccessAspect {
 
-    @Autowired
-    private ITournamentService tournamentService;
+    private final ITournamentService tournamentService;
 
-    @Autowired
-    private ICurrentUserProvider currentUserProvider;
+    private final ICurrentUserProvider currentUserProvider;
 
-    @Autowired
-    private IParticipantService participantService;
+    private final IParticipantService participantService;
 
     @Pointcut(value = "@annotation(pl.wturnieju.annotation.CheckTournamentAccess)")
     private void checkTournamentAccess() {
-
     }
 
     @Around("checkTournamentAccess()")

@@ -11,7 +11,7 @@ import pl.wturnieju.service.IEmailService;
 @Service
 public class ResetPasswordTokenVerificationService extends TokenVerificationService<ResetPasswordVerificationToken> {
 
-    public ResetPasswordTokenVerificationService(TokenVerificationRepository tokenVerificationRepository,
+    public ResetPasswordTokenVerificationService(TokenVerificationRepository<ResetPasswordVerificationToken> tokenVerificationRepository,
             IEmailService emailService) {
         super(tokenVerificationRepository, emailService);
     }
