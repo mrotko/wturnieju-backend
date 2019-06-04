@@ -3,37 +3,32 @@ package pl.wturnieju.config.tournament.creator;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import pl.wturnieju.config.AbstractConfigurationLoader;
 
 @Configuration
 @Getter
-@RequiredArgsConstructor
-public class TournamentCreatorConfiguration {
+public class TournamentCreatorConfiguration extends AbstractConfigurationLoader {
 
     private TournamentCreatorConfigurationData tournamentCreatorConfigurationData;
 
-    private final ApplicationContext context;
+    public TournamentCreatorConfiguration(ApplicationContext context) {
+        super(context);
+    }
 
-    @PostConstruct
-    private void init() {
-        try {
-            InputStream is = context.getResource("classpath:config/tournament-creator.json").getInputStream();
-            var objectMapper = new ObjectMapper();
-            tournamentCreatorConfigurationData = objectMapper.readValue(is,
-                    new TypeReference<TournamentCreatorConfigurationData>() {
-                    });
-        } catch (IOException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+    @Override
+    protected String getConfigFilename() {
+        return "tournament-creator.json";
+    }
+
+    @Override
+    protected void readData(InputStream is) throws IOException {
+        var objectMapper = new ObjectMapper();
+        tournamentCreatorConfigurationData = objectMapper.readValue(is, TournamentCreatorConfigurationData.class);
     }
 }
