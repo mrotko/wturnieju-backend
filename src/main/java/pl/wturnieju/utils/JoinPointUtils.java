@@ -1,6 +1,9 @@
 package pl.wturnieju.utils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Optional;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -12,7 +15,11 @@ import lombok.NoArgsConstructor;
 public class JoinPointUtils {
 
     public static <T extends Annotation> T getAnnotation(JoinPoint joinPoint, Class<T> annotation) {
-        return getMethodSignature(joinPoint).getMethod().getAnnotation(annotation);
+        return getMethod(joinPoint).getAnnotation(annotation);
+    }
+
+    private static Method getMethod(JoinPoint joinPoint) {
+        return getMethodSignature(joinPoint).getMethod();
     }
 
     public static MethodSignature getMethodSignature(JoinPoint joinPoint) {
@@ -20,21 +27,22 @@ public class JoinPointUtils {
     }
 
     public static Object getParameterValue(JoinPoint joinPoint, Class<? extends Annotation> annotation) {
-        var index = getParameterIndex(joinPoint, annotation);
-        if (index == null) {
-            return null;
-        }
-
-        return joinPoint.getArgs()[index];
+        return findParameterIndex(joinPoint, annotation)
+                .map(index -> joinPoint.getArgs()[index])
+                .orElse(null);
     }
 
-    public static Integer getParameterIndex(JoinPoint joinPoint, Class<? extends Annotation> annotation) {
-        var parameters = getMethodSignature(joinPoint).getMethod().getParameters();
+    public static Optional<Integer> findParameterIndex(JoinPoint joinPoint, Class<? extends Annotation> annotation) {
+        var parameters = getMethod(joinPoint).getParameters();
         for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].getAnnotation(annotation) != null) {
-                return i;
+            if (hasAnnotation(parameters[i], annotation)) {
+                return Optional.of(i);
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    private static boolean hasAnnotation(Parameter parameter, Class<? extends Annotation> annotation) {
+        return parameter.getAnnotation(annotation) != null;
     }
 }
