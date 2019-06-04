@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import pl.wturnieju.access.tournament.validator.TournamentAccessLevel;
 import pl.wturnieju.annotation.CheckTournamentAccess;
-import pl.wturnieju.annotation.TournamentAccessLevel;
 import pl.wturnieju.annotation.TournamentId;
 import pl.wturnieju.controller.dto.tournament.ParticipantDto;
 import pl.wturnieju.controller.dto.tournament.TournamentDto;
