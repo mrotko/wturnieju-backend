@@ -23,9 +23,9 @@ public class UserAccessLevelValidator extends AbstractAccessLevelValidator {
 
     @Override
     public void checkAccess(Tournament tournament) {
+        var user = currentUserProvider.getCurrentUser();
+        denyIfNotLoggedIn(user);
         if (tournament.getAccessOption() == AccessOption.PRIVATE) {
-            var user = currentUserProvider.getCurrentUser();
-            denyIfNotLoggedIn(user);
             denyIfUserNotParticipateInTournament(tournament, user);
         }
     }

@@ -81,14 +81,9 @@ public class TournamentController {
             @TournamentId @PathVariable("tournamentId") String tournamentId,
             @RequestBody UpdateTournamentStatusDTO dto) {
         switch (dto.getStatus()) {
-        case "START":
-            tournamentService.startTournament(tournamentId);
-            break;
-        case "FINISH":
-            tournamentService.finishTournament(tournamentId);
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown property - " + dto.getStatus());
+        case "START" -> tournamentService.startTournament(tournamentId);
+        case "FINISH" -> tournamentService.finishTournament(tournamentId);
+        default -> throw new IllegalArgumentException("Unknown property - " + dto.getStatus());
         }
         var tournament = tournamentService.getById(tournamentId);
         return mappers.createTournamentDto(tournament);
