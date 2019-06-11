@@ -1,20 +1,26 @@
 package pl.wturnieju.graph;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class GraphFactory<T> {
 
-    private AtomicInteger vertexIdGenerator = new AtomicInteger(0);
+    private int vertexId = 0;
 
-    private AtomicInteger edgeIdGenerator = new AtomicInteger(0);
+    private int edgeId = 0;
 
     public void reset() {
-        vertexIdGenerator.set(0);
-        edgeIdGenerator.set(0);
+        vertexId = 0;
+        edgeId = 0;
+    }
+
+    private int nextEdgeId() {
+        return edgeId++;
+    }
+
+    private int nextVertexId() {
+        return vertexId++;
     }
 
     public Edge<T> createEdge(Vertex<T> first, Vertex<T> second) {
-        var edge = new Edge<T>(edgeIdGenerator.getAndIncrement());
+        var edge = new Edge<T>(nextEdgeId());
 
         edge.setFirst(first);
         edge.setSecond(second);
@@ -24,7 +30,7 @@ public class GraphFactory<T> {
     }
 
     public Vertex<T> createVertex(T value) {
-        return new Vertex<>(vertexIdGenerator.getAndIncrement(), value);
+        return new Vertex<>(nextVertexId(), value);
     }
 
 }

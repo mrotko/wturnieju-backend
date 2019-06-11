@@ -21,7 +21,7 @@ class DateUtilsTest {
     public void shouldReturnGivenDate() {
         var expected = Timestamp.now();
 
-        Assertions.assertEquals(expected, DateUtils.getLatest(expected));
+        Assertions.assertEquals(expected, DateUtils.getMax(expected));
     }
 
     @Test
@@ -31,7 +31,7 @@ class DateUtilsTest {
         var second = new Timestamp(now.plusMinutes(1));
 
         Assertions.assertNotEquals(first, second);
-        Assertions.assertEquals(second, DateUtils.getLatest(first, second));
-        Assertions.assertEquals(second, DateUtils.getLatest(second, first));
+        Assertions.assertEquals(second, DateUtils.getMax(first, second));
+        Assertions.assertEquals(second, DateUtils.getMax(second, first));
     }
 }

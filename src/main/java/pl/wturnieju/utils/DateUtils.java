@@ -18,7 +18,7 @@ public class DateUtils {
         return new Timestamp(date.getValue().toLocalDate().atTime(LocalTime.MIDNIGHT));
     }
 
-    public static Timestamp getLatest(Timestamp... timestamps) {
+    public static Timestamp getMax(Timestamp... timestamps) {
         return Stream.of(timestamps)
                 .max(Comparator.naturalOrder())
                 .orElse(null);

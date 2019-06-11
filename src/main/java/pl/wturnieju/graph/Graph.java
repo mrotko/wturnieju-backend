@@ -12,10 +12,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public abstract class Graph<T> {
 
-    private final BiFunction<T, T, Double> weightCalculationMethod;
-
     protected final GraphFactory<T> graphFactory;
-
+    private final BiFunction<T, T, Double> weightCalculationMethod;
     protected List<Vertex<T>> vertices = new ArrayList<>();
 
     protected List<Edge<T>> edges = new ArrayList<>();
@@ -35,23 +33,19 @@ public abstract class Graph<T> {
         shortestPath.clear();
     }
 
-    private void addEdgesToVertices() {
-        vertices.forEach(v -> getEdgesWithVertex(v).forEach(v::addEdge));
-    }
-
     public void makeFinalSetup() {
         addEdgesToVertices();
         recalculateEdgesWeights();
+    }
+
+    private void addEdgesToVertices() {
+        vertices.forEach(v -> getEdgesWithVertex(v).forEach(v::addEdge));
     }
 
     private List<Edge<T>> getEdgesWithVertex(Vertex<T> vertex) {
         return edges.stream()
                 .filter(e -> e.containsVertex(vertex))
                 .collect(Collectors.toList());
-    }
-
-    public List<Edge<T>> getEdges() {
-        return edges;
     }
 
     private void recalculateEdgesWeights() {
@@ -73,14 +67,14 @@ public abstract class Graph<T> {
         return ImmutablePair.of(getVertexByValue(valuesPair.getLeft()), getVertexByValue(valuesPair.getRight()));
     }
 
-    private void removeEdgeWithVertices(Vertex<T> first, Vertex<T> second) {
-        edges.removeIf(edge -> edge.isConnectingVertices(first, second));
-    }
-
     private Vertex<T> getVertexByValue(T value) {
         return vertices.stream()
                 .filter(v -> Objects.equals(value, v.getValue()))
                 .findFirst().orElse(null);
+    }
+
+    private void removeEdgeWithVertices(Vertex<T> first, Vertex<T> second) {
+        edges.removeIf(edge -> edge.isConnectingVertices(first, second));
     }
 
     public void findPath() {
@@ -100,12 +94,16 @@ public abstract class Graph<T> {
                 lastVertex.resetVisitedEdges();
                 lastVertex.setUsed(false);
             } else {
-                var nextVertex = lastVertex.getOtherVertexFromEdge(lightestEdge);
+                var nextVertex = lastVertex.getOppositeVertex(lightestEdge);
                 shortestPath.addLast(nextVertex);
                 nextVertex.setUsed(true);
                 lastVertex.markEdgeAsVisited(lightestEdge);
             }
         }
+    }
+
+    public List<Edge<T>> getEdges() {
+        return edges;
     }
 
     public Deque<Vertex<T>> getPath() {

@@ -40,7 +40,7 @@ public class LeagueScheduleEditor extends ScheduleEditor {
             var homeId = game.getHomeParticipantId();
             var awayId = game.getAwayParticipantId();
             if (firstLegPairsIds.contains(ImmutablePair.of(homeId, awayId))) {
-                swapHomeAwayParticipants(game);
+                swapParticipants(game);
             }
             game.setPreviousGameFixtureId(findFirstLegGameId(game));
         });

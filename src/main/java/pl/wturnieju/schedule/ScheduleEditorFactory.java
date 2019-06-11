@@ -2,7 +2,6 @@ package pl.wturnieju.schedule;
 
 import org.springframework.context.ApplicationContext;
 
-import pl.wturnieju.exception.UnknownEnumTypeException;
 import pl.wturnieju.service.IGameFixtureService;
 import pl.wturnieju.service.IGeneratedGamesService;
 import pl.wturnieju.service.IGroupService;
@@ -16,53 +15,45 @@ public class ScheduleEditorFactory {
             Tournament tournament) {
         var systemType = tournament.getSystemType();
 
-        switch (systemType) {
-        case SWISS:
-            return new SwissScheduleEditor(
+        return switch (systemType) {
+            case SWISS -> new SwissScheduleEditor(
                     getTournamentTableService(context),
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        case KNOCKOUT:
-            return new KnockOutScheduleEditor(
+            case KNOCKOUT -> new KnockOutScheduleEditor(
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        case GROUP:
-            return new GroupScheduleEditor(
+            case GROUP -> new GroupScheduleEditor(
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        case LEAGUE:
-            return new LeagueScheduleEditor(
+            case LEAGUE -> new LeagueScheduleEditor(
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        case ROUND_ROBIN:
-            return new RoundRobinScheduleEditor(
+            case ROUND_ROBIN -> new RoundRobinScheduleEditor(
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        case CUSTOM:
-            return new CustomScheduleEditor(
+            case CUSTOM -> new CustomScheduleEditor(
                     getParticipantService(context),
                     getGeneratedGamesService(context),
                     getGameFixtureService(context),
                     groupService(context),
                     tournament);
-        default:
-            throw new UnknownEnumTypeException(systemType);
-        }
+        };
     }
 
     private static IGeneratedGamesService getGeneratedGamesService(ApplicationContext context) {

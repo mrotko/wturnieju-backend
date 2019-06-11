@@ -39,7 +39,7 @@ public class Vertex<T> {
 
     public Edge<T> getLightestAvailableEdge() {
         return edges.stream()
-                .filter(e -> !getOtherVertexFromEdge(e).isUsed())
+                .filter(e -> !getOppositeVertex(e).isUsed())
                 .filter(e -> !isEdgeVisited(e))
                 .min(Comparator.comparing(Edge::getWeight))
                 .orElse(null);
@@ -49,7 +49,7 @@ public class Vertex<T> {
         return visitedEdges.contains(e);
     }
 
-    public Vertex<T> getOtherVertexFromEdge(Edge<T> edge) {
+    public Vertex<T> getOppositeVertex(Edge<T> edge) {
         if (!edge.getFirst().equals(this)) {
             return edge.getFirst();
         }

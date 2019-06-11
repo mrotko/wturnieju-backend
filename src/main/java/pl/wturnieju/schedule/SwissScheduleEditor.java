@@ -1,6 +1,8 @@
 package pl.wturnieju.schedule;
 
+import static java.lang.Math.abs;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.groupingBy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,13 +33,7 @@ public class SwissScheduleEditor extends ScheduleEditor {
 
     private static final Integer AWAY_SIDE = 2;
 
-    private static final Integer MAX_SIDE_STREAK = 3;
-
-    private static final Integer MAX_SCHEDULE_GENERATION_ATTEMPTS = 100;
-
     private final ITournamentTableService tournamentTableService;
-
-    private List<TournamentTableRow> tableRows;
 
     private Map<String, TournamentTableRow> participantIdToRowMapping;
 
@@ -51,22 +47,6 @@ public class SwissScheduleEditor extends ScheduleEditor {
             IGroupService groupService, Tournament tournament) {
         super(participantService, generatedGamesService, gameFixtureService, groupService, tournament);
         this.tournamentTableService = tournamentTableService;
-    }
-
-    @Override
-    protected BiFunction<String, String, Double> getWeightCalculationMethod() {
-        return this::calculatePointsDifferenceBetweenParticipants;
-    }
-
-    private double calculatePointsDifferenceBetweenParticipants(String homeParticipantId, String awayParticipantId) {
-        return Math.abs(getPointsByParticipantId(homeParticipantId) - getPointsByParticipantId(awayParticipantId));
-    }
-
-    private Double getPointsByParticipantId(String id) {
-        if (id != null) {
-            return participantIdToRowMapping.get(id).getPoints();
-        }
-        return 0.;
     }
 
     @Override
@@ -110,50 +90,10 @@ public class SwissScheduleEditor extends ScheduleEditor {
     }
 
     @Override
-    protected List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
-        var games = super.createGameFixtures(shortestPath, group);
-
-        resolveSameSideStreakProblem(games);
-        addSmallPointsToGames(games);
-
-        return games;
-    }
-
-    private void resolveSameSideStreakProblem(List<GameFixture> games) {
-        games.stream()
-                .filter(game -> !game.getBye())
-                .forEach(game -> {
-                    var home = game.getHomeParticipant();
-                    var homeStreakHome = getSideStreak(home.getId(), HOME_SIDE);
-
-                    var away = game.getAwayParticipant();
-                    var awayStreakAway = getSideStreak(away.getId(), AWAY_SIDE);
-
-                    if (awayStreakAway > 0 && homeStreakHome > 0) {
-                        swapHomeAwayParticipants(game);
-                    } else if (Math.abs(homeStreakHome - awayStreakAway) > 1) {
-                        swapHomeAwayParticipants(game);
-                    }
-                });
-    }
-
-    private void addSmallPointsToGames(List<GameFixture> games) {
-        games.forEach(game -> {
-            game.setHomeSmallPoints(getPointsByParticipantId(game.getHomeParticipantId()));
-            game.setAwaySmallPoints(getPointsByParticipantId(game.getAwayParticipantId()));
-        });
-    }
-
-    private Integer getSideStreak(String participantId, Integer side) {
-        return participantIdAndSideToSideStreakMapping.getOrDefault(ImmutablePair.of(participantId, side), 0);
-    }
-
-    @Override
     protected List<String> createParticipantsPairsPath(List<String> participantsIds) {
         LinkedList<String> participantsPairsPath = new LinkedList<>();
         List<String> participantsWithoutPairs = new ArrayList<>();
-        boolean containsNull = participantsIds.contains(null);
-        participantsIds.remove(null);
+        boolean containsNull = participantsIds.remove(null);
 
         var pointsToParticipantsIdsMapping = groupParticipantsByPoints(participantsIds);
         pointsToParticipantsIdsMapping.forEach((points, ids) -> {
@@ -191,9 +131,70 @@ public class SwissScheduleEditor extends ScheduleEditor {
         return participantsPairsPath;
     }
 
-    Map<Double, List<String>> groupParticipantsByPoints(List<String> participantsIds) {
+    @Override
+    protected List<GameFixture> createGameFixtures(List<String> shortestPath, Group group) {
+        var games = super.createGameFixtures(shortestPath, group);
+
+        resolveSameSideStreakProblem(games);
+        addSmallPointsToGames(games);
+
+        return games;
+    }
+
+    @Override
+    protected BiFunction<String, String, Double> getWeightCalculationMethod() {
+        return this::calculatePointsDifferenceBetweenParticipants;
+    }
+
+    private double calculatePointsDifferenceBetweenParticipants(String homeParticipantId, String awayParticipantId) {
+        return abs(getPointsByParticipantId(homeParticipantId) - getPointsByParticipantId(awayParticipantId));
+    }
+
+    private Double getPointsByParticipantId(String id) {
+        if (id != null) {
+            return participantIdToRowMapping.get(id).getPoints();
+        }
+        return 0.;
+    }
+
+    private void resolveSameSideStreakProblem(List<GameFixture> games) {
+        games.stream()
+                .filter(game -> !game.getBye())
+                .forEach(game -> {
+                    var home = game.getHomeParticipant();
+                    var homeStreak = getSideStreak(home.getId(), HOME_SIDE);
+
+                    var away = game.getAwayParticipant();
+                    var awayStreak = getSideStreak(away.getId(), AWAY_SIDE);
+
+                    if (isNeedSwap(homeStreak, awayStreak)) {
+                        swapParticipants(game);
+                    }
+                });
+    }
+
+    private boolean isNeedSwap(Integer homeStreak, Integer awayStreak) {
+        if (homeStreak > 0 && awayStreak > 0) {
+            return true;
+        }
+
+        return abs(homeStreak - awayStreak) > 1;
+    }
+
+    private Integer getSideStreak(String participantId, Integer side) {
+        return participantIdAndSideToSideStreakMapping.getOrDefault(ImmutablePair.of(participantId, side), 0);
+    }
+
+    private void addSmallPointsToGames(List<GameFixture> games) {
+        games.forEach(game -> {
+            game.setHomeSmallPoints(getPointsByParticipantId(game.getHomeParticipantId()));
+            game.setAwaySmallPoints(getPointsByParticipantId(game.getAwayParticipantId()));
+        });
+    }
+
+    private Map<Double, List<String>> groupParticipantsByPoints(List<String> participantsIds) {
         return participantsIds.stream()
-                .collect(Collectors.groupingBy(this::getPointsByParticipantId, Collectors.toList()));
+                .collect(groupingBy(this::getPointsByParticipantId, Collectors.toList()));
     }
 }
 

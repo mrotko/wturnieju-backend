@@ -13,6 +13,7 @@ import pl.wturnieju.gamefixture.GameFixture;
 import pl.wturnieju.gamefixture.GameFixtureFactory;
 import pl.wturnieju.gamefixture.GameStatus;
 import pl.wturnieju.graph.CompleteGraph;
+import pl.wturnieju.graph.Edge;
 import pl.wturnieju.graph.GraphFactory;
 import pl.wturnieju.graph.Vertex;
 import pl.wturnieju.model.Timestamp;
@@ -44,7 +45,7 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
     protected List<ImmutablePair<String, String>> competitors = new ArrayList<>();
 
-    protected void swapHomeAwayParticipants(GameFixture gameFixture) {
+    protected void swapParticipants(GameFixture gameFixture) {
         var participantTemp = gameFixture.getHomeParticipant();
         var smallPointsTemp = gameFixture.getHomeSmallPoints();
         var scoreTemp = gameFixture.getHomeScore();
@@ -85,7 +86,7 @@ public abstract class ScheduleEditor implements IScheduleEditor {
 
                     game.setGameStatus(GameStatus.ENDED);
                     game.setWinner(winner);
-                    game.setFinishedDate(DateUtils.getLatest(Timestamp.now(), game.getStartDate()));
+                    game.setFinishedDate(DateUtils.getMax(Timestamp.now(), game.getStartDate()));
                 });
     }
 
@@ -109,17 +110,20 @@ public abstract class ScheduleEditor implements IScheduleEditor {
         var group = groupService.getById(groupId);
         var participantsIds = getParticipantsIdsForGamesGeneration(group);
 
-        if (tournament.getRequirements().getPlannedRounds() <= tournament.getCurrentRound()) {
+        if (!canStartNextRound(group)) {
             return Collections.emptyList();
-        }
-        if (group.isRequiredAllGamesEnded()) {
-            if (gameFixtureService.countPendingGamesByGroupId(groupId) > 0) {
-                return Collections.emptyList();
-            }
         }
 
         List<String> participantsPairsPath = createParticipantsPairsPath(participantsIds);
         return createGameFixtures(participantsPairsPath, group);
+    }
+
+    private boolean canStartNextRound(Group group) {
+        if (tournament.getRequirements().getPlannedRounds() <= tournament.getCurrentRound()) {
+            return false;
+        }
+
+        return !(group.isRequiredAllGamesEnded() && gameFixtureService.countPendingGamesByGroupId(group.getId()) > 0);
     }
 
     protected List<String> createParticipantsPairsPath(List<String> participantsIds) {
@@ -135,17 +139,19 @@ public abstract class ScheduleEditor implements IScheduleEditor {
                 .map(Vertex::getValue)
                 .collect(Collectors.toList());
 
-        if (path.isEmpty()) {
-            var edges = graph.getEdges();
-            if (!edges.isEmpty() && (edges.size() == participantsIds.size() / 2)) {
-                edges.forEach(edge -> {
-                    path.add(edge.getFirst().getValue());
-                    path.add(edge.getSecond().getValue());
-                });
-            }
+        var edges = graph.getEdges();
+        if (isLastRound(participantsIds, path, edges)) {
+            edges.forEach(edge -> {
+                path.add(edge.getFirst().getValue());
+                path.add(edge.getSecond().getValue());
+            });
         }
 
         return path;
+    }
+
+    private boolean isLastRound(List<String> participantsIds, List<String> path, List<Edge<String>> edges) {
+        return path.isEmpty() && !edges.isEmpty() && (edges.size() == participantsIds.size() / 2);
     }
 
     protected List<ImmutablePair<String, String>> getCompetitors(String groupId) {
