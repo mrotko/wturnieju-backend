@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -Dspring.profiles.active=prod -DallAuth=false -jar build/libs/*.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -Dspring.profiles.active=prod -DallAuth=false --enable-preview -jar build/libs/*.jar
